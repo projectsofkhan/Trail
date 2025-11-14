@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elmwood Trail Interactive Phone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="phone-container">
+        <div class="notch"></div> 
+        
+        <div class="screen">
+            <!-- Status Bar -->
+            <div class="status-bar" id="statusBar">
+                <div class="left-icons">
+                    <span>◇</span> 
+                    <span>1:37</span> 
+                </div>
+                <div class="center-text">Zoey's phone</div>
+                <div class="right-icons">
+                    <span>📶</span> 
+                    <span>🔋</span>
+                </div>
+            </div>
+            
+            <!-- HOME VIEW -->
+            <div id="home-view" class="view">
+                <div class="app-grid" id="appGrid"></div>
+            </div>
+
+            <!-- APP VIEW -->
+            <div id="app-view" class="view">
+                <div class="app-header">
+                    <button class="back-button" onclick="closeApp()">&#9664;</button>
+                    <div class="app-title" id="appTitle"></div>
+                    <div></div>
+                </div>
+                <div class="app-content">
+                    <p id="app-content-text">Welcome to the application content area. Click on an icon on the home screen to launch an app!</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="home-bar"></div>
+    </div>
+
+    <!-- External JS -->
+    <script src="script.js"></script>
+</body>
+</html>
