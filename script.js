@@ -1,70 +1,47 @@
-const homeView = document.getElementById('home-view');
-const appView = document.getElementById('app-view');
-const appGrid = document.getElementById('appGrid');
-const appTitle = document.getElementById('appTitle');
-const appContentText = document.getElementById('app-content-text');
+// Create home screen app icons
+const appGrid = document.getElementById("appGrid");
+const appView = document.getElementById("app-view");
+const homeView = document.getElementById("home-view");
+const appTitle = document.getElementById("appTitle");
+const appContent = document.getElementById("app-content-text");
 
 const apps = [
-    { id: 'messages', name: 'Messages', icon: '💬', color: '#579AD9' },
-    { id: 'phone', name: 'Phone', icon: '📞', color: '#6BBF6B' },
-    { id: 'mail', name: 'Mail', icon: '✉️', color: '#E06B6B' },
-    { id: 'gallery', name: 'Gallery', icon: '🌄', color: '#6A618F' },
-    { id: 'pixabowl', name: 'Pixabowl', icon: '📸', color: '#9B5BBE' },
-    { id: 'diary', name: 'Diary', icon: '📖', color: '#A08E77' },
-    { id: 'files', name: 'Files', icon: '📁', color: '#5AA79E' },
-    { id: 'symmetry', name: 'Symmetry', icon: '❤️', color: '#D45A5A' },
-    { id: 'settings', name: 'Settings', icon: '⚙️', color: '#555555' }
+    { name: "Messages", content: "Open Messages App" },
+    { name: "Photos", content: "Your Gallery" },
+    { name: "Browser", content: "Welcome to Browser" },
+    { name: "Clock", content: "Clock is running..." },
+    { name: "Maps", content: "Find your way!" },
+    { name: "Notes", content: "Your notes appear here." }
 ];
 
-function initializeAppGrid() {
-    apps.forEach(app => {
-        const icon = document.createElement('div');
-        icon.className = 'app-icon';
-        icon.onclick = () => openApp(app.id, app.name);
+apps.forEach(app => {
+    const wrapper = document.createElement("div");
+    wrapper.style.textAlign = "center";
+    
+    const icon = document.createElement("div");
+    icon.classList.add("app-icon");
+    icon.onclick = () => openApp(app.name, app.content);
 
-        icon.innerHTML = `
-            <div class="app-icon-body" style="background:${app.color}">
-                ${app.icon}
-            </div>
-            <div class="app-icon-label">${app.name}</div>
-        `;
+    const label = document.createElement("div");
+    label.style.color = "white";
+    label.style.marginTop = "6px";
+    label.style.fontSize = "11px";
+    label.innerText = app.name;
 
-        appGrid.appendChild(icon);
-    });
-}
+    wrapper.appendChild(icon);
+    wrapper.appendChild(label);
+    appGrid.appendChild(wrapper);
+});
 
-function openApp(appId, appName) {
-    appTitle.textContent = appName;
+function openApp(name, content) {
+    appTitle.innerText = name;
+    appContent.innerText = content;
 
-    if (appId === 'diary') {
-        appContentText.innerHTML = `
-            <h2>The Diary App</h2>
-            <p>This is where Avery stores her personal thoughts.</p>
-            <div style="background:#f0f0f0; padding:15px; border-radius:8px;">
-                <strong>Current Entry:</strong>
-                <p style="font-style:italic;">"I need to check the coordinates Zoey sent..."</p>
-            </div>
-        `;
-    } else {
-        appContentText.innerHTML = `
-            <h2>${appName}</h2>
-            <p>This app is currently under construction.</p>
-        `;
-    }
-
-    homeView.classList.add('hidden');
-    appView.classList.add('active');
+    homeView.style.transform = "translateX(-100%)";
+    appView.style.transform = "translateX(0)";
 }
 
 function closeApp() {
-    homeView.classList.remove('hidden');
-    appView.classList.remove('active');
-
-    setTimeout(() => {
-        appTitle.textContent = '';
-        appContentText.innerHTML =
-            'Welcome to the application content area. Click an icon!';
-    }, 300);
+    homeView.style.transform = "translateX(0)";
+    appView.style.transform = "translateX(100%)";
 }
-
-window.onload = initializeAppGrid;
