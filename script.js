@@ -57,7 +57,7 @@ function enterFullscreen() {
     // Check if already in fullscreen
     if (document.fullscreenElement || document.webkitFullscreenElement || 
         document.mozFullScreenElement || document.msFullscreenElement) {
-        return;
+        return; // Already in fullscreen, do nothing
     }
     
     // Try different fullscreen methods
@@ -78,13 +78,68 @@ function enterFullscreen() {
     document.body.removeEventListener('touchstart', enterFullscreen);
 }
 
+/**
+ * Handle exit fullscreen
+ */
+function exitFullscreen() {
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+    }
+}
+
+/**
+ * Fullscreen change handler
+ */
+function handleFullscreenChange() {
+    const isFullscreen = document.fullscreenElement || 
+                        document.webkitFullscreenElement || 
+                        document.mozFullScreenElement || 
+                        document.msFullscreenElement;
+    
+    if (!isFullscreen) {
+        // Re-add listeners if user exits fullscreen
+        document.body.addEventListener('click', enterFullscreen);
+        document.body.addEventListener('touchstart', enterFullscreen);
+    }
+}
+
 // Initialize
 window.onload = function() {
     initializeAppGrid();
     updateTime();
     setInterval(updateTime, 60000);
     
+    // Add fullscreen event listeners
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+    
     // Initial fullscreen setup
     document.body.addEventListener('click', enterFullscreen);
     document.body.addEventListener('touchstart', enterFullscreen);
+    
+    // Add keyboard support for fullscreen (for testing)
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'f' || e.key === 'F') {
+            enterFullscreen();
+        }
+        if (e.key === 'Escape') {
+            exitFullscreen();
+        }
+    });
 };
+
+// Handle page visibility changes (for mobile devices)
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) {
+        // Page became visible again, re-initialize if needed
+        updateTime();
+    }
+});
