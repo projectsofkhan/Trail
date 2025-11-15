@@ -49,6 +49,20 @@ function initializeAppGrid() {
 }
 
 /**
+ * Redirect to main home URL if on index.html
+ */
+function checkHomeRedirect() {
+    const currentPath = window.location.pathname;
+    if (currentPath.includes('index.html') || currentPath.endsWith('/Trail/')) {
+        // Redirect to clean main URL
+        const cleanUrl = window.location.origin + '/Trail/';
+        if (window.location.href !== cleanUrl) {
+            window.history.replaceState(null, null, cleanUrl);
+        }
+    }
+}
+
+/**
  * Enhanced fullscreen functionality
  */
 function enterFullscreen() {
@@ -68,7 +82,7 @@ function enterFullscreen() {
     } else if (element.mozRequestFullScreen) {
         element.mozRequestFullScreen();
     } else if (element.webkitRequestFullscreen) {
-        element.webkitRequestFullscreen();
+        element.webkitRequestfullscreen();
     } else if (element.msRequestFullscreen) {
         element.msRequestFullscreen();
     }
@@ -115,6 +129,9 @@ window.onload = function() {
     updateTime();
     setInterval(updateTime, 60000);
     
+    // Check and fix home URL
+    checkHomeRedirect();
+    
     // Add fullscreen event listeners
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
@@ -142,4 +159,9 @@ document.addEventListener('visibilitychange', function() {
         // Page became visible again, re-initialize if needed
         updateTime();
     }
+});
+
+// Handle browser back button
+window.addEventListener('popstate', function() {
+    checkHomeRedirect();
 });
