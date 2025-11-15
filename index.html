@@ -2,71 +2,42 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="description" content="Elmwood Trail Interactive Phone - A mysterious adventure game">
+    
+    <!-- iOS Specific Meta Tags -->
+    <meta name="apple-mobile-web-app-title" content="Elmwood Trail">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+    
     <title>Elmwood Trail Interactive Phone</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="phone-container">
         <div class="notch"></div>
         <div class="screen">
-            <!-- Global Status Bar (Fixed at the top, Dark Style) -->
+            <!-- Global Status Bar -->
             <div class="status-bar" id="statusBar">
                 <div class="left-icons">
                     <span>◇</span>
                     <span id="current-time">1:37</span>
                 </div>
-                <div class="center-text">Zoey's phone</div>
+                <div class="center-text">Elmwood Trail</div>
                 <div class="right-icons">
                     <span>📶</span>
                     <span>🔋</span>
                 </div>
             </div>
             
-            <!-- HOME VIEW (Contains the icon grid over the dimmed background) -->
+            <!-- HOME VIEW -->
             <div id="home-view" class="view">
                 <div class="app-grid" id="appGrid">
                     <!-- App Icons will be inserted here by JavaScript -->
-                </div>
-            </div>
-
-            <!-- APP VIEW (Where the individual app content loads) -->
-            <div id="app-view" class="view">
-                <!-- Standard App Header (Visible for non-browser apps) -->
-                <div class="app-header" id="standardAppHeader">
-                    <button class="back-button" onclick="closeApp()">&#9664;</button>
-                    <div class="app-title" id="appTitle"></div>
-                    <div></div> <!-- Spacer for alignment -->
-                </div>
-                
-                <div class="app-content-wrapper">
-                    
-                    <!-- Browser App Content -->
-                    <div id="app-content-browser" class="app-content">
-                        <div class="browser-top-bar">
-                            <div class="browser-input-container">
-                                <span onclick="loadBrowserHomePage()">🏠</span>
-                                <input 
-                                    type="text" 
-                                    id="browserUrlInput" 
-                                    placeholder="Enter website or search..." 
-                                    value="startpage.com"
-                                    onkeydown="if(event.key === 'Enter') searchBrowser(this.value)"
-                                />
-                            </div>
-                            <!-- 'X' button to close app -->
-                            <span class="browser-close" onclick="closeApp()">✕</span>
-                        </div>
-                        <div class="browser-content" id="browserContent">
-                            <!-- Content loaded by JS functions -->
-                        </div>
-                    </div>
-
-                    <!-- Default App Content (Diary, Messages, etc.) -->
-                    <div id="app-content-default" class="app-content">
-                        <p id="app-content-text">Welcome to the application content area. Click on an icon on the home screen to launch an app!</p>
-                    </div>
                 </div>
             </div>
         </div>
