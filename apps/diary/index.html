@@ -17,28 +17,50 @@
             margin: 0;
             padding: 0;
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            background: #333333;
             min-height: 100vh;
             overflow: hidden;
-        }
-
-        .phone-container {
-            width: 100%;
-            height: 100vh;
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        .screen {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
-            display: flex;
-            flex-direction: column;
+        /* Mobile Phone Frame */
+        .phone-container {
+            width: 340px;
+            height: 680px;
+            background-color: #1a1a1a;
+            border-radius: 30px;
+            padding: 8px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
         }
 
+        .notch {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 130px;
+            height: 25px;
+            background-color: #1a1a1a;
+            border-radius: 0 0 15px 15px;
+            z-index: 10;
+        }
+
+        .screen {
+            width: 100%;
+            height: calc(100% - 16px);
+            background-color: #000;
+            border-radius: 22px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Status Bar */
         .status-bar {
             display: flex;
             justify-content: space-between;
@@ -48,9 +70,11 @@
             font-weight: 500;
             padding: 0 15px;
             height: 35px;
-            background: rgba(0, 0, 0, 0.3);
+            background-color: rgba(0, 0, 0, 0.2);
+            position: absolute;
+            top: 0;
             width: 100%;
-            z-index: 100;
+            z-index: 3;
         }
 
         .status-bar .left-icons, .status-bar .right-icons { 
@@ -62,13 +86,22 @@
             margin-right: 8px; 
         }
 
+        .status-bar .center-text { 
+            font-size: 12px; 
+            font-weight: 500; 
+        }
+
+        /* App Structure */
         .app-page {
             flex: 1;
             background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
             display: flex;
             flex-direction: column;
+            margin-top: 35px;
+            height: calc(100% - 35px);
         }
 
+        /* Enhanced Back Button */
         .app-header {
             display: flex;
             justify-content: space-between;
@@ -77,6 +110,8 @@
             background: rgba(139, 0, 0, 0.95);
             color: #FFD700;
             height: 50px;
+            flex-shrink: 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
         }
 
         .back-button {
@@ -85,17 +120,31 @@
             color: #FFD700;
             font-size: 1.8rem;
             cursor: pointer;
-            padding: 5px 12px;
+            padding: 8px 12px;
             text-decoration: none;
             display: flex;
             align-items: center;
+            transition: all 0.2s ease;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .back-button:active {
+            transform: scale(0.95);
+            background: rgba(255, 215, 0, 0.2);
         }
 
         .app-title {
             font-weight: 600;
             font-size: 1.2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
 
+        /* Diary Content */
         .diary-container {
             flex: 1;
             padding: 20px;
@@ -104,71 +153,6 @@
             flex-direction: column;
             align-items: center;
             overflow-y: auto;
-        }
-
-        .diary-page-content {
-            flex: 1;
-            padding: 20px;
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
-
-        .page-header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 15px;
-        }
-
-        .page-number {
-            font-size: 28px;
-            font-weight: bold;
-            color: #FFD700;
-            font-family: 'Georgia', serif;
-        }
-
-        .entry-content {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 25px;
-            line-height: 1.6;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .entry-content p {
-            margin-bottom: 20px;
-            font-size: 16px;
-        }
-
-        .clue-section {
-            background: #FFF8E1;
-            border-left: 4px solid #FFD700;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 8px;
-            font-style: italic;
-        }
-
-        .page-nav {
-            display: flex;
-            justify-content: space-between;
-            margin-top: auto;
-            padding: 0 10px;
-        }
-
-        .nav-button {
-            background: rgba(139, 0, 0, 0.8);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 500;
         }
 
         .pages-grid {
@@ -208,6 +192,7 @@
             color: #333;
         }
 
+        /* Home Bar */
         .home-bar {
             position: absolute;
             bottom: 15px;
@@ -217,15 +202,13 @@
             height: 4px;
             background: rgba(255, 255, 255, 0.4);
             border-radius: 2px;
+            z-index: 10;
         }
 
+        /* Animations */
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         @keyframes fadeInUp {
@@ -244,12 +227,8 @@
         }
 
         @keyframes fadeOut {
-            from {
-                opacity: 1;
-            }
-            to {
-                opacity: 0;
-            }
+            from { opacity: 1; }
+            to { opacity: 0; }
         }
 
         .fade-in-item {
@@ -259,12 +238,14 @@
 </head>
 <body>
     <div class="phone-container">
+        <div class="notch"></div>
         <div class="screen">
             <div class="status-bar">
                 <div class="left-icons">
                     <span>◇</span>
                     <span id="current-time">1:37</span>
                 </div>
+                <div class="center-text">Diary</div>
                 <div class="right-icons">
                     <span>📶</span>
                     <span>🔋</span>
@@ -279,7 +260,6 @@
                 </div>
 
                 <div class="diary-container">
-                    <!-- Diary Pages Grid - Directly Visible -->
                     <div class="pages-grid" id="pagesGrid">
                         <div class="page-item" onclick="openPage('page1')">
                             <div class="page-number">01</div>
