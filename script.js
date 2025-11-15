@@ -3,17 +3,17 @@ const appGrid = document.getElementById('appGrid');
 const currentTimeElement = document.getElementById('current-time');
 
 // App data with corrected paths
+// App data with direct GitHub Pages URLs
 const apps = [
-    { id: 'messages', name: 'Messages', icon: '💬', color: '#579AD9', file: './apps/messages.html' },
-    { id: 'phone', name: 'Phone', icon: '📞', color: '#6BBF6B', file: './apps/phone.html' },
-    { id: 'mail', name: 'Mail', icon: '✉️', color: '#E06B6B', file: './apps/mail.html' },
-    { id: 'gallery', name: 'Gallery', icon: '🌄', color: '#6A618F', file: './apps/gallery.html' },
-    { id: 'pixabowl', name: 'Pixabowl', icon: '📸', color: '#9B5BBE', file: './apps/pixabowl.html' },
-    { id: 'diary', name: 'Diary', icon: '📖', color: '#A08E77', file: './apps/diary.html' },
-    { id: 'browser', name: 'Browser', icon: '🌐', color: '#5D6B9C', file: './apps/browser.html' },
-    { id: 'settings', name: 'Settings', icon: '⚙️', color: '#555555', file: './apps/settings.html' }
+    { id: 'messages', name: 'Messages', icon: '💬', color: '#579AD9', file: 'https://projectsofkhan.github.io/Trail/apps/messages.html' },
+    { id: 'phone', name: 'Phone', icon: '📞', color: '#6BBF6B', file: 'https://projectsofkhan.github.io/Trail/apps/phone.html' },
+    { id: 'mail', name: 'Mail', icon: '✉️', color: '#E06B6B', file: 'https://projectsofkhan.github.io/Trail/apps/mail.html' },
+    { id: 'gallery', name: 'Gallery', icon: '🌄', color: '#6A618F', file: 'https://projectsofkhan.github.io/Trail/apps/gallery.html' },
+    { id: 'pixabowl', name: 'Pixabowl', icon: '📸', color: '#9B5BBE', file: 'https://projectsofkhan.github.io/Trail/apps/pixabowl.html' },
+    { id: 'diary', name: 'Diary', icon: '📖', color: '#A08E77', file: 'https://projectsofkhan.github.io/Trail/apps/diary.html' },
+    { id: 'browser', name: 'Browser', icon: '🌐', color: '#5D6B9C', file: 'https://projectsofkhan.github.io/Trail/apps/browser.html' },
+    { id: 'settings', name: 'Settings', icon: '⚙️', color: '#555555', file: 'https://projectsofkhan.github.io/Trail/apps/settings.html' }
 ];
-
 /**
  * Updates the current time display
  */
