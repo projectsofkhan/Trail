@@ -145,11 +145,16 @@
         .suggested-item {
             background: #2d2d2d;
             border-radius: 10px;
-            padding: 20px 15px;
+            padding: 15px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
             border: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 120px;
         }
 
         .suggested-item:active {
@@ -157,10 +162,13 @@
             transform: scale(0.98);
         }
 
-        .suggested-icon {
-            font-size: 24px;
+        .suggested-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            object-fit: cover;
             margin-bottom: 8px;
-            color: white;
+            border: 2px solid #444;
         }
 
         .suggested-title {
@@ -271,6 +279,20 @@
             margin-top: 10px;
             font-style: italic;
         }
+
+        .curved-image {
+            width: 100%;
+            border-radius: 15px;
+            margin: 15px 0;
+            border: 2px solid #444;
+        }
+
+        .content-image {
+            width: 100%;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #333;
+        }
     </style>
 </head>
 <body>
@@ -325,20 +347,32 @@
                             <div class="suggested-section">
                                 <div class="suggested-grid">
                                     <div class="suggested-item" onclick="navigateTo('avery-map.com')">
-                                        <div class="suggested-icon">🗺️</div>
+                                        <img src="https://image.jimcdn.com/app/cms/image/transf/none/path/s5b7af0618d302082/image/ie4578239dad12bfe/version/1763192908/image.jpg" 
+                                             alt="Avery Map" 
+                                             class="suggested-image"
+                                             onerror="this.style.display='none';">
                                         <div class="suggested-title">Avery Map</div>
                                     </div>
-                                    <div class="suggested-item" onclick="navigateTo('location-data.com')">
-                                        <div class="suggested-icon">📊</div>
-                                        <div class="suggested-title">Location Data</div>
+                                    <div class="suggested-item" onclick="navigateTo('kaveri-river.com')">
+                                        <img src="https://thumbs.dreamstime.com/b/vibrant-digital-painting-depicts-serene-forest-river-flowing-lush-woodland-landscape-sunny-day-clear-blue-386116319.jpg" 
+                                             alt="Kaveri River" 
+                                             class="suggested-image"
+                                             onerror="this.style.display='none';">
+                                        <div class="suggested-title">Kaveri River</div>
                                     </div>
-                                    <div class="suggested-item" onclick="loadImage('imagemap.png')">
-                                        <div class="suggested-icon">🖼️</div>
-                                        <div class="suggested-title">Image 1</div>
+                                    <div class="suggested-item" onclick="loadImage('hospital-info.png')">
+                                        <img src="https://static.vecteezy.com/system/resources/thumbnails/009/350/681/small/building-place-hospital-png.png" 
+                                             alt="Hospital" 
+                                             class="suggested-image"
+                                             onerror="this.style.display='none';">
+                                        <div class="suggested-title">Hospital Info</div>
                                     </div>
-                                    <div class="suggested-item" onclick="loadImage('imagecity.png')">
-                                        <div class="suggested-icon">🏙️</div>
-                                        <div class="suggested-title">Image 2</div>
+                                    <div class="suggested-item" onclick="loadImage('himalaya-info.png')">
+                                        <img src="https://www.shutterstock.com/image-vector/breathtaking-animated-mountain-landscape-inspire-600nw-2614074607.jpg" 
+                                             alt="Himalaya" 
+                                             class="suggested-image"
+                                             onerror="this.style.display='none';">
+                                        <div class="suggested-title">Himalaya</div>
                                     </div>
                                 </div>
                             </div>
@@ -360,7 +394,6 @@
         
         <div class="home-bar"></div>
     </div>
-    
     <script>
         // Available websites (case insensitive)
         const availableWebsites = {
@@ -389,18 +422,32 @@
                     </div>
                 `
             },
-            'location-data.com': {
-                title: 'Location Data Service',
+            'kaveri-river.com': {
+                title: 'Kaveri River - Natural Wonder',
                 content: `
-                    <p>Comprehensive location information and mapping services.</p>
+                    <p>The Kaveri River is one of the major rivers of India, flowing through the states of Karnataka and Tamil Nadu.</p>
+                    
+                    <img src="https://thumbs.dreamstime.com/b/vibrant-digital-painting-depicts-serene-forest-river-flowing-lush-woodland-landscape-sunny-day-clear-blue-386116319.jpg" 
+                         alt="Kaveri River" 
+                         class="curved-image"
+                         onerror="this.style.display='none';">
+                    
                     <div class="info-box">
-                        <strong>Available Data:</strong><br>
-                        • GPS Coordinates<br>
-                        • Area Maps<br>
-                        • Location History<br>
-                        • Navigation Routes
+                        <strong>River Characteristics:</strong><br>
+                        • Length: 805 km (500 mi)<br>
+                        • Source: Talakaveri, Western Ghats<br>
+                        • Mouth: Bay of Bengal<br>
+                        • Coldness: Maintains cool temperature year-round
                     </div>
-                    <p>For detailed maps, visit the Avery Map section.</p>
+                    
+                    <p><strong>Coldness Uses:</strong><br>
+                    The river's naturally cold waters are utilized for:<br>
+                    • Agricultural irrigation<br>
+                    • Drinking water supply<br>
+                    • Hydroelectric power generation<br>
+                    • Religious ceremonies and rituals</p>
+                    
+                    <p>The Kaveri is considered sacred and is often called the "Ganges of the South".</p>
                 `
             }
         };
@@ -503,9 +550,9 @@
         function getTitleFromUrl(url) {
             const titles = {
                 'avery-map.com': 'Avery Map - Location Data',
-                'location-data.com': 'Location Data Service',
-                'imagemap.png': 'Map Image File',
-                'imagecity.png': 'City Image File'
+                'kaveri-river.com': 'Kaveri River Information',
+                'hospital-info.png': 'Hospital Information',
+                'himalaya-info.png': 'Himalaya Mountains'
             };
             return titles[url] || url;
         }
@@ -576,14 +623,13 @@
                     <p>Available websites:</p>
                     <div class="info-box">
                         • avery-map.com<br>
-                        • location-data.com
+                        • kaveri-river.com
                     </div>
                 </div>
             `;
             
             // Add to history even if not found
-// Add to history even if not found
-addToHistory(url, 'website');
+            addToHistory(url, 'website');
         }
 
         function showImageContent(imageName) {
@@ -591,26 +637,81 @@ addToHistory(url, 'website');
             searchResults.style.display = 'none';
             websiteContent.style.display = 'block';
 
-            websiteContent.innerHTML = `
-                <div class="website-title">${imageName}</div>
-                <div class="website-url">${imageName}</div>
-                <div class="website-body">
-                    <div class="info-box">
-                        <strong>Image File:</strong> ${imageName}<br>
-                        <strong>Type:</strong> PNG Image<br>
-                        <strong>Size:</strong> 2.4 MB<br>
-                        <strong>Last Modified:</strong> Today
-                    </div>
-                    <div style="background: #1a1a1a; height: 200px; display: flex; align-items: center; justify-content: center; border-radius: 10px; margin: 20px 0; border: 1px solid #333;">
-                        <div style="text-align: center; color: #888;">
-                            <div style="font-size: 48px; margin-bottom: 10px;">🖼️</div>
-                            <div>${imageName}</div>
-                            <div style="font-size: 12px; margin-top: 5px;">Image preview</div>
+            let content = '';
+            
+            if (imageName === 'hospital-info.png') {
+                content = `
+                    <div class="website-title">Hospital Information</div>
+                    <div class="website-url">${imageName}</div>
+                    <div class="website-body">
+                        <img src="https://static.vecteezy.com/system/resources/thumbnails/009/350/681/small/building-place-hospital-png.png" 
+                             alt="Hospital" 
+                             class="curved-image"
+                             onerror="this.style.display='none';">
+                        
+                        <div class="info-box">
+                            <strong>Hospital Services:</strong><br>
+                            • Emergency Care<br>
+                            • Surgical Procedures<br>
+                            • Maternity Services<br>
+                            • Pediatric Care<br>
+                            • Diagnostic Imaging
                         </div>
+                        
+                        <p><strong>About Healthcare:</strong><br>
+                        Modern hospitals provide comprehensive medical care with advanced technology and specialized medical professionals. They serve as crucial community health centers offering preventive, curative, and rehabilitative services.</p>
+                        
+                        <p>Hospitals maintain strict hygiene protocols and utilize state-of-the-art equipment to ensure patient safety and effective treatment outcomes.</p>
                     </div>
-                    <p>This is an image file. In a real application, the actual image would be displayed here.</p>
-                </div>
-            `;
+                `;
+            } else if (imageName === 'himalaya-info.png') {
+                content = `
+                    <div class="website-title">Himalaya Mountains</div>
+                    <div class="website-url">${imageName}</div>
+                    <div class="website-body">
+                        <img src="https://www.shutterstock.com/image-vector/breathtaking-animated-mountain-landscape-inspire-600nw-2614074607.jpg" 
+                             alt="Himalaya" 
+                             class="curved-image"
+                             onerror="this.style.display='none';">
+                        
+                        <div class="info-box">
+                            <strong>Himalaya Facts:</strong><br>
+                            • Highest peak: Mount Everest (8,848 m)<br>
+                            • Length: 2,400 km (1,500 mi)<br>
+                            • Countries: India, Nepal, Bhutan, China, Pakistan<br>
+                            • Age: Approximately 50 million years
+                        </div>
+                        
+                        <p><strong>About the Himalayas:</strong><br>
+                        The Himalayas are the highest mountain range in the world, forming a natural barrier between the Tibetan Plateau and the Indian subcontinent. These majestic mountains are home to diverse ecosystems, rare wildlife, and ancient cultures.</p>
+                        
+                        <p>The range influences weather patterns across Asia and is the source of major river systems including the Ganges, Indus, and Brahmaputra. The Himalayas continue to grow approximately 1 cm per year due to tectonic plate movements.</p>
+                    </div>
+                `;
+            } else {
+                content = `
+                    <div class="website-title">${imageName}</div>
+                    <div class="website-url">${imageName}</div>
+                    <div class="website-body">
+                        <div class="info-box">
+                            <strong>Image File:</strong> ${imageName}<br>
+                            <strong>Type:</strong> PNG Image<br>
+                            <strong>Size:</strong> 2.4 MB<br>
+                            <strong>Last Modified:</strong> Today
+                        </div>
+                        <div style="background: #1a1a1a; height: 200px; display: flex; align-items: center; justify-content: center; border-radius: 10px; margin: 20px 0; border: 1px solid #333;">
+                            <div style="text-align: center; color: #888;">
+                                <div style="font-size: 48px; margin-bottom: 10px;">🖼️</div>
+                                <div>${imageName}</div>
+                                <div style="font-size: 12px; margin-top: 5px;">Image preview</div>
+                            </div>
+                        </div>
+                        <p>This is an image file. In a real application, the actual image would be displayed here.</p>
+                    </div>
+                `;
+            }
+
+            websiteContent.innerHTML = content;
         }
 
         // Initialize browser
