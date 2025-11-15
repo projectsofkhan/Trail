@@ -28,27 +28,35 @@ function loadBrowserHomePage() {
     browserUrlInput.value = 'startpage.com';
 
     let historyHTML = '';
-
     if (searchHistory.length === 0) {
-        historyHTML = `<p style="color: #999;">No recent searches.</p>`;
+        historyHTML = `<p style="color: #999; font-style: italic; font-size: 0.9rem; padding: 10px 0;">No recent searches.</p>`;
     } else {
-        historyHTML = searchHistory
-            .map(item => `<div class="browser-list-item" onclick="searchBrowser('${item}')">${item}</div>`)
-            .join('');
+        historyHTML = searchHistory.map(item => `
+            <div class="browser-list-item" onclick="searchBrowser('${item}')">${item}</div>
+        `).join('');
     }
 
     const suggestedHTML = `
         <div class="browser-suggested-tiles">
-            <div class="suggestion-tile" onclick="searchBrowser('averyelmwood.wiki')">🌐 About Avery</div>
-            <div class="suggestion-tile" onclick="searchBrowser('file://storage/imagemap.png')">🗺️ imagemap.png</div>
-            <div class="suggestion-tile" onclick="searchBrowser('local.news/missing')">🚨 Missing Person</div>
-        </div>
-    `;
+            <div class="suggestion-tile" onclick="searchBrowser('averyelmwood.wiki')">
+                <span class="icon">🌐</span> About Avery
+            </div>
+            <div class="suggestion-tile" onclick="searchBrowser('file://storage/imagemap.png')">
+                <span class="icon">🗺️</span> imagemap.png
+            </div>
+            <div class="suggestion-tile" onclick="searchBrowser('file://storage/imageschool.png')">
+                <span class="icon">🏫</span> imageschool.png
+            </div>
+            <div class="suggestion-tile" onclick="searchBrowser('local.news/missing')">
+                <span class="icon">🚨</span> Missing Persons Report
+            </div>
+        </div>`;
 
     browserContent.innerHTML = `
         <h4 class="browser-section-title">RECENTLY VIEWED</h4>
-        ${historyHTML}
-
+        <div id="recently-viewed-list">
+            ${historyHTML}
+        </div>
         <h4 class="browser-section-title">SUGGESTIONS</h4>
         ${suggestedHTML}
     `;
@@ -62,40 +70,36 @@ function updateSearchHistory(query) {
 
 function searchBrowser(query) {
     if (!query) return;
-
     updateSearchHistory(query);
     browserUrlInput.value = query;
 
     let resultsHTML;
 
-    if (query.toLowerCase().includes('elmwood')) {
+    if (query.toLowerCase().includes('elmwood') || query.includes('wiki')) {
         resultsHTML = `
+            <p style="color: #999; font-size: 0.8rem; margin: 0 0 10px 0; padding-top: 15px;">About 3 results (0.45 seconds)</p>
             <div class="search-result">
                 <h3>Elmwood Trail Fan Wiki - Avery's Profile</h3>
-                <p>averyelmwood.wiki/profile</p>
-                <p>All known clues collected by Avery.</p>
+                <p>averyelmwood.wiki/profile/clues_and_theories</p>
+                <p>A detailed breakdown of clues collected by Avery.</p>
             </div>
         `;
     } else {
-        resultsHTML = `<p style="color:#bbb;">No results found for "${query}".</p>`;
+        resultsHTML = `<p style="color: #999; padding-top: 15px;">No search results found.</p>`;
     }
 
-    browserContent.innerHTML = resultsHTML;
+    browserContent.innerHTML = `<div class="browser-content-search">${resultsHTML}</div>`;
 }
 
 function initializeAppGrid() {
     apps.forEach(app => {
         const iconDiv = document.createElement('div');
         iconDiv.className = 'app-icon';
-        iconDiv.setAttribute('data-app-id', app.id);
         iconDiv.onclick = () => openApp(app.id, app.name);
 
         iconDiv.innerHTML = `
-            <div class="app-icon-body" style="background-color: ${app.color};">
-                ${app.icon}
-            </div>
-            <div class="app-icon-label">${app.name}</div>
-        `;
+            <div class="app-icon-body" style="background-color: ${app.color};">${app.icon}</div>
+            <div class="app-icon-label">${app.name}</div>`;
 
         appGrid.appendChild(iconDiv);
     });
@@ -104,24 +108,17 @@ function initializeAppGrid() {
 function openApp(appId, appName) {
     appContentDefault.style.display = 'flex';
     appContentBrowser.style.display = 'none';
-    standardAppHeader.style.display = 'flex';
-    appView.classList.remove('browser-mode');
 
     appTitle.textContent = appName;
 
     if (appId === 'diary') {
-        appContentText.innerHTML = `
-            <h2>Diary</h2>
-            <p>\"I need to check Zoey's last coordinates...\"</p>
-        `;
+        appContentText.innerHTML = `<h2>Diary App</h2><p>Notes go here.</p>`;
     } else if (appId === 'browser') {
-        standardAppHeader.style.display = 'none';
-        appView.classList.add('browser-mode');
         appContentDefault.style.display = 'none';
         appContentBrowser.style.display = 'flex';
         loadBrowserHomePage();
     } else {
-        appContentText.innerHTML = `<h2>${appName}</h2><p>This app is under construction.</p>`;
+        appContentText.innerHTML = `<h2>${appName}</h2><p>Under development.</p>`;
     }
 
     homeView.classList.add('hidden');
