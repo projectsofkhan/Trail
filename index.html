@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elmwood Trail Interactive Phone</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="phone-container">
         <div class="notch"></div>
-
         <div class="screen">
+            <!-- Global Status Bar (Fixed at the top, Dark Style) -->
             <div class="status-bar" id="statusBar">
                 <div class="left-icons">
-                    <span>*</span>
-                    <span>1:37</span>
+                    <span>◇</span>
+                    <span id="current-time">1:37</span>
                 </div>
                 <div class="center-text">Zoey's phone</div>
                 <div class="right-icons">
@@ -23,42 +23,57 @@
                     <span>🔋</span>
                 </div>
             </div>
-
+            
+            <!-- HOME VIEW (Contains the icon grid over the dimmed background) -->
             <div id="home-view" class="view">
-                <div class="app-grid" id="appGrid"></div>
+                <div class="app-grid" id="appGrid">
+                    <!-- App Icons will be inserted here by JavaScript -->
+                </div>
             </div>
 
-            <div id="app-view" class="view hidden">
+            <!-- APP VIEW (Where the individual app content loads) -->
+            <div id="app-view" class="view">
+                <!-- Standard App Header (Visible for non-browser apps) -->
                 <div class="app-header" id="standardAppHeader">
                     <button class="back-button" onclick="closeApp()">&#9664;</button>
                     <div class="app-title" id="appTitle"></div>
-                    <div></div>
+                    <div></div> <!-- Spacer for alignment -->
                 </div>
-
+                
                 <div class="app-content-wrapper">
-                    <div id="app-content-browser" class="hidden">
+                    
+                    <!-- Browser App Content -->
+                    <div id="app-content-browser" class="app-content">
                         <div class="browser-top-bar">
                             <div class="browser-input-container">
                                 <span onclick="loadBrowserHomePage()">🏠</span>
-                                <input type="text" id="browserUrlInput"
-                                    placeholder="Enter website or search..."
-                                    onkeydown="if(event.key==='Enter') searchBrowser(this.value)" />
+                                <input 
+                                    type="text" 
+                                    id="browserUrlInput" 
+                                    placeholder="Enter website or search..." 
+                                    value="startpage.com"
+                                    onkeydown="if(event.key === 'Enter') searchBrowser(this.value)"
+                                />
                             </div>
+                            <!-- 'X' button to close app -->
                             <span class="browser-close" onclick="closeApp()">✕</span>
                         </div>
-                        <div class="browser-content" id="browserContent"></div>
+                        <div class="browser-content" id="browserContent">
+                            <!-- Content loaded by JS functions -->
+                        </div>
                     </div>
 
+                    <!-- Default App Content (Diary, Messages, etc.) -->
                     <div id="app-content-default" class="app-content">
-                        <p id="app-content-text">Welcome to the application content area.</p>
+                        <p id="app-content-text">Welcome to the application content area. Click on an icon on the home screen to launch an app!</p>
                     </div>
                 </div>
             </div>
         </div>
-
+        
         <div class="home-bar"></div>
     </div>
-
-<script src="script.js"></script>
+    
+    <script src="script.js"></script>
 </body>
 </html>
