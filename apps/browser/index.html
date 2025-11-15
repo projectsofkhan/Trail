@@ -483,3 +483,281 @@
         let currentUrl = '';
 
         // DOM Elements
+        const browserContent = document.getElementById('browserContent');
+        const homePage = document.getElementById('homePage');
+        const searchResults = document.getElementById('searchResults');
+        const websiteContent = document.getElementById('websiteContent');
+        const urlInput = document.getElementById('urlInput');
+        const recentItems = document.getElementById('recentItems');
+        const noHistoryMessage = document.getElementById('noHistoryMessage');
+
+        function refreshPage() {
+            if (currentPage === 'website' && currentUrl) {
+                loadWebsite(currentUrl);
+            }
+        }
+
+        function searchOrNavigate(input) {
+            if (!input.trim()) return;
+
+            const query = input.toLowerCase().trim();
+
+            // Remove protocol and www if present
+            let cleanUrl = query.replace(/https?:\/\//, '').replace(/^www\./, '');
+
+            // Check if it's a valid website (has .com, .net, etc.)
+            if (cleanUrl.match(/\.(com|net|org|io|gov|edu)$/)) {
+                // Try to navigate to the website
+                if (availableWebsites[cleanUrl]) {
+                    navigateTo(cleanUrl);
+                } else {
+                    // Website not found
+                    showWebsiteNotFound(cleanUrl);
+                }
+            } else {
+                // Treat as search
+                performSearch(query);
+            }
+        }
+
+        function performSearch(query) {
+            if (!query.trim()) return;
+
+            currentPage = 'search';
+            showSearchResults(query);
+            urlInput.value = query;
+
+            // Add to history
+            addToHistory(query, 'search');
+        }
+
+        function navigateTo(url) {
+            if (!url) return;
+
+            currentUrl = url;
+            currentPage = 'website';
+            loadWebsite(url);
+            urlInput.value = url;
+
+            // Add to history
+            addToHistory(url, 'website');
+        }
+
+        function loadImage(imageName) {
+            currentPage = 'website';
+            showImageContent(imageName);
+            urlInput.value = imageName;
+
+            // Add to history
+            addToHistory(imageName, 'image');
+        }
+
+        function addToHistory(item, type) {
+            // Remove if already exists
+            history = history.filter(entry => entry.url !== item);
+
+            // Add to beginning
+            history.unshift({
+                url: item,
+                title: getTitleFromUrl(item),
+                type: type,
+                timestamp: new Date()
+            });
+
+            // Keep only last 5 items
+            if (history.length > 5) {
+                history.pop();
+            }
+
+            updateHistoryDisplay();
+        }
+
+        function getTitleFromUrl(url) {
+            const titles = {
+                'avery-map.com': 'Avery Map - Location Data',
+                'kaveri-river.com': 'Kaveri River Information',
+                'hospital-info.png': 'Hospital Information',
+                'himalaya-info.png': 'Himalaya Mountains'
+            };
+            return titles[url] || url;
+        }
+
+        function updateHistoryDisplay() {
+            if (history.length === 0) {
+                noHistoryMessage.style.display = 'block';
+                recentItems.style.display = 'none';
+            } else {
+                noHistoryMessage.style.display = 'none';
+                recentItems.style.display = 'block';
+
+                recentItems.innerHTML = history.map(item => `
+                    <div class="recent-item" onclick="navigateTo('${item.url}')">
+                        <div class="recent-title">${item.title}</div>
+                        <div class="recent-url">${item.url}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function showSearchResults(query) {
+            homePage.style.display = 'none';
+            searchResults.style.display = 'block';
+            websiteContent.style.display = 'none';
+
+            searchResults.innerHTML = `
+                <div style="color: #888; margin-bottom: 20px; font-size: 14px;">
+                    Search results for "${query}"
+                </div>
+                <div class="error-message">
+                    No search results found for "${query}".<br>
+                    Try entering a valid website address like "avery-map.com"
+                </div>
+            `;
+        }
+
+        function loadWebsite(url) {
+            homePage.style.display = 'none';
+            searchResults.style.display = 'none';
+            websiteContent.style.display = 'block';
+
+            const websiteData = availableWebsites[url];
+            if (websiteData) {
+                websiteContent.innerHTML = `
+                    <div class="website-title">${websiteData.title}</div>
+                    <div class="website-url">${url}</div>
+                    <div class="website-body">
+                        ${websiteData.content}
+                    </div>
+                `;
+            }
+        }
+
+        function showWebsiteNotFound(url) {
+            homePage.style.display = 'none';
+            searchResults.style.display = 'none';
+            websiteContent.style.display = 'block';
+
+            websiteContent.innerHTML = `
+                <div class="website-title">Website Not Available</div>
+                <div class="website-url">${url}</div>
+                <div class="website-body">
+                    <div class="error-message">
+                        Cannot connect to "${url}"<br><br>
+                        The website may be temporarily unavailable or the address may be incorrect.
+                    </div>
+                    <p>Available websites:</p>
+                    <div class="info-box">
+                        • avery-map.com<br>
+                        • kaveri-river.com
+                    </div>
+                </div>
+            `;
+
+            // Add to history even if not found
+            addToHistory(url, 'website');
+        }
+
+        function showImageContent(imageName) {
+            homePage.style.display = 'none';
+            searchResults.style.display = 'none';
+            websiteContent.style.display = 'block';
+
+            let content = '';
+
+            if (imageName === 'hospital-info.png') {
+                content = `
+                    <div class="website-title">Hospital Information</div>
+                    <div class="website-url">${imageName}</div>
+                    <div class="website-body">
+                        <img src="https://static.vecteezy.com/system/resources/thumbnails/009/350/681/small/building-place-hospital-png.png" 
+                             alt="Hospital" 
+                             class="curved-image"
+                             onerror="this.style.display='none';">
+                        
+                        <div class="info-box">
+                            <strong>Hospital Services:</strong><br>
+                            • Emergency Care<br>
+                            • Surgical Procedures<br>
+                            • Maternity Services<br>
+                            • Pediatric Care<br>
+                            • Diagnostic Imaging
+                        </div>
+                        
+                        <p><strong>About Healthcare:</strong><br>
+                        Modern hospitals provide comprehensive medical care with advanced technology and specialized medical professionals. They serve as crucial community health centers offering preventive, curative, and rehabilitative services.</p>
+                        
+                        <p>Hospitals maintain strict hygiene protocols and utilize state-of-the-art equipment to ensure patient safety and effective treatment outcomes.</p>
+                    </div>
+                `;
+            } else if (imageName === 'himalaya-info.png') {
+                content = `
+                    <div class="website-title">Himalaya Mountains</div>
+                    <div class="website-url">${imageName}</div>
+                    <div class="website-body">
+                        <img src="https://www.shutterstock.com/image-vector/breathtaking-animated-mountain-landscape-inspire-600nw-2614074607.jpg" 
+                             alt="Himalaya" 
+                             class="curved-image"
+                             onerror="this.style.display='none';">
+                        
+                        <div class="info-box">
+                            <strong>Himalaya Facts:</strong><br>
+                            • Highest peak: Mount Everest (8,848 m)<br>
+                            • Length: 2,400 km (1,500 mi)<br>
+                            • Countries: India, Nepal, Bhutan, China, Pakistan<br>
+                            • Age: Approximately 50 million years
+                        </div>
+                        
+                        <p><strong>About the Himalayas:</strong><br>
+                        The Himalayas are the highest mountain range in the world, forming a natural barrier between the Tibetan Plateau and the Indian subcontinent. These majestic mountains are home to diverse ecosystems, rare wildlife, and ancient cultures.</p>
+                        
+                        <p>The range influences weather patterns across Asia and is the source of major river systems including the Ganges, Indus, and Brahmaputra. The Himalayas continue to grow approximately 1 cm per year due to tectonic plate movements.</p>
+                    </div>
+                `;
+            } else {
+                content = `
+                    <div class="website-title">${imageName}</div>
+                    <div class="website-url">${imageName}</div>
+                    <div class="website-body">
+                        <div class="info-box">
+                            <strong>Image File:</strong> ${imageName}<br>
+                            <strong>Type:</strong> PNG Image<br>
+                            <strong>Size:</strong> 2.4 MB<br>
+                            <strong>Last Modified:</strong> Today
+                        </div>
+                        <div style="background: #1a1a1a; height: 200px; display: flex; align-items: center; justify-content: center; border-radius: 10px; margin: 20px 0; border: 1px solid #333;">
+                            <div style="text-align: center; color: #888;">
+                                <div style="font-size: 48px; margin-bottom: 10px;">🖼️</div>
+                                <div>${imageName}</div>
+                                <div style="font-size: 12px; margin-top: 5px;">Image preview</div>
+                            </div>
+                        </div>
+                        <p>This is an image file. In a real application, the actual image would be displayed here.</p>
+                    </div>
+                `;
+            }
+
+            websiteContent.innerHTML = content;
+        }
+
+        // Initialize browser
+        window.onload = function() {
+            // Set current time
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const timeElement = document.getElementById('current-time');
+            if (timeElement) {
+                timeElement.textContent = `${hours}:${minutes}`;
+            }
+
+            // Show home page initially
+            homePage.style.display = 'block';
+            searchResults.style.display = 'none';
+            websiteContent.style.display = 'none';
+
+            // Initialize empty history
+            updateHistoryDisplay();
+        };
+    </script>
+</body>
+</html>
