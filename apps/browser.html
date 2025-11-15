@@ -252,6 +252,25 @@
             color: #ff6b6b;
             margin: 20px 0;
         }
+
+        .map-image {
+            width: 100%;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 2px solid #333;
+        }
+
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .image-caption {
+            color: #888;
+            font-size: 14px;
+            margin-top: 10px;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -305,13 +324,13 @@
                             <div class="section-title">SUGGESTED</div>
                             <div class="suggested-section">
                                 <div class="suggested-grid">
-                                    <div class="suggested-item" onclick="navigateTo('about-site.com')">
-                                        <div class="suggested-icon">🌐</div>
-                                        <div class="suggested-title">About Site</div>
-                                    </div>
-                                    <div class="suggested-item" onclick="navigateTo('location-map.com')">
+                                    <div class="suggested-item" onclick="navigateTo('avery-map.com')">
                                         <div class="suggested-icon">🗺️</div>
-                                        <div class="suggested-title">Location Map</div>
+                                        <div class="suggested-title">Avery Map</div>
+                                    </div>
+                                    <div class="suggested-item" onclick="navigateTo('location-data.com')">
+                                        <div class="suggested-icon">📊</div>
+                                        <div class="suggested-title">Location Data</div>
                                     </div>
                                     <div class="suggested-item" onclick="loadImage('imagemap.png')">
                                         <div class="suggested-icon">🖼️</div>
@@ -345,22 +364,43 @@
     <script>
         // Available websites (case insensitive)
         const availableWebsites = {
-            'about-site.com': {
-                title: 'About Site Information',
+            'avery-map.com': {
+                title: 'Avery Map - Location Data',
                 content: `
-                    <p>Welcome to About Site Information portal.</p>
+                    <p>Detailed map showing locations and coordinates.</p>
+                    <div class="image-container">
+                        <img src="https://image.jimcdn.com/app/cms/image/transf/none/path/s5b7af0618d302082/image/ie4578239dad12bfe/version/1763192908/image.jpg" 
+                             alt="Avery Map" 
+                             class="map-image"
+                             onerror="this.style.display='none'; document.getElementById('mapFallback').style.display='block';">
+                        <div id="mapFallback" style="display: none; background: #1a1a1a; padding: 40px; border-radius: 10px; color: #888; text-align: center;">
+                            <div style="font-size: 48px; margin-bottom: 10px;">🗺️</div>
+                            <div>Avery Map Image</div>
+                            <div style="font-size: 12px; margin-top: 5px;">Image failed to load</div>
+                        </div>
+                        <div class="image-caption">Avery Map - Location coordinates and markers</div>
+                    </div>
                     <div class="info-box">
-                        This is a sample website. In a real application, this would contain actual content and functionality.
+                        <strong>Map Features:</strong><br>
+                        • Location markers<br>
+                        • Coordinate grid<br>
+                        • Area boundaries<br>
+                        • Navigation points
                     </div>
                 `
             },
-            'location-map.com': {
-                title: 'Location Map Service',
+            'location-data.com': {
+                title: 'Location Data Service',
                 content: `
-                    <p>Interactive mapping service with location data.</p>
+                    <p>Comprehensive location information and mapping services.</p>
                     <div class="info-box">
-                        Map services are currently available. Use the search function to find specific locations.
+                        <strong>Available Data:</strong><br>
+                        • GPS Coordinates<br>
+                        • Area Maps<br>
+                        • Location History<br>
+                        • Navigation Routes
                     </div>
+                    <p>For detailed maps, visit the Avery Map section.</p>
                 `
             }
         };
@@ -462,8 +502,8 @@
 
         function getTitleFromUrl(url) {
             const titles = {
-                'about-site.com': 'About Site Information',
-                'location-map.com': 'Interactive Location Map',
+                'avery-map.com': 'Avery Map - Location Data',
+                'location-data.com': 'Location Data Service',
                 'imagemap.png': 'Map Image File',
                 'imagecity.png': 'City Image File'
             };
@@ -498,7 +538,7 @@
                 </div>
                 <div class="error-message">
                     No search results found for "${query}".<br>
-                    Try entering a valid website address like "about-site.com"
+                    Try entering a valid website address like "avery-map.com"
                 </div>
             `;
         }
@@ -535,14 +575,15 @@
                     </div>
                     <p>Available websites:</p>
                     <div class="info-box">
-                        • about-site.com<br>
-                        • location-map.com
+                        • avery-map.com<br>
+                        • location-data.com
                     </div>
                 </div>
             `;
             
             // Add to history even if not found
-            addToHistory(url, 'website');
+// Add to history even if not found
+addToHistory(url, 'website');
         }
 
         function showImageContent(imageName) {
