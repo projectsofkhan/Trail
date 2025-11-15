@@ -15,7 +15,7 @@ const currentTimeElement = document.getElementById('current-time');
 let searchHistory = [];
 const HISTORY_LIMIT = 5; // Max number of items to show
 
-// Define app data
+// Define app data (Symmetry app removed)
 const apps = [
     { id: 'messages', name: 'Messages', icon: '💬', color: '#579AD9', col: 0 },
     { id: 'phone', name: 'Phone', icon: '📞', color: '#6BBF6B', col: 1 },
@@ -25,7 +25,6 @@ const apps = [
     { id: 'pixabowl', name: 'Pixabowl', icon: '📸', color: '#9B5BBE', col: 0 },
     { id: 'diary', name: 'Diary', icon: '📖', color: '#A08E77', col: 1 },
     { id: 'browser', name: 'Browser', icon: '🌐', color: '#5D6B9C', col: 2 },
-    { id: 'symmetry', name: 'Symmetry', icon: '❤️', color: '#D45A5A', col: 3 },
     
     { id: 'settings', name: 'Settings', icon: '⚙️', color: '#555555', col: 0 }
 ];
@@ -241,7 +240,7 @@ function enterFullscreen() {
     } else if (element.mozRequestFullScreen) { // Firefox
         element.mozRequestFullScreen();
     } else if (element.webkitRequestFullscreen) { // Chrome, Safari and Opera
-        element.webkitRequestFullscreen();
+        element.webkitRequestfullscreen();
     } else if (element.msRequestFullscreen) { // IE/Edge
         element.msRequestFullscreen();
     }
