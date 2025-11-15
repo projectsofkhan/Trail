@@ -16,6 +16,7 @@
             display: flex;
             flex-direction: column;
             background: #000;
+            overflow: hidden;
         }
 
         .browser-navbar {
@@ -25,6 +26,7 @@
             background: #1a1a1a;
             border-bottom: 1px solid #333;
             gap: 10px;
+            flex-shrink: 0;
         }
 
         .url-bar {
@@ -64,6 +66,7 @@
             justify-content: center;
             cursor: pointer;
             font-size: 18px;
+            flex-shrink: 0;
         }
 
         .browser-content {
@@ -71,10 +74,12 @@
             padding: 0;
             overflow-y: auto;
             background: #000;
+            -webkit-overflow-scrolling: touch;
         }
 
         .home-page {
             padding: 20px;
+            min-height: fit-content;
         }
 
         .section-title {
@@ -180,7 +185,7 @@
         .search-results {
             padding: 20px;
             background: #000;
-            min-height: 100%;
+            min-height: fit-content;
         }
 
         .result-item {
@@ -222,7 +227,7 @@
         .website-content {
             padding: 20px;
             background: #000;
-            min-height: 100%;
+            min-height: fit-content;
         }
 
         .website-title {
@@ -266,6 +271,7 @@
             border-radius: 10px;
             margin: 15px 0;
             border: 2px solid #333;
+            max-width: 100%;
         }
 
         .image-container {
@@ -285,6 +291,7 @@
             border-radius: 15px;
             margin: 15px 0;
             border: 2px solid #444;
+            max-width: 100%;
         }
 
         .content-image {
@@ -292,6 +299,23 @@
             border-radius: 12px;
             margin: 20px 0;
             border: 2px solid #333;
+            max-width: 100%;
+        }
+
+        /* Fix for mobile scrolling */
+        .app-page.dark-mode {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .browser-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        .browser-content {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
     </style>
 </head>
@@ -394,6 +418,7 @@
         
         <div class="home-bar"></div>
     </div>
+
     <script>
         // Available websites (case insensitive)
         const availableWebsites = {
