@@ -2,10 +2,257 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Browser - Elmwood Trail</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a1a1a">
+    <title>Browser</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
+    <style>
+        .browser-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #000;
+        }
+
+        .browser-navbar {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: #1a1a1a;
+            border-bottom: 1px solid #333;
+            gap: 10px;
+        }
+
+        .url-bar {
+            flex: 1;
+            background: #2d2d2d;
+            border-radius: 10px;
+            padding: 10px 15px;
+            color: white;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .url-bar input {
+            background: none;
+            border: none;
+            color: white;
+            flex: 1;
+            outline: none;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .url-bar input::placeholder {
+            color: #888;
+        }
+
+        .refresh-button {
+            background: none;
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .browser-content {
+            flex: 1;
+            padding: 0;
+            overflow-y: auto;
+            background: #000;
+        }
+
+        .home-page {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: white;
+            margin: 25px 0 15px 0;
+            padding: 0 5px;
+        }
+
+        .recently-visited {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 5px;
+            border: 1px solid #333;
+        }
+
+        .recent-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #333;
+            cursor: pointer;
+        }
+
+        .recent-item:last-child {
+            border-bottom: none;
+        }
+
+        .recent-item:active {
+            background: #2d2d2d;
+            border-radius: 8px;
+            margin: 0 -10px;
+            padding: 12px 10px;
+        }
+
+        .recent-title {
+            font-weight: 500;
+            color: white;
+            margin-bottom: 2px;
+        }
+
+        .recent-url {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .no-history {
+            text-align: center;
+            color: #888;
+            font-style: italic;
+            padding: 30px 0;
+        }
+
+        .suggested-section {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid #333;
+        }
+
+        .suggested-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .suggested-item {
+            background: #2d2d2d;
+            border-radius: 10px;
+            padding: 20px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #333;
+        }
+
+        .suggested-item:active {
+            background: #3d3d3d;
+            transform: scale(0.98);
+        }
+
+        .suggested-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: white;
+        }
+
+        .suggested-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: white;
+        }
+
+        .search-results {
+            padding: 20px;
+            background: #000;
+            min-height: 100%;
+        }
+
+        .result-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #333;
+            cursor: pointer;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-item:active {
+            background: #2d2d2d;
+            border-radius: 8px;
+            margin: 0 -10px;
+            padding: 15px 10px;
+        }
+
+        .result-title {
+            font-weight: 500;
+            color: #8ab4f8;
+            margin-bottom: 4px;
+            font-size: 16px;
+        }
+
+        .result-url {
+            font-size: 14px;
+            color: #0f9d58;
+            margin-bottom: 6px;
+        }
+
+        .result-desc {
+            font-size: 14px;
+            color: #ccc;
+            line-height: 1.4;
+        }
+
+        .website-content {
+            padding: 20px;
+            background: #000;
+            min-height: 100%;
+        }
+
+        .website-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .website-url {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .website-body {
+            line-height: 1.6;
+            color: white;
+        }
+
+        .info-box {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #007AFF;
+            color: white;
+        }
+
+        .error-message {
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: #ff6b6b;
+            margin: 20px 0;
+        }
+    </style>
 </head>
 <body>
     <div class="phone-container">
@@ -24,41 +271,68 @@
             </div>
             
             <div class="app-page dark-mode">
-                <div class="browser-top-bar">
-                    <div class="browser-input-container">
-                        <input type="text" value="elmwood-trail.net" readonly>
-                    </div>
-                    <a href="../index.html" style="color: white; text-decoration: none; font-size: 1.2rem;">✕</a>
+                <div class="app-header dark">
+                    <a href="../index.html" class="back-button">←</a>
+                    <div class="app-title">Browser</div>
+                    <div style="width: 40px;"></div>
                 </div>
                 
-                <div class="browser-content dark-content">
-                    <h3>Elmwood Trail Network</h3>
-                    <p>Welcome to the official Elmwood Trail information portal.</p>
-                    
-                    <div style="margin-top: 30px;">
-                        <h4>Trail Information</h4>
-                        <div style="background: #444; padding: 15px; border-radius: 8px; margin-top: 10px;">
-                            <strong>Current Status:</strong> TRAIL CLOSED<br>
-                            <strong>Reason:</strong> Unexplained phenomena<br>
-                            <strong>Last Updated:</strong> Today, 13:45
+                <div class="browser-container">
+                    <!-- Navigation Bar -->
+                    <div class="browser-navbar">
+                        <div class="url-bar">
+                            <span>🔍</span>
+                            <input type="text" id="urlInput" placeholder="Enter website..." onkeydown="if(event.key === 'Enter') searchOrNavigate(this.value)">
                         </div>
+                        
+                        <button class="refresh-button" onclick="refreshPage()">↻</button>
                     </div>
-                    
-                    <div style="margin-top: 30px;">
-                        <h4>Recent Updates</h4>
-                        <div style="margin-top: 15px;">
-                            <div style="padding: 10px; border-bottom: 1px solid #444;">
-                                <strong>Strange Sightings Reported</strong><br>
-                                <span style="color: #ccc;">Multiple hikers report unusual lights in the forest...</span>
+
+                    <!-- Browser Content -->
+                    <div class="browser-content" id="browserContent">
+                        <!-- Home Page -->
+                        <div class="home-page" id="homePage">
+                            <div class="section-title">Recently visited</div>
+                            <div class="recently-visited">
+                                <div class="no-history" id="noHistoryMessage">
+                                    No recent visits
+                                </div>
+                                <div id="recentItems" style="display: none;">
+                                    <!-- Recent items will be added here by JavaScript -->
+                                </div>
                             </div>
-                            <div style="padding: 10px; border-bottom: 1px solid #444;">
-                                <strong>Trail Maps Updated</strong><br>
-                                <span style="color: #ccc;">New paths discovered, old ones vanished...</span>
+
+                            <div class="section-title">SUGGESTED</div>
+                            <div class="suggested-section">
+                                <div class="suggested-grid">
+                                    <div class="suggested-item" onclick="navigateTo('about-site.com')">
+                                        <div class="suggested-icon">🌐</div>
+                                        <div class="suggested-title">About Site</div>
+                                    </div>
+                                    <div class="suggested-item" onclick="navigateTo('location-map.com')">
+                                        <div class="suggested-icon">🗺️</div>
+                                        <div class="suggested-title">Location Map</div>
+                                    </div>
+                                    <div class="suggested-item" onclick="loadImage('imagemap.png')">
+                                        <div class="suggested-icon">🖼️</div>
+                                        <div class="suggested-title">Image 1</div>
+                                    </div>
+                                    <div class="suggested-item" onclick="loadImage('imagecity.png')">
+                                        <div class="suggested-icon">🏙️</div>
+                                        <div class="suggested-title">Image 2</div>
+                                    </div>
+                                </div>
                             </div>
-                            <div style="padding: 10px;">
-                                <strong>Research Team Missing</strong><br>
-                                <span style="color: #ccc;">University team last seen near the watchtower...</span>
-                            </div>
+                        </div>
+
+                        <!-- Search Results -->
+                        <div class="search-results" id="searchResults" style="display: none;">
+                            <!-- Results will be populated by JavaScript -->
+                        </div>
+
+                        <!-- Website Content -->
+                        <div class="website-content" id="websiteContent" style="display: none;">
+                            <!-- Dynamic website content -->
                         </div>
                     </div>
                 </div>
@@ -68,6 +342,255 @@
         <div class="home-bar"></div>
     </div>
     
-    <script src="../script.js"></script>
+    <script>
+        // Available websites (case insensitive)
+        const availableWebsites = {
+            'about-site.com': {
+                title: 'About Site Information',
+                content: `
+                    <p>Welcome to About Site Information portal.</p>
+                    <div class="info-box">
+                        This is a sample website. In a real application, this would contain actual content and functionality.
+                    </div>
+                `
+            },
+            'location-map.com': {
+                title: 'Location Map Service',
+                content: `
+                    <p>Interactive mapping service with location data.</p>
+                    <div class="info-box">
+                        Map services are currently available. Use the search function to find specific locations.
+                    </div>
+                `
+            }
+        };
+
+        // Browser state
+        let currentPage = 'home';
+        let history = [];
+        let currentUrl = '';
+
+        // DOM Elements
+        const browserContent = document.getElementById('browserContent');
+        const homePage = document.getElementById('homePage');
+        const searchResults = document.getElementById('searchResults');
+        const websiteContent = document.getElementById('websiteContent');
+        const urlInput = document.getElementById('urlInput');
+        const recentItems = document.getElementById('recentItems');
+        const noHistoryMessage = document.getElementById('noHistoryMessage');
+
+        function refreshPage() {
+            if (currentPage === 'website' && currentUrl) {
+                loadWebsite(currentUrl);
+            }
+        }
+
+        function searchOrNavigate(input) {
+            if (!input.trim()) return;
+            
+            const query = input.toLowerCase().trim();
+            
+            // Remove protocol and www if present
+            let cleanUrl = query.replace(/https?:\/\//, '').replace(/^www\./, '');
+            
+            // Check if it's a valid website (has .com, .net, etc.)
+            if (cleanUrl.match(/\.(com|net|org|io|gov|edu)$/)) {
+                // Try to navigate to the website
+                if (availableWebsites[cleanUrl]) {
+                    navigateTo(cleanUrl);
+                } else {
+                    // Website not found
+                    showWebsiteNotFound(cleanUrl);
+                }
+            } else {
+                // Treat as search
+                performSearch(query);
+            }
+        }
+
+        function performSearch(query) {
+            if (!query.trim()) return;
+
+            currentPage = 'search';
+            showSearchResults(query);
+            urlInput.value = query;
+            
+            // Add to history
+            addToHistory(query, 'search');
+        }
+
+        function navigateTo(url) {
+            if (!url) return;
+
+            currentUrl = url;
+            currentPage = 'website';
+            loadWebsite(url);
+            urlInput.value = url;
+            
+            // Add to history
+            addToHistory(url, 'website');
+        }
+
+        function loadImage(imageName) {
+            currentPage = 'website';
+            showImageContent(imageName);
+            urlInput.value = imageName;
+            
+            // Add to history
+            addToHistory(imageName, 'image');
+        }
+
+        function addToHistory(item, type) {
+            // Remove if already exists
+            history = history.filter(entry => entry.url !== item);
+            
+            // Add to beginning
+            history.unshift({
+                url: item,
+                title: getTitleFromUrl(item),
+                type: type,
+                timestamp: new Date()
+            });
+            
+            // Keep only last 5 items
+            if (history.length > 5) {
+                history.pop();
+            }
+            
+            updateHistoryDisplay();
+        }
+
+        function getTitleFromUrl(url) {
+            const titles = {
+                'about-site.com': 'About Site Information',
+                'location-map.com': 'Interactive Location Map',
+                'imagemap.png': 'Map Image File',
+                'imagecity.png': 'City Image File'
+            };
+            return titles[url] || url;
+        }
+
+        function updateHistoryDisplay() {
+            if (history.length === 0) {
+                noHistoryMessage.style.display = 'block';
+                recentItems.style.display = 'none';
+            } else {
+                noHistoryMessage.style.display = 'none';
+                recentItems.style.display = 'block';
+                
+                recentItems.innerHTML = history.map(item => `
+                    <div class="recent-item" onclick="navigateTo('${item.url}')">
+                        <div class="recent-title">${item.title}</div>
+                        <div class="recent-url">${item.url}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function showSearchResults(query) {
+            homePage.style.display = 'none';
+            searchResults.style.display = 'block';
+            websiteContent.style.display = 'none';
+
+            searchResults.innerHTML = `
+                <div style="color: #888; margin-bottom: 20px; font-size: 14px;">
+                    Search results for "${query}"
+                </div>
+                <div class="error-message">
+                    No search results found for "${query}".<br>
+                    Try entering a valid website address like "about-site.com"
+                </div>
+            `;
+        }
+
+        function loadWebsite(url) {
+            homePage.style.display = 'none';
+            searchResults.style.display = 'none';
+            websiteContent.style.display = 'block';
+
+            const websiteData = availableWebsites[url];
+            if (websiteData) {
+                websiteContent.innerHTML = `
+                    <div class="website-title">${websiteData.title}</div>
+                    <div class="website-url">${url}</div>
+                    <div class="website-body">
+                        ${websiteData.content}
+                    </div>
+                `;
+            }
+        }
+
+        function showWebsiteNotFound(url) {
+            homePage.style.display = 'none';
+            searchResults.style.display = 'none';
+            websiteContent.style.display = 'block';
+
+            websiteContent.innerHTML = `
+                <div class="website-title">Website Not Available</div>
+                <div class="website-url">${url}</div>
+                <div class="website-body">
+                    <div class="error-message">
+                        Cannot connect to "${url}"<br><br>
+                        The website may be temporarily unavailable or the address may be incorrect.
+                    </div>
+                    <p>Available websites:</p>
+                    <div class="info-box">
+                        • about-site.com<br>
+                        • location-map.com
+                    </div>
+                </div>
+            `;
+            
+            // Add to history even if not found
+            addToHistory(url, 'website');
+        }
+
+        function showImageContent(imageName) {
+            homePage.style.display = 'none';
+            searchResults.style.display = 'none';
+            websiteContent.style.display = 'block';
+
+            websiteContent.innerHTML = `
+                <div class="website-title">${imageName}</div>
+                <div class="website-url">${imageName}</div>
+                <div class="website-body">
+                    <div class="info-box">
+                        <strong>Image File:</strong> ${imageName}<br>
+                        <strong>Type:</strong> PNG Image<br>
+                        <strong>Size:</strong> 2.4 MB<br>
+                        <strong>Last Modified:</strong> Today
+                    </div>
+                    <div style="background: #1a1a1a; height: 200px; display: flex; align-items: center; justify-content: center; border-radius: 10px; margin: 20px 0; border: 1px solid #333;">
+                        <div style="text-align: center; color: #888;">
+                            <div style="font-size: 48px; margin-bottom: 10px;">🖼️</div>
+                            <div>${imageName}</div>
+                            <div style="font-size: 12px; margin-top: 5px;">Image preview</div>
+                        </div>
+                    </div>
+                    <p>This is an image file. In a real application, the actual image would be displayed here.</p>
+                </div>
+            `;
+        }
+
+        // Initialize browser
+        window.onload = function() {
+            // Set current time
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const timeElement = document.getElementById('current-time');
+            if (timeElement) {
+                timeElement.textContent = `${hours}:${minutes}`;
+            }
+
+            // Show home page initially
+            homePage.style.display = 'block';
+            searchResults.style.display = 'none';
+            websiteContent.style.display = 'none';
+            
+            // Initialize empty history
+            updateHistoryDisplay();
+        };
+    </script>
 </body>
 </html>
