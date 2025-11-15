@@ -1,3 +1,4 @@
+
 // DOM Elements
 const appGrid = document.getElementById('appGrid');
 const currentTimeElement = document.getElementById('current-time');
@@ -81,8 +82,8 @@ function enterFullscreen() {
         });
     } else if (element.mozRequestFullScreen) {
         element.mozRequestFullScreen();
-    } else if (element.webkitRequestFullscreen) {
-        element.webkitRequestfullscreen();
+    } else if (element.webkitRequestFullscreen) { // Fixed: capital S
+        element.webkitRequestFullscreen();
     } else if (element.msRequestFullscreen) {
         element.msRequestFullscreen();
     }
