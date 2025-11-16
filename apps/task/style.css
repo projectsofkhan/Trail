@@ -310,12 +310,28 @@ body {
     border: 2px solid #4A90E2;
 }
 
+/* Ad Text Overlay */
+.ad-text {
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-align: center;
+    display: none;
+}
+
 .ad-image {
     width: 100%;
     max-height: 300px;
     border-radius: 10px;
     margin-bottom: 15px;
     object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.ad-image:active {
+    transform: scale(0.98);
 }
 
 .ad-timer {
