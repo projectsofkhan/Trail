@@ -1,1 +1,166 @@
-hello
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a1a1a">
+    <title>Task Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="phone-container">
+        <div class="notch"></div>
+        <div class="screen">
+            <div class="status-bar">
+                <div class="left-icons">
+                    <span>◇</span>
+                    <span id="current-time">1:37</span>
+                </div>
+                <div class="center-text">Task Manager</div>
+                <div class="right-icons">
+                    <span>📶</span>
+                    <span>🔋</span>
+                </div>
+            </div>
+
+            <div class="app-page">
+                <div class="app-header dark">
+                    <a href="https://projectsofkhan.github.io/Trail/" class="back-button">←</a>
+                    <div class="app-title">Task Manager</div>
+                    <div style="width: 40px;"></div>
+                </div>
+
+                <div class="app-content">
+                    <!-- Task Header -->
+                    <div class="task-header">
+                        <div class="task-logo">Task Manager</div>
+                        <div class="task-subtitle">Stay organized and productive</div>
+                    </div>
+
+                    <!-- Tasks Section -->
+                    <div class="tasks-section">
+                        <div class="tasks-container">
+                            <div class="section-title">Today's Tasks</div>
+                            
+                            <div class="task-list">
+                                <!-- Task 1 to 10 -->
+                                <div class="task-item" onclick="toggleTask(this)">
+                                    <div class="task-checkbox"></div>
+                                    <div class="task-content">
+                                        <div class="task-title">Task 1</div>
+                                        <div class="task-description">Complete initial research</div>
+                                    </div>
+                                    <button class="hint-button" onclick="showAd(event)">Hint</button>
+                                </div>
+
+                                <div class="task-item" onclick="toggleTask(this)">
+                                    <div class="task-checkbox"></div>
+                                    <div class="task-content">
+                                        <div class="task-title">Task 2</div>
+                                        <div class="task-description">Review case files</div>
+                                    </div>
+                                    <button class="hint-button" onclick="showAd(event)">Hint</button>
+                                </div>
+
+                                <div class="task-item" onclick="toggleTask(this)">
+                                    <div class="task-checkbox"></div>
+                                    <div class="task-content">
+                                        <div class="task-title">Task 3</div>
+                                        <div class="task-description">Organize evidence</div>
+                                    </div>
+                                    <button class="hint-button" onclick="showAd(event)">Hint</button>
+                                </div>
+
+                                <div class="task-item" onclick="toggleTask(this)">
+                                    <div class="task-checkbox"></div>
+                                    <div class="task-content">
+                                        <div class="task-title">Task 4</div>
+                                        <div class="task-description">Interview witnesses</div>
+                                    </div>
+                                    <button class="hint-button" onclick="showAd(event)">Hint</button>
+                                </div>
+
+                                <div class="task-item" onclick="toggleTask(this)">
+                                    <div class="task-checkbox"></div>
+                                    <div class="task-content">
+                                        <div class="task-title">Task 5</div>
+                                        <div class="task-description">Check locations</div>
+                                    </div>
+                                    <button class="hint-button" onclick="showAd(event)">Hint</button>
+                                </div>
+
+                                <div class="task-item" onclick="toggleTask(this)">
+                                    <div class="task-checkbox"></div>
+                                    <div class="task-content">
+                                        <div class="task-title">Task 6</div>
+                                        <div class="task-description">Update timeline</div>
+                                    </div>
+                                    <button class="hint-button" onclick="showAd(event)">Hint</button>
+                                </div>
+
+                                <div class="task-item" onclick="toggleTask(this)">
+                                    <div class="task-checkbox"></div>
+                                    <div class="task-content">
+                                        <div class="task-title">Task 7</div>
+                                        <div class="task-description">Verify alibis</div>
+                                    </div>
+                                    <button class="hint-button" onclick="showAd(event)">Hint</button>
+                                </div>
+
+                                <div class="task-item" onclick="toggleTask(this)">
+                                    <div class="task-checkbox"></div>
+                                    <div class="task-content">
+                                        <div class="task-title">Task 8</div>
+                                        <div class="task-description">Cross-reference data</div>
+                                    </div>
+                                    <button class="hint-button" onclick="showAd(event)">Hint</button>
+                                </div>
+
+                                <div class="task-item" onclick="toggleTask(this)">
+                                    <div class="task-checkbox"></div>
+                                    <div class="task-content">
+                                        <div class="task-title">Task 9</div>
+                                        <div class="task-description">Prepare report</div>
+                                    </div>
+                                    <button class="hint-button" onclick="showAd(event)">Hint</button>
+                                </div>
+
+                                <div class="task-item" onclick="toggleTask(this)">
+                                    <div class="task-checkbox"></div>
+                                    <div class="task-content">
+                                        <div class="task-title">Task 10</div>
+                                        <div class="task-description">Final review</div>
+                                    </div>
+                                    <button class="hint-button" onclick="showAd(event)">Hint</button>
+                                </div>
+
+                                <!-- Coming Soon -->
+                                <div class="coming-soon">
+                                    Coming Soon...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ad Overlay -->
+        <div id="adOverlay" class="ad-overlay">
+            <div class="ad-container">
+                <img id="adImage" alt="Advertisement" class="ad-image">
+                <div id="adTimer" class="ad-timer">Ad ends in 3s</div>
+                <button class="see-hint-button" onclick="showHint()" style="display: none;" id="seeHintBtn">See Hint</button>
+            </div>
+        </div>
+
+        <div class="home-bar"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
