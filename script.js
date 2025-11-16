@@ -11,6 +11,7 @@ const apps = [
     { id: 'pixabowl', name: 'Instashan', icon: 'https://projectsofkhan.github.io/pythontodoapp/instashan.jpg', color: '#9B5BBE', file: 'apps/instashan.html' },
     { id: 'diary', name: 'Diary', icon: '📖', color: '#A08E77', file: 'apps/diary/index.html' },
     { id: 'browser', name: 'Browser', icon: '🌐', color: '#5D6B9C', file: 'apps/browser/index.html' },
+    { id: 'taskmanager', name: 'Task Manager', icon: '📋', color: '#FF6B6B', file: 'apps/taskmanager/index.html' },
     { id: 'settings', name: 'Settings', icon: '⚙️', color: '#555555', file: 'apps/settings/index.html' }
 ];
 
@@ -73,7 +74,7 @@ function enterFullscreen() {
     } else if (element.mozRequestFullScreen) {
         element.mozRequestFullScreen();
     } else if (element.webkitRequestFullscreen) {
-        element.webkitRequestFullscreen();
+        element.webkitRequestfullscreen();
     } else if (element.msRequestFullscreen) {
         element.msRequestFullscreen();
     }
