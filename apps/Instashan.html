@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a1a1a">
+    <title>Instashan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Mobile Phone Theme */
+        :root {
+            --phone-width: 340px;
+            --phone-height: 680px;
+            --border-radius: 30px;
+            --frame-color: #1a1a1a;
+            --status-bar-height: 35px;
+            --instagram-gradient: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent !important;
+            tap-highlight-color: transparent !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+            -webkit-touch-callout: none !important;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #333333;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+
+        /* Phone Frame */
+        .phone-container {
+            width: var(--phone-width);
+            height: var(--phone-height);
+            background-color: var(--frame-color);
+            border-radius: var(--border-radius);
+            padding: 8px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notch {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 130px;
+            height: 25px;
+            background-color: var(--frame-color);
+            border-radius: 0 0 15px 15px;
+            z-index: 10;
+        }
+
+        /* Screen Area */
+        .screen {
+            width: 100%;
+            height: calc(100% - 16px);
+            background-color: #000;
+            border-radius: calc(var(--border-radius) - 8px);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 11px;
+            font-weight: 500;
+            padding: 0 15px;
+            height: var(--status-bar-height);
+            background-color: rgba(0, 0, 0, 0.2);
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 3;
+        }
+
+        .status-bar .left-icons, .status-bar .right-icons { 
+            display: flex; 
+            align-items: center; 
+        }
+
+        .status-bar span { 
+            margin-right: 8px; 
+        }
+
+        .status-bar .center-text { 
+            font-size: 12px; 
+            font-weight: 500; 
+        }
+
+        /* App Page */
+        .app-page {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: #000;
+        }
+
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 15px;
+            background: #1a1a1a;
+            border-bottom: 1px solid #333;
+            flex-shrink: 0;
+        }
+
+        .app-header.dark {
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .back-button {
+            color: white;
+            text-decoration: none;
+            font-size: 20px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+        }
+
+        .back-button:active {
+            background: #2d2d2d;
+        }
+
+        .app-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: white;
+        }
+
+        /* Instashan Content */
+        .app-content {
+            flex: 1;
+            padding: 0;
+            background: #000;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Instashan Header */
+        .instashan-header {
+            background: var(--instagram-gradient);
+            padding: 40px 20px 30px 20px;
+            text-align: center;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+
+        .instashan-logo {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .instashan-tagline {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        /* Login Section */
+        .login-section {
+            padding: 30px 25px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .login-card {
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid #333;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .login-details {
+            background: #2d2d2d;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid #444;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #444;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #ccc;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .username-display {
+            background: #000;
+            border: 2px solid #555;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .username-text {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .no-password-note {
+            background: #2d2d2d;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 25px;
+            border-left: 4px solid #e6683c;
+        }
+
+        .note-text {
+            color: #ccc;
+            font-size: 13px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        /* Login Button */
+        .login-button-container {
+            margin-top: auto;
+            padding: 20px 0;
+        }
+
+        .login-button {
+            width: 100%;
+            background: var(--instagram-gradient);
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(220, 39, 67, 0.3);
+        }
+
+        .login-button:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(220, 39, 67, 0.4);
+        }
+
+        .login-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Footer */
+        .app-footer {
+            padding: 20px 25px;
+            background: #1a1a1a;
+            border-top: 1px solid #333;
+        }
+
+        .footer-text {
+            color: #888;
+            font-size: 12px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        /* Home Bar */
+        .home-bar {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110px;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.4);
+            border-radius: 2px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="notch"></div>
+        <div class="screen">
+            <div class="status-bar">
+                <div class="left-icons">
+                    <span>◇</span>
+                    <span id="current-time">1:37</span>
+                </div>
+                <div class="center-text">Instashan</div>
+                <div class="right-icons">
+                    <span>📶</span>
+                    <span>🔋</span>
+                </div>
+            </div>
+
+            <div class="app-page">
+                <div class="app-header dark">
+                    <a href="https://projectsofkhan.github.io/Trail/" class="back-button">←</a>
+                    <div class="app-title">Instashan</div>
+                    <div style="width: 40px;"></div>
+                </div>
+
+                <div class="app-content">
+                    <!-- Instashan Header -->
+                    <div class="instashan-header">
+                        <div class="instashan-logo">Instashan</div>
+                        <div class="instashan-tagline">Connect and share your moments</div>
+                    </div>
+
+                    <!-- Login Section -->
+                    <div class="login-section">
+                        <div class="login-card">
+                            <div class="section-title">Account Details</div>
+
+                            <div class="login-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Status</span>
+                                    <span class="detail-value" style="color: #4CAF50;">● Active</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Auto-login</span>
+                                    <span class="detail-value" style="color: #e6683c;">Enabled</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Last Login</span>
+                                    <span class="detail-value">2 hours ago</span>
+                                </div>
+                            </div>
+
+                            <div class="username-display">
+                                <div class="username-text">ericpetrove</div>
+                            </div>
+
+                            <div class="no-password-note">
+                                <div class="note-text">
+                                    Password authentication is handled automatically. Your credentials are securely stored and verified through our encrypted login system.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="login-button-container">
+                            <button class="login-button" onclick="loginToInstagram()">
+                                Login to Instagram
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="home-bar"></div>
+    </div>
+
+    <script>
+        /**
+         * Updates the current time display
+         */
+        function updateTime() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const timeElement = document.getElementById('current-time');
+            if (timeElement) {
+                timeElement.textContent = `${hours}:${minutes}`;
+            }
+        }
+
+        /**
+         * Redirects to Instagram login page
+         */
+        function loginToInstagram() {
+            const loginButton = document.querySelector('.login-button');
+
+            // Show loading state
+            loginButton.innerHTML = 'Connecting...';
+            loginButton.disabled = true;
+
+            // Simulate loading delay
+            setTimeout(() => {
+                // Redirect to Instagram login
+                window.location.href = 'https://www.instagram.com/accounts/login/?hl=en';
+            }, 1500);
+        }
+
+        // Initialize when page loads
+        window.onload = function() {
+            updateTime();
+            setInterval(updateTime, 60000);
+        };
+    </script>
+</body>
+</html>
