@@ -44,11 +44,11 @@ function showAd(event) {
     const adText = document.getElementById('adText');
     
     // Randomly choose between ad1.jpg and ad2.png (50-50 chance)
-    const randomAd = Math.random() < 0.5 ? 'ad1.jpg' : 'ad2.png';
+    const randomAd = Math.random() < 0.5 ? 'task/ad1.jpg' : 'task/ad2.png';
     adImage.src = randomAd;
     
     // Set ad text and click behavior based on which ad
-    if (randomAd === 'ad1.jpg') {
+    if (randomAd === 'task/ad1.jpg') {
         adText.textContent = 'Play BlitzRacer Now';
         adText.style.display = 'block';
         adImage.onclick = function() {
