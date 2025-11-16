@@ -51,11 +51,11 @@ function showAd(event) {
     }
     
     // Randomly choose between ad1.jpg and ad2.png (50-50 chance)
-    const randomAd = Math.random() < 0.5 ? 'task/ad1.jpg' : 'task/ad2.png';
+    const randomAd = Math.random() < 0.5 ? 'ad1.jpg' : 'ad2.png';
     adImage.src = randomAd;
     
     // Set ad text and click behavior based on which ad
-    if (randomAd === 'task/ad1.jpg') {
+    if (randomAd === 'ad1.jpg') {
         adText.textContent = 'Play BlitzRacer Now';
         adImage.onclick = function() {
             window.open('https://blitzracer.github.io/Cargame/', '_blank');
