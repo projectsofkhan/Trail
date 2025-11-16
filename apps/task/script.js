@@ -37,11 +37,18 @@ function toggleTask(taskElement) {
  */
 function showAd(event) {
     event.stopPropagation(); // Prevent task toggle
+    
     const adOverlay = document.getElementById('adOverlay');
     const adImage = document.getElementById('adImage');
     const adTimer = document.getElementById('adTimer');
     const seeHintBtn = document.getElementById('seeHintBtn');
     const adText = document.getElementById('adText');
+    
+    // Check if all elements exist
+    if (!adOverlay || !adImage || !adTimer || !seeHintBtn || !adText) {
+        console.error('Ad elements not found');
+        return;
+    }
     
     // Randomly choose between ad1.jpg and ad2.png (50-50 chance)
     const randomAd = Math.random() < 0.5 ? 'task/ad1.jpg' : 'task/ad2.png';
@@ -50,13 +57,11 @@ function showAd(event) {
     // Set ad text and click behavior based on which ad
     if (randomAd === 'task/ad1.jpg') {
         adText.textContent = 'Play BlitzRacer Now';
-        adText.style.display = 'block';
         adImage.onclick = function() {
             window.open('https://blitzracer.github.io/Cargame/', '_blank');
         };
     } else {
         adText.textContent = 'ZeeAi Text To Speech App';
-        adText.style.display = 'block';
         adImage.onclick = function() {
             window.open('https://projectsofkhan.github.io/zeeAi/', '_blank');
         };
@@ -101,16 +106,16 @@ function closeAd() {
     const adTimer = document.getElementById('adTimer');
     const seeHintBtn = document.getElementById('seeHintBtn');
     const adText = document.getElementById('adText');
-    
-    adOverlay.style.display = 'none';
-    adTimer.style.display = 'block';
-    seeHintBtn.style.display = 'none';
-    adText.style.display = 'none';
-    adTimer.textContent = 'Ad ends in 3s';
-    
-    // Reset image click handler
     const adImage = document.getElementById('adImage');
-    adImage.onclick = null;
+    
+    if (adOverlay) adOverlay.style.display = 'none';
+    if (adTimer) {
+        adTimer.style.display = 'block';
+        adTimer.textContent = 'Ad ends in 3s';
+    }
+    if (seeHintBtn) seeHintBtn.style.display = 'none';
+    if (adText) adText.style.display = 'none';
+    if (adImage) adImage.onclick = null;
 }
 
 // Initialize when page loads
