@@ -41,14 +41,31 @@ function showAd(event) {
     const adImage = document.getElementById('adImage');
     const adTimer = document.getElementById('adTimer');
     const seeHintBtn = document.getElementById('seeHintBtn');
+    const adText = document.getElementById('adText');
     
     // Randomly choose between ad1.jpg and ad2.png (50-50 chance)
     const randomAd = Math.random() < 0.5 ? 'ad1.jpg' : 'ad2.png';
     adImage.src = randomAd;
     
+    // Set ad text and click behavior based on which ad
+    if (randomAd === 'ad1.jpg') {
+        adText.textContent = 'Play BlitzRacer Now';
+        adText.style.display = 'block';
+        adImage.onclick = function() {
+            window.open('https://blitzracer.github.io/Cargame/', '_blank');
+        };
+    } else {
+        adText.textContent = 'ZeeAi Text To Speech App';
+        adText.style.display = 'block';
+        adImage.onclick = function() {
+            window.open('https://projectsofkhan.github.io/zeeAi/', '_blank');
+        };
+    }
+    
     // Show ad overlay
     adOverlay.style.display = 'flex';
     seeHintBtn.style.display = 'none';
+    adText.style.display = 'block';
     
     // Start 3-second timer
     let seconds = 3;
@@ -83,11 +100,17 @@ function closeAd() {
     const adOverlay = document.getElementById('adOverlay');
     const adTimer = document.getElementById('adTimer');
     const seeHintBtn = document.getElementById('seeHintBtn');
+    const adText = document.getElementById('adText');
     
     adOverlay.style.display = 'none';
     adTimer.style.display = 'block';
     seeHintBtn.style.display = 'none';
+    adText.style.display = 'none';
     adTimer.textContent = 'Ad ends in 3s';
+    
+    // Reset image click handler
+    const adImage = document.getElementById('adImage');
+    adImage.onclick = null;
 }
 
 // Initialize when page loads
