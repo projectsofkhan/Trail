@@ -22,7 +22,7 @@ const apps = [
     { id: 'mail', name: 'Mail', icon: '✉️', color: '#E06B6B', col: 2 },
     { id: 'gallery', name: 'Gallery', icon: '🌄', color: '#6A618F', col: 3 },
     
-    { id: 'pixabowl', name: 'Pixabowl', icon: '📸', color: '#9B5BBE', col: 0 },
+    { id: 'Instashan', name: 'Instashan', icon: 'https://projectsofkhan.github.io/pythontodoapp/instashan.jpg', color: '#9B5BBE', col: 0 },
     { id: 'diary', name: 'Diary', icon: '📖', color: '#A08E77', col: 1 },
     { id: 'browser', name: 'Browser', icon: '🌐', color: '#5D6B9C', col: 2 },
     
