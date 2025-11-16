@@ -8,7 +8,7 @@ const apps = [
     { id: 'phone', name: 'Phone', icon: '📞', color: '#6BBF6B', file: 'apps/phone/index.html' },
     { id: 'mail', name: 'Mail', icon: '✉️', color: '#E06B6B', file: 'apps/mail/index.html' },
     { id: 'gallery', name: 'Gallery', icon: '🌄', color: '#6A618F', file: 'apps/gallery/index.html' },
-    { id: 'pixabowl', name: 'Pixabowl', icon: '📸', color: '#9B5BBE', file: 'apps/pixabowl/index.html' },
+    { id: 'pixabowl', name: 'Instashan', icon: 'https://projectsofkhan.github.io/pythontodoapp/instashan.jpg', color: '#9B5BBE', file: 'apps/pixabowl/index.html' },
     { id: 'diary', name: 'Diary', icon: '📖', color: '#A08E77', file: 'apps/diary/index.html' },
     { id: 'browser', name: 'Browser', icon: '🌐', color: '#5D6B9C', file: 'apps/browser/index.html' },
     { id: 'settings', name: 'Settings', icon: '⚙️', color: '#555555', file: 'apps/settings/index.html' }
