@@ -168,157 +168,91 @@
         /* Instashan Header */
         .instashan-header {
             background: var(--instagram-gradient);
-            padding: 40px 20px 30px 20px;
+            padding: 50px 20px 40px 20px;
             text-align: center;
             border-bottom-left-radius: 20px;
             border-bottom-right-radius: 20px;
         }
 
         .instashan-logo {
-            font-size: 32px;
+            font-size: 36px;
             font-weight: 700;
             color: white;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             letter-spacing: -0.5px;
-        }
-
-        .instashan-tagline {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 14px;
-            font-weight: 400;
         }
 
         /* Login Section */
         .login-section {
-            padding: 30px 25px;
+            padding: 40px 25px;
             flex: 1;
             display: flex;
             flex-direction: column;
-        }
-
-        .login-card {
-            background: #1a1a1a;
-            border-radius: 15px;
-            padding: 25px;
-            border: 1px solid #333;
-            margin-bottom: 20px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .login-details {
-            background: #2d2d2d;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
-            border: 1px solid #444;
-        }
-
-        .detail-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #444;
-        }
-
-        .detail-item:last-child {
-            border-bottom: none;
-        }
-
-        .detail-label {
-            color: #ccc;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .detail-value {
-            color: white;
-            font-size: 14px;
-            font-weight: 600;
+            justify-content: center;
         }
 
         .username-display {
-            background: #000;
-            border: 2px solid #555;
-            border-radius: 10px;
-            padding: 15px;
+            background: #1a1a1a;
+            border: 2px solid #444;
+            border-radius: 15px;
+            padding: 25px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .username-label {
+            color: #ccc;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .username-text {
             color: white;
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 24px;
+            font-weight: 700;
             letter-spacing: 0.5px;
-        }
-
-        .no-password-note {
-            background: #2d2d2d;
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-            margin-bottom: 25px;
-            border-left: 4px solid #e6683c;
-        }
-
-        .note-text {
-            color: #ccc;
-            font-size: 13px;
-            font-weight: 500;
-            line-height: 1.4;
+            background: var(--instagram-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         /* Login Button */
         .login-button-container {
-            margin-top: auto;
-            padding: 20px 0;
+            margin-top: -20px;
         }
 
         .login-button {
             width: 100%;
             background: var(--instagram-gradient);
             border: none;
-            border-radius: 12px;
-            padding: 16px;
+            border-radius: 15px;
+            padding-top: 18px;
+            padding-bottom: 18px;
+            padding-left: 18px;
+            padding-right: 18px;
             color: white;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(220, 39, 67, 0.3);
+            box-shadow: 0 6px 20px rgba(220, 39, 67, 0.4);
+            letter-spacing: 0.5px;
         }
 
         .login-button:active {
-            transform: scale(0.98);
-            box-shadow: 0 2px 8px rgba(220, 39, 67, 0.4);
+            transform: scale(0.96);
+            box-shadow: 0 3px 12px rgba(220, 39, 67, 0.5);
         }
 
         .login-button:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
-        }
-
-        /* Footer */
-        .app-footer {
-            padding: 20px 25px;
-            background: #1a1a1a;
-            border-top: 1px solid #333;
-        }
-
-        .footer-text {
-            color: #888;
-            font-size: 12px;
-            text-align: center;
-            line-height: 1.4;
         }
 
         /* Home Bar */
@@ -362,43 +296,18 @@
                     <!-- Instashan Header -->
                     <div class="instashan-header">
                         <div class="instashan-logo">Instashan</div>
-                        <div class="instashan-tagline">Connect and share your moments</div>
                     </div>
 
                     <!-- Login Section -->
                     <div class="login-section">
-                        <div class="login-card">
-                            <div class="section-title">Account Details</div>
-
-                            <div class="login-details">
-                                <div class="detail-item">
-                                    <span class="detail-label">Status</span>
-                                    <span class="detail-value" style="color: #4CAF50;">● Active</span>
-                                </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">Auto-login</span>
-                                    <span class="detail-value" style="color: #e6683c;">Enabled</span>
-                                </div>
-                                <div class="detail-item">
-                                    <span class="detail-label">Last Login</span>
-                                    <span class="detail-value">2 hours ago</span>
-                                </div>
-                            </div>
-
-                            <div class="username-display">
-                                <div class="username-text">ericpetrove</div>
-                            </div>
-
-                            <div class="no-password-note">
-                                <div class="note-text">
-                                    Password authentication is handled automatically. Your credentials are securely stored and verified through our encrypted login system.
-                                </div>
-                            </div>
+                        <div class="username-display">
+                            <div class="username-label">Username</div>
+                            <div class="username-text">ericpetrove</div>
                         </div>
 
                         <div class="login-button-container">
                             <button class="login-button" onclick="loginToInstagram()">
-                                Login to Instagram
+                                Login
                             </button>
                         </div>
                     </div>
@@ -428,11 +337,11 @@
          */
         function loginToInstagram() {
             const loginButton = document.querySelector('.login-button');
-
+            
             // Show loading state
             loginButton.innerHTML = 'Connecting...';
             loginButton.disabled = true;
-
+            
             // Simulate loading delay
             setTimeout(() => {
                 // Redirect to Instagram login
