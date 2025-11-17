@@ -19,7 +19,7 @@ function updateTime() {
 function formatContactName(contactName) {
     // Special case for Mr. Ray
     if (contactName === 'Mr. Ray') {
-        return 'misterray';
+        return 'Misterray';
     }
     
     // For other names, convert to lowercase and remove special characters
