@@ -6,7 +6,6 @@ const currentTimeElement = document.getElementById('current-time');
 const apps = [
     { id: 'messages', name: 'Messages', icon: '💬', color: '#579AD9', file: 'apps/messages/index.html' },
     { id: 'phone', name: 'Phone', icon: '📞', color: '#6BBF6B', file: 'apps/phone/index.html' },
-    { id: 'mail', name: 'Mail', icon: '✉️', color: '#E06B6B', file: 'apps/mail/index.html' },
     { id: 'gallery', name: 'Gallery', icon: '🌄', color: '#6A618F', file: 'apps/gallery/index.html' },
     { id: 'pixabowl', name: 'Instashan', icon: 'https://projectsofkhan.github.io/pythontodoapp/instashan.jpg', color: '#9B5BBE', file: 'apps/instashan.html' },
     { id: 'diary', name: 'Diary', icon: '📖', color: '#A08E77', file: 'apps/diary/index.html' },
