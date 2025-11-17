@@ -17,9 +17,9 @@ function updateTime() {
  * Formats contact name for URL path
  */
 function formatContactName(contactName) {
-    // Special case for Mr. Ray
+    // Special case for Mr. Ray - now using "Misterray" with capital M
     if (contactName === 'Mr. Ray') {
-        return 'misterray';
+        return 'Misterray';
     }
     
     // For other names, convert to lowercase and remove special characters
@@ -34,7 +34,7 @@ function openContact(contactName) {
     const formattedName = formatContactName(contactName);
     
     // Create the URL with the contact name
-    const url = `https://projectsofkhan.github.io/Trail/apps/phone/contacts/${formattedName}/index.html`;
+    const url = `https://projectsofkhan.github.io/Trail/apps/phone/contacts/${formattedName}/Index.html`;
     
     // Open the URL in the SAME tab
     window.location.href = url;
@@ -82,7 +82,7 @@ function checkPassword() {
         const formattedName = formatContactName(currentContact);
         
         // Create the URL with the contact name
-        const url = `https://projectsofkhan.github.io/Trail/apps/phone/contacts/${formattedName}/index.html`;
+        const url = `https://projectsofkhan.github.io/Trail/apps/phone/contacts/${formattedName}/Index.html`;
         
         // Open the URL in the SAME tab
         window.location.href = url;
