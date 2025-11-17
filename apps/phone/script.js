@@ -14,14 +14,27 @@ function updateTime() {
 }
 
 /**
+ * Formats contact name for URL path
+ */
+function formatContactName(contactName) {
+    // Special case for Mr. Ray
+    if (contactName === 'Mr. Ray') {
+        return 'misterray';
+    }
+    
+    // For other names, convert to lowercase and remove special characters
+    return contactName.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+/**
  * Opens unlocked contact - redirects to URL with contact name
  */
 function openContact(contactName) {
-    // Format the contact name for URL (replace spaces with %20)
-    const formattedName = contactName.replace(/ /g, '%20');
+    // Format the contact name for URL path
+    const formattedName = formatContactName(contactName);
     
     // Create the URL with the contact name
-    const url = `https://projectsofkhan.github.io/Trail/apps/phone/${formattedName}`;
+    const url = `https://projectsofkhan.github.io/Trail/apps/phone/contacts/${formattedName}/index.html`;
     
     // Open the URL in a new tab
     window.open(url, '_blank');
@@ -65,11 +78,11 @@ function checkPassword() {
     
     // For now, any password is valid as requested
     if (password.length > 0) {
-        // Format the contact name for URL (replace spaces with %20)
-        const formattedName = currentContact.replace(/ /g, '%20');
+        // Format the contact name for URL path
+        const formattedName = formatContactName(currentContact);
         
         // Create the URL with the contact name
-        const url = `https://projectsofkhan.github.io/Trail/apps/phone/${formattedName}`;
+        const url = `https://projectsofkhan.github.io/Trail/apps/phone/contacts/${formattedName}/index.html`;
         
         // Open the URL in a new tab
         window.open(url, '_blank');
