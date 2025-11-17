@@ -185,6 +185,8 @@ body {
     display: flex;
     flex-direction: column;
     gap: 30px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .settings-row {
@@ -238,9 +240,11 @@ body {
 }
 
 /* Audio Controls */
+/* Audio Controls */
 .audio-controls {
     display: flex;
     gap: 15px;
+    width: 100%;
 }
 
 .audio-button {
@@ -254,11 +258,36 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     border: 1px solid #333;
+    min-width: 0; /* Prevents overflow */
+    box-sizing: border-box;
 }
 
 .audio-button:active {
     background: #2d2d2d;
     transform: scale(0.98);
+}
+
+.audio-text {
+    flex: 1;
+    min-width: 0; /* Prevents text overflow */
+    overflow: hidden;
+}
+
+.audio-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.audio-status {
+    font-size: 14px;
+    color: #4CAF50;
+    font-weight: 500;
+    white-space: nowrap;
 }
 
 .audio-icon {
