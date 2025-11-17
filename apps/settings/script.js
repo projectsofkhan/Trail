@@ -15,12 +15,22 @@ function updateTime() {
 }
 
 /**
- * Shows Try Pro overlay
+ * Shows Try Pro overlay with delayed cancel button
  */
 function showTryPro() {
     const tryProOverlay = document.getElementById('tryProOverlay');
-    if (tryProOverlay) {
+    const closeButton = document.querySelector('.close-try-pro');
+    
+    if (tryProOverlay && closeButton) {
         tryProOverlay.style.display = 'flex';
+        
+        // Hide close button initially
+        closeButton.classList.remove('show');
+        
+        // Show close button after 1 second with animation
+        setTimeout(() => {
+            closeButton.classList.add('show');
+        }, 1000);
     }
 }
 
