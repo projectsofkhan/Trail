@@ -239,8 +239,7 @@ body {
     font-weight: 500;
 }
 
-/* Audio Controls */
-/* Audio Controls */
+/* Audio Controls - FIXED */
 .audio-controls {
     display: flex;
     gap: 15px;
@@ -251,14 +250,14 @@ body {
     flex: 1;
     background: #1a1a1a;
     border-radius: 15px;
-    padding: 20px;
+    padding: 18px 15px;
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
     border: 1px solid #333;
-    min-width: 0; /* Prevents overflow */
+    min-width: 0;
     box-sizing: border-box;
 }
 
@@ -267,53 +266,37 @@ body {
     transform: scale(0.98);
 }
 
+.audio-icon {
+    font-size: 22px;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
 .audio-text {
     flex: 1;
-    min-width: 0; /* Prevents text overflow */
+    min-width: 0;
     overflow: hidden;
 }
 
 .audio-title {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     color: white;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .audio-status {
-    font-size: 14px;
+    font-size: 13px;
     color: #4CAF50;
     font-weight: 500;
     white-space: nowrap;
-}
-
-.audio-icon {
-    font-size: 24px;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.audio-text {
-    flex: 1;
-}
-
-.audio-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: white;
-    margin-bottom: 4px;
-}
-
-.audio-status {
-    font-size: 14px;
-    color: #4CAF50;
-    font-weight: 500;
 }
 
 /* Bottom Buttons */
@@ -387,8 +370,8 @@ body {
     background: #000000;
     border-radius: 20px;
     padding: 20px;
-    max-width: 90%;
-    max-height: 80%;
+    max-width: 95%;
+    max-height: 85%;
     border: 2px solid #FFD700;
     display: flex;
     flex-direction: column;
@@ -398,8 +381,8 @@ body {
 
 .try-pro-image {
     width: 100%;
-    max-width: 300px;
-    max-height: 400px;
+    max-width: 320px;
+    max-height: 500px;
     border-radius: 15px;
     object-fit: contain;
     display: block;
@@ -421,11 +404,19 @@ body {
     align-items: center;
     justify-content: center;
     z-index: 101;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.3s ease;
 }
 
 .close-try-pro:active {
     background: #ff5252;
     transform: scale(0.95);
+}
+
+.close-try-pro.show {
+    opacity: 1;
+    transform: scale(1);
 }
 
 /* Home Bar */
