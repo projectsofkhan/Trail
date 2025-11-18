@@ -93,3 +93,22 @@ window.onload = function() {
     document.body.addEventListener('click', enterFullscreen);
     document.body.addEventListener('touchstart', enterFullscreen);
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function playClickSound() {
+    const sound = new Audio('sounds/click.mp3');
+    sound.volume = 0.3;
+    sound.play().catch(e => console.log('Sound error:', e));
+}
