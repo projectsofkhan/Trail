@@ -17,10 +17,10 @@ function updateTime() {
 }
 
 /**
- * Cancel call and redirect to phone app
+ * Cancel call and redirect to phone app without history
  */
 function cancelCall() {
-    window.location.href = 'https://projectsofkhan.github.io/Trail/apps/phone/index.html';
+    window.location.replace('https://projectsofkhan.github.io/Trail/apps/phone/index.html');
 }
 
 /**
@@ -30,14 +30,14 @@ function startCall() {
     const confirmationScreen = document.getElementById('callConfirmation');
     const activeCallScreen = document.getElementById('activeCall');
     const callStatus = document.getElementById('callStatus');
-
+    
     // Switch to active call screen
     confirmationScreen.style.display = 'none';
     activeCallScreen.style.display = 'flex';
-
+    
     // Add calling animation
     callStatus.classList.add('calling');
-
+    
     // Start call sequence with sounds
     startCallSequence();
 }
@@ -49,33 +49,33 @@ function startCallSequence() {
     const ringtone = document.getElementById('ringtone');
     const voiceAudio = document.getElementById('voiceAudio');
     const callStatus = document.getElementById('callStatus');
-
+    
     // Start ringing after 1 second delay
     setTimeout(() => {
         ringtone.play().catch(e => console.log('Audio play failed:', e));
         callStatus.textContent = 'Ringing...';
     }, 1000);
-
+    
     // Stop ringing and play voice after 4 seconds (1s delay + 3s ringing)
     setTimeout(() => {
         ringtone.pause();
         ringtone.currentTime = 0;
-
+        
         // Play voice audio
         voiceAudio.play().catch(e => console.log('Voice audio play failed:', e));
         callStatus.textContent = 'Connected';
         callStatus.classList.remove('calling');
-
+        
         // Start call timer
         startCallTimer();
-
+        
         // Auto-end call 1 second after voice audio ends
         voiceAudio.onended = function() {
             setTimeout(() => {
                 endCall();
             }, 1000);
         };
-
+        
     }, 4000);
 }
 
@@ -95,7 +95,7 @@ function updateCallTimer() {
     const diff = Math.floor((now - callStartTime) / 1000);
     const minutes = Math.floor(diff / 60).toString().padStart(2, '0');
     const seconds = (diff % 60).toString().padStart(2, '0');
-
+    
     document.getElementById('callTimer').textContent = `${minutes}:${seconds}`;
 }
 
@@ -106,15 +106,13 @@ function toggleMute() {
     isMuted = !isMuted;
     const muteButton = document.getElementById('muteButton');
     const muteIcon = muteButton.querySelector('.control-icon');
-
+    
     if (isMuted) {
         muteIcon.textContent = '🎤';
         muteButton.classList.add('active');
-        // In a real app, you would mute the audio stream here
     } else {
         muteIcon.textContent = '🔇';
         muteButton.classList.remove('active');
-        // In a real app, you would unmute the audio stream here
     }
 }
 
@@ -124,36 +122,35 @@ function toggleMute() {
 function toggleSpeaker() {
     isSpeakerOn = !isSpeakerOn;
     const speakerButton = document.getElementById('speakerButton');
-
+    
     if (isSpeakerOn) {
         speakerButton.classList.add('active');
-        // In a real app, you would switch to speaker mode here
     } else {
         speakerButton.classList.remove('active');
-        // In a real app, you would switch to earpiece here
     }
 }
 
 /**
- * End the current call
+ * End the current call and replace history to prevent back button
  */
 function endCall() {
     // Stop all audio
     const ringtone = document.getElementById('ringtone');
     const voiceAudio = document.getElementById('voiceAudio');
-
+    
     ringtone.pause();
     ringtone.currentTime = 0;
     voiceAudio.pause();
     voiceAudio.currentTime = 0;
-
+    
     // Stop timer
     if (callTimer) {
         clearInterval(callTimer);
     }
-
-    // Redirect back to phone app
-    window.location.href = 'https://projectsofkhan.github.io/Trail/apps/phone/index.html';
+    
+    // Replace current history entry with main phone app URL
+    // This prevents going back to call page
+    window.location.replace('https://projectsofkhan.github.io/Trail/apps/phone/index.html');
 }
 
 // Initialize when page loads
