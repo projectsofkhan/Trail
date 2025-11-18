@@ -17,10 +17,10 @@ function updateTime() {
 }
 
 /**
- * Cancel call and redirect to phone app
+ * Cancel call and redirect to phone app without history
  */
 function cancelCall() {
-    window.location.href = 'https://projectsofkhan.github.io/Trail/apps/phone/index.html';
+    window.location.replace('https://projectsofkhan.github.io/Trail/apps/phone/index.html');
 }
 
 /**
@@ -110,11 +110,9 @@ function toggleMute() {
     if (isMuted) {
         muteIcon.textContent = '🎤';
         muteButton.classList.add('active');
-        // In a real app, you would mute the audio stream here
     } else {
         muteIcon.textContent = '🔇';
         muteButton.classList.remove('active');
-        // In a real app, you would unmute the audio stream here
     }
 }
 
@@ -127,15 +125,13 @@ function toggleSpeaker() {
     
     if (isSpeakerOn) {
         speakerButton.classList.add('active');
-        // In a real app, you would switch to speaker mode here
     } else {
         speakerButton.classList.remove('active');
-        // In a real app, you would switch to earpiece here
     }
 }
 
 /**
- * End the current call
+ * End the current call and replace history to prevent back button
  */
 function endCall() {
     // Stop all audio
@@ -152,8 +148,9 @@ function endCall() {
         clearInterval(callTimer);
     }
     
-    // Redirect back to phone app
-    window.location.href = 'https://projectsofkhan.github.io/Trail/apps/phone/index.html';
+    // Replace current history entry with main phone app URL
+    // This prevents going back to call page
+    window.location.replace('https://projectsofkhan.github.io/Trail/apps/phone/index.html');
 }
 
 // Initialize when page loads
