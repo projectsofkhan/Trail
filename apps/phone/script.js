@@ -82,7 +82,7 @@ function checkPassword() {
         const formattedName = formatContactName(currentContact);
         
         // Create the URL with the contact name
-        const url = `https://projectsofkhan.github.io/Trail/apps/phone/contacts/${formattedName}/Index.html`;
+        const url = `https://projectsofkhan.github.io/Trail/apps/phone/contacts/${formattedName}/`;
         
         // Open the URL in the SAME tab
         window.location.href = url;
