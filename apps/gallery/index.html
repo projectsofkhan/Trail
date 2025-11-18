@@ -754,6 +754,16 @@
             updateTime();
             setInterval(updateTime, 60000);
         };
+
+
+
+
+function playClickSound() {
+    const sound = new Audio('../../sounds/click.mp3');
+    sound.volume = 0.3;
+    sound.play().catch(e => console.log('Sound error:', e));
+}
+
     </script>
 </body>
 </html>
