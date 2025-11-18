@@ -1106,6 +1106,23 @@
             // Initialize empty history
             updateHistoryDisplay();
         };
+
+
+
+
+
+
+
+
+
+
+
+
+function playClickSound() {
+    const sound = new Audio('../../sounds/click.mp3');
+    sound.volume = 0.3;
+    sound.play().catch(e => console.log('Sound error:', e));
+}
     </script>
 </body>
 </html>
