@@ -14,62 +14,60 @@ const apps = [
     { id: 'settings', name: 'Settings', icon: '⚙️', color: '#555555', file: 'apps/settings/index.html' }
 ];
 
+// Sound system - FIXED: Use single audio element and reuse it
+let clickSound = null;
+
 /**
  * RELIABLE CLICK SOUND - Works EVERY time
  */
 function playClickSound() {
-    // Create new audio instance each time (most reliable)
-    const sound = new Audio('sounds/click.mp3');
-    sound.volume = 0.3;
+    // If sound doesn't exist or is invalid, create it
+    if (!clickSound || clickSound.readyState === 0) {
+        clickSound = new Audio('sounds/click.mp3');
+        clickSound.volume = 0.3;
+        clickSound.preload = 'auto';
+    }
     
     // Reset and play - this ensures it works every time
-    sound.currentTime = 0;
+    clickSound.currentTime = 0;
     
-    // Play with error handling
-    sound.play().catch(e => {
-        // If first play fails, try one more time
-        console.log('Sound play failed, retrying...');
-        setTimeout(() => {
-            sound.currentTime = 0;
-            sound.play().catch(e => console.log('Sound retry failed'));
-        }, 50);
-    });
-}
-
-/**
- * ALTERNATIVE METHOD - Even more reliable
- * Use this if the above still has issues
- */
-function playClickSoundReliable() {
-    // Method 1: Try creating new audio each time
-    try {
-        const sound = new Audio('sounds/click.mp3');
-        sound.volume = 0.3;
-        sound.currentTime = 0;
-        sound.play().catch(e => {
-            // If that fails, try method 2
-            playClickSoundBackup();
+    // Play with multiple fallbacks
+    const playPromise = clickSound.play();
+    
+    if (playPromise !== undefined) {
+        playPromise.catch(error => {
+            // If play fails, create a fresh sound and try again
+            console.log('Sound play failed, creating fresh sound...');
+            clickSound = new Audio('sounds/click.mp3');
+            clickSound.volume = 0.3;
+            clickSound.currentTime = 0;
+            clickSound.play().catch(e => {
+                // Final fallback - use Web Audio API
+                playFallbackSound();
+            });
         });
-    } catch (error) {
-        // If all else fails, use backup method
-        playClickSoundBackup();
     }
 }
 
 /**
- * Backup method using multiple approaches
+ * Fallback sound using Web Audio API
  */
-function playClickSoundBackup() {
-    // Try different approaches
+function playFallbackSound() {
     try {
-        // Approach 1: Using audio context (most reliable)
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const source = audioContext.createBufferSource();
-        
-        // For now, just create a simple beep as fallback
         const oscillator = audioContext.createOscillator();
-        oscillator.connect(audioContext.destination);
-        oscillator.start();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.value = 800;
+        oscillator.type = 'sine';
+        
+        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+        
+        oscillator.start(audioContext.currentTime);
         oscillator.stop(audioContext.currentTime + 0.1);
     } catch (error) {
         console.log('All sound methods failed');
@@ -89,7 +87,7 @@ function updateTime() {
 }
 
 /**
- * Initializes the home screen grid
+ * Initializes the home screen grid - FIXED: Prevent default and use playClickSound
  */
 function initializeAppGrid() {
     if (!appGrid) return;
@@ -111,6 +109,13 @@ function initializeAppGrid() {
             </div>
             <div class="app-icon-label">${app.name}</div>
         `;
+        
+        // FIXED: Add click event listener to play sound BEFORE navigation
+        iconLink.addEventListener('click', function(e) {
+            playClickSound();
+            // Allow default navigation to happen
+        });
+        
         appGrid.appendChild(iconLink);
     });
 }
@@ -145,7 +150,7 @@ function enterFullscreen() {
     document.body.removeEventListener('touchstart', enterFullscreen);
 }
 
-// Automatic click sounds for all interactive elements
+// Automatic click sounds for all interactive elements - IMPROVED
 function setupClickSounds() {
     document.addEventListener('click', function(event) {
         // Check if element is clickable
@@ -162,13 +167,12 @@ function setupClickSounds() {
         );
 
         if (isClickable) {
-            // Use the reliable version that works EVERY time
             playClickSound();
         }
     });
 }
 
-// Initialize everything
+// Initialize everything - IMPROVED
 window.onload = function() {
     initializeAppGrid();
     updateTime();
@@ -180,5 +184,16 @@ window.onload = function() {
     document.body.addEventListener('click', enterFullscreen);
     document.body.addEventListener('touchstart', enterFullscreen);
     
-    console.log('App loaded with RELIABLE click sounds!');
+    console.log('Home screen loaded with RELIABLE click sounds!');
 };
+
+// FIXED: Add this to handle page visibility changes
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) {
+        // Page became visible again (user came back from an app)
+        // Reset the sound system
+        if (clickSound) {
+            clickSound.currentTime = 0;
+        }
+    }
+});
