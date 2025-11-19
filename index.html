@@ -6,45 +6,67 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#1a1a1a">
-    <meta name="description" content="Elmwood Trail Interactive Phone - A mysterious adventure game">
-    
-    <!-- iOS Specific Meta Tags -->
-    <meta name="apple-mobile-web-app-title" content="Elmwood Trail">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
-    
-    <title>Elmwood Trail Interactive Phone</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#000000">
+    <title>Home Screen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="phone-container">
+        <!-- Pull Down Control Panel -->
+        <div class="control-panel" id="controlPanel">
+            <div class="panel-header">
+                <div class="panel-title">Quick Controls</div>
+                <button class="close-panel" onclick="closeControlPanel()">✕</button>
+            </div>
+            <div class="music-controls">
+                <button class="music-control-btn" onclick="toggleMusic()">
+                    <span class="control-icon">🎵</span>
+                    <span class="control-text" id="musicToggleText">Turn On Music</span>
+                    <div class="status-indicator off" id="musicStatusIndicator"></div>
+                </button>
+                
+                <button class="music-control-btn" onclick="playMusicOne()">
+                    <span class="control-icon">▶️</span>
+                    <span class="control-text">Play Music One</span>
+                </button>
+                
+                <button class="music-control-btn" onclick="playMusicTwo()">
+                    <span class="control-icon">▶️</span>
+                    <span class="control-text">Play Music Two</span>
+                </button>
+            </div>
+        </div>
+
         <div class="notch"></div>
         <div class="screen">
-            <!-- Global Status Bar -->
             <div class="status-bar" id="statusBar">
                 <div class="left-icons">
-                    <span>◇</span>
                     <span id="current-time">1:37</span>
                 </div>
-                <div class="center-text">Elmwood Trail</div>
+                <div class="center-text"></div>
                 <div class="right-icons">
                     <span>📶</span>
                     <span>🔋</span>
                 </div>
             </div>
-            
-            <!-- HOME VIEW -->
-            <div id="home-view" class="view">
-                <div class="app-grid" id="appGrid">
-                    <!-- App Icons will be inserted here by JavaScript -->
-                </div>
+
+            <div class="home-screen">
+                <div class="app-grid" id="appGrid"></div>
             </div>
         </div>
-        
+
         <div class="home-bar"></div>
     </div>
-    
+
+    <!-- Background Music Elements -->
+    <audio id="bgMusic1" loop>
+        <source src="sounds/bgmusic.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="bgMusic2" loop>
+        <source src="sounds/bgmusic2.mp3" type="audio/mpeg">
+    </audio>
+
     <script src="script.js"></script>
 </body>
 </html>
