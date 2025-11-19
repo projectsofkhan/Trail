@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Get fixed answer for question
     function getAnswer(question) {
         if (question === "Hello!") {
-            return "Hello, who are you?";
+            return "Hello! who are you??";
         }
         else if (question === "Sir, I am Detective, working on Eric Petrove's case, Can you help me?") {
             return "Oh, thanks I'm glad that someone is here to find, him. Yes i will be happy to help you.";
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return "Ahmet was his friend, maybe you was surprised after hearing that he have one more best friend right? Ahmet belongs to a very rich family, his family shifted him south Korea for study,";
         }
         else if (question === "Yes, sir do you know more about him") {
-            return "Yes  Ahmet belongs to a very rich family, his family shifted him south Korea for study,";
+            return "No sorry, I don't know much about him it's my first year at the school";
         }
         else if (question === "Thanks a lot sir") {
             return "welcome mr feel free to ask anything, but now I have some work so we'll be talk later";
