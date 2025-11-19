@@ -3,11 +3,12 @@ let messages = [];
 
 // Questions and their fixed answers
 const questions = [
-    "Hello, how are you?",
-    "What are you working on?",
-    "Can we meet tomorrow?",
-    "How is the project going?",
-    "Goodbye!"
+    "Hello!",
+    "Sir, I am Detective, working on Eric Petrove's case, Can you help me?",
+    "Thanks sir, I need some information about his friends family and persons he usually talk to",
+    "Sir who's Ahmet",
+    "Yes, sir do you know more about him",
+    "Thanks a lot sir"
 ];
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -41,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function addMessage(text, type) {
         const now = new Date();
         const time = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
-        
+
         // Create message element
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${type}`;
@@ -49,13 +50,13 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="message-content">${text}</div>
             <div class="message-time">${time}</div>
         `;
-        
+
         // Add to chat
         chatMessages.appendChild(messageDiv);
-        
+
         // Scroll to bottom
         chatMessages.scrollTop = chatMessages.scrollHeight;
-        
+
         // Also add to messages array for tracking
         messages.push({
             id: messages.length + 1,
@@ -74,20 +75,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Get fixed answer for question
     function getAnswer(question) {
-        if (question === "Hello, how are you?") {
-            return "I'm doing great! Thanks for asking.";
+        if (question === "Hello!") {
+            return "Hello, who are you?";
         }
-        else if (question === "What are you working on?") {
-            return "Working on a new project. It's going well!";
+        else if (question === "Sir, I am Detective, working on Eric Petrove's case, Can you help me?") {
+            return "Oh, thanks I'm glad that someone is here to find, him. Yes i will be happy to help you.";
         }
-        else if (question === "Can we meet tomorrow?") {
-            return "Sure! Let's meet at 3 PM.";
+        else if (question === "Thanks sir, I need some information about his friends family and persons he usually talk to") {
+            return "Eric is a kind hearted person, usually talks to his friends Sahil, Dyere and Ahmet, all are good friends.";
         }
-        else if (question === "How is the project going?") {
-            return "Project is almost finished!";
+        else if (question === "Sir who's Ahmet") {
+            return "Ahmet was his friend, maybe you was surprised after hearing that he have one more best friend right? Ahmet belongs to a very rich family, his family shifted him south Korea for study,";
         }
-        else if (question === "Goodbye!") {
-            return "Goodbye! See you soon!";
+        else if (question === "Yes, sir do you know more about him") {
+            return "Yes  Ahmet belongs to a very rich family, his family shifted him south Korea for study,";
+        }
+        else if (question === "Thanks a lot sir") {
+            return "welcome mr feel free to ask anything, but now I have some work so we'll be talk later";
         }
         else {
             return "Nice talking to you!";
@@ -111,29 +115,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Get current question
         const question = questions[currentStep];
-        
+
         // Disable button immediately
         choiceButton.disabled = true;
-        
+
         console.log("Sending:", question);
-        
+
         // STEP 1: Send user message immediately
         addMessage(question, 'sent');
-        
+
         // STEP 2: Wait 1 second and send reply
         setTimeout(() => {
             const answer = getAnswer(question);
             console.log("Replying:", answer);
             addMessage(answer, 'received');
-            
+
             // Move to next question
             currentStep++;
-            
+
             // Update button for next question
             setTimeout(() => {
                 updateChoiceButton();
             }, 500);
-            
+
         }, 1000);
     }
 
@@ -141,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function initChat() {
         console.log("Chat started");
         updateChoiceButton();
-        
+
         // Add welcome message after a short delay
         setTimeout(() => {
             addMessage("Hi there! Ready to chat?", 'received');
@@ -152,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateTime();
     initChat();
     setInterval(updateTime, 60000);
-    
+
     // Make function available globally
     window.selectChoice = selectChoice;
 });
