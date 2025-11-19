@@ -15,6 +15,17 @@ const apps = [
 ];
 
 /**
+ * FAST CLICK SOUND - No preloading, instant play
+ */
+function playClickSound() {
+    const sound = new Audio('sounds/click.mp3');
+    sound.volume = 0.3;
+    sound.play().catch(e => {
+        // Silent fail - don't show errors to user
+    });
+}
+
+/**
  * Updates the current time display
  */
 function updateTime() {
@@ -83,13 +94,6 @@ function enterFullscreen() {
     document.body.removeEventListener('touchstart', enterFullscreen);
 }
 
-// Play click sound function
-function playClickSound() {
-    const sound = new Audio('sounds/click.mp3');
-    sound.volume = 0.3;
-    sound.play().catch(e => console.log('Sound error:', e));
-}
-
 // Automatic click sounds for all interactive elements
 function setupClickSounds() {
     document.addEventListener('click', function(event) {
@@ -103,7 +107,7 @@ function setupClickSounds() {
             target.closest('.page-item') ||
             target.hasAttribute('onclick') ||
             target.classList.contains('clickable') ||
-            target.parentElement.classList.contains('clickable')
+            (target.parentElement && target.parentElement.classList.contains('clickable'))
         );
 
         if (isClickable) {
@@ -112,15 +116,17 @@ function setupClickSounds() {
     });
 }
 
-// Initialize everything
+// Initialize everything - FAST LOADING!
 window.onload = function() {
     initializeAppGrid();
     updateTime();
     setupClickSounds();
-    
+
     setInterval(updateTime, 60000);
 
     // Initial fullscreen setup
     document.body.addEventListener('click', enterFullscreen);
     document.body.addEventListener('touchstart', enterFullscreen);
+    
+    console.log('App loaded instantly with fast click sounds!');
 };
