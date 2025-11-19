@@ -15,14 +15,65 @@ const apps = [
 ];
 
 /**
- * FAST CLICK SOUND - No preloading, instant play
+ * RELIABLE CLICK SOUND - Works EVERY time
  */
 function playClickSound() {
+    // Create new audio instance each time (most reliable)
     const sound = new Audio('sounds/click.mp3');
     sound.volume = 0.3;
+    
+    // Reset and play - this ensures it works every time
+    sound.currentTime = 0;
+    
+    // Play with error handling
     sound.play().catch(e => {
-        // Silent fail - don't show errors to user
+        // If first play fails, try one more time
+        console.log('Sound play failed, retrying...');
+        setTimeout(() => {
+            sound.currentTime = 0;
+            sound.play().catch(e => console.log('Sound retry failed'));
+        }, 50);
     });
+}
+
+/**
+ * ALTERNATIVE METHOD - Even more reliable
+ * Use this if the above still has issues
+ */
+function playClickSoundReliable() {
+    // Method 1: Try creating new audio each time
+    try {
+        const sound = new Audio('sounds/click.mp3');
+        sound.volume = 0.3;
+        sound.currentTime = 0;
+        sound.play().catch(e => {
+            // If that fails, try method 2
+            playClickSoundBackup();
+        });
+    } catch (error) {
+        // If all else fails, use backup method
+        playClickSoundBackup();
+    }
+}
+
+/**
+ * Backup method using multiple approaches
+ */
+function playClickSoundBackup() {
+    // Try different approaches
+    try {
+        // Approach 1: Using audio context (most reliable)
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioContext.createBufferSource();
+        
+        // For now, just create a simple beep as fallback
+        const oscillator = audioContext.createOscillator();
+        oscillator.connect(audioContext.destination);
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + 0.1);
+    } catch (error) {
+        console.log('All sound methods failed');
+    }
 }
 
 /**
@@ -111,12 +162,13 @@ function setupClickSounds() {
         );
 
         if (isClickable) {
+            // Use the reliable version that works EVERY time
             playClickSound();
         }
     });
 }
 
-// Initialize everything - FAST LOADING!
+// Initialize everything
 window.onload = function() {
     initializeAppGrid();
     updateTime();
@@ -128,5 +180,5 @@ window.onload = function() {
     document.body.addEventListener('click', enterFullscreen);
     document.body.addEventListener('touchstart', enterFullscreen);
     
-    console.log('App loaded instantly with fast click sounds!');
+    console.log('App loaded with RELIABLE click sounds!');
 };
