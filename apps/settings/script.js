@@ -1,6 +1,6 @@
-let musicOn = false; // OFF by default
+let musicOn = false;
 let soundEffectsOn = true;
-let currentMusic = null; // Track which music is playing
+let currentMusic = null;
 let bgMusic1 = null;
 let bgMusic2 = null;
 
@@ -12,10 +12,10 @@ function initializeMusic() {
     bgMusic2 = document.getElementById('bgMusic2');
     
     if (bgMusic1) {
-        bgMusic1.volume = 0.15; // Lower volume - 15%
+        bgMusic1.volume = 0.05; // 5% volume - very low
     }
     if (bgMusic2) {
-        bgMusic2.volume = 0.15; // Lower volume - 15%
+        bgMusic2.volume = 0.05; // 5% volume - very low
     }
     
     // Update button status to show "Off"
@@ -214,28 +214,66 @@ function openZeeAi() {
     window.open('https://projectsofkhan.github.io/zeeAi/', '_blank');
 }
 
+/**
+ * Keep music playing in background - prevents auto-pause
+ */
+function keepMusicAlive() {
+    if (musicOn && currentMusic) {
+        let currentPlayer = currentMusic === 'music1' ? bgMusic1 : bgMusic2;
+        if (currentPlayer && currentPlayer.paused) {
+            // If music got paused by browser, restart it
+            currentPlayer.play().catch(e => {
+                console.log('Background music restarted');
+            });
+        }
+    }
+}
+
 // Initialize when page loads
 window.onload = function() {
     updateTime();
     setInterval(updateTime, 60000);
     initializeMusic();
+    
+    // Start background music keeper
+    setInterval(keepMusicAlive, 10000); // Check every 10 seconds
 };
 
-// Handle page visibility changes
+// Handle page visibility changes - MUSIC CONTINUES IN BACKGROUND
 document.addEventListener('visibilitychange', function() {
     if (musicOn && currentMusic) {
-        if (document.hidden) {
-            // Page is hidden, pause music
-            let currentPlayer = currentMusic === 'music1' ? bgMusic1 : bgMusic2;
-            if (currentPlayer) currentPlayer.pause();
-        } else {
-            // Page is visible, resume current music
-            let currentPlayer = currentMusic === 'music1' ? bgMusic1 : bgMusic2;
-            if (currentPlayer) {
-                currentPlayer.play().catch(error => {
-                    console.log('Failed to resume music:', error);
-                });
+        let currentPlayer = currentMusic === 'music1' ? bgMusic1 : bgMusic2;
+        if (currentPlayer) {
+            if (document.hidden) {
+                // Page is in background - DON'T pause, let music continue
+                console.log('Music continues playing in background');
+                // Ensure music is still playing
+                if (currentPlayer.paused) {
+                    currentPlayer.play().catch(e => {});
+                }
+            } else {
+                // Page is visible again - ensure music is playing
+                if (currentPlayer.paused) {
+                    currentPlayer.play().catch(e => {});
+                }
             }
+        }
+    }
+});
+
+// Prevent browser from auto-pausing music
+window.addEventListener('beforeunload', function() {
+    // This helps keep audio context alive
+    if (bgMusic1) bgMusic1.load();
+    if (bgMusic2) bgMusic2.load();
+});
+
+// Additional protection: resume music on any user interaction
+document.addEventListener('click', function() {
+    if (musicOn && currentMusic) {
+        let currentPlayer = currentMusic === 'music1' ? bgMusic1 : bgMusic2;
+        if (currentPlayer && currentPlayer.paused) {
+            currentPlayer.play().catch(e => {});
         }
     }
 });
