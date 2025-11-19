@@ -55,18 +55,18 @@
 
                             <!-- Audio Controls -->
                             <div class="audio-controls">
-                                <div class="audio-button" onclick="toggleMusic()">
+                                <div class="audio-button" onclick="showMusicSelection()">
                                     <div class="audio-icon">🎵</div>
                                     <div class="audio-text">
-                                        <div class="audio-title">Music</div>
-                                        <div class="audio-status" id="musicStatus">On</div>
+                                        <div class="audio-title">Background Music</div>
+                                        <div class="audio-status" id="musicStatus">Off</div>
                                     </div>
                                 </div>
 
                                 <div class="audio-button" onclick="toggleSoundEffects()">
                                     <div class="audio-icon">🔊</div>
                                     <div class="audio-text">
-                                        <div class="audio-title">Sound</div>
+                                        <div class="audio-title">Sound Effects</div>
                                         <div class="audio-status" id="soundStatus">On</div>
                                     </div>
                                 </div>
@@ -108,9 +108,50 @@
             </div>
         </div>
 
+        <!-- Music Selection Overlay -->
+        <div id="musicSelectionOverlay" class="music-selection-overlay">
+            <div class="music-selection-container">
+                <button class="close-music-selection" onclick="closeMusicSelection()">✕</button>
+                <h3>Choose Background Music</h3>
+                <div class="music-options">
+                    <div class="music-option" onclick="selectMusic('music1')">
+                        <div class="music-icon">🎵</div>
+                        <div class="music-text">
+                            <div class="music-title">Music One</div>
+                            <div class="music-desc">Relaxing ambient</div>
+                        </div>
+                    </div>
+                    <div class="music-option" onclick="selectMusic('music2')">
+                        <div class="music-icon">🎶</div>
+                        <div class="music-text">
+                            <div class="music-title">Music Two</div>
+                            <div class="music-desc">Upbeat melody</div>
+                        </div>
+                    </div>
+                    <div class="music-option turn-off-option" onclick="turnOffMusic()">
+                        <div class="music-icon">🔇</div>
+                        <div class="music-text">
+                            <div class="music-title">Turn Off</div>
+                            <div class="music-desc">No background music</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="home-bar"></div>
     </div>
 
+    <!-- Background Music Elements -->
+    <audio id="bgMusic1" loop>
+        <source src="bgmusic.mp3" type="audio/mpeg">
+        <source src="bgmusic.wav" type="audio/wav">
+    </audio>
+    <audio id="bgMusic2" loop>
+        <source src="bgmusic2.mp3" type="audio/mpeg">
+        <source src="bgmusic2.wav" type="audio/wav">
+    </audio>
+
     <script src="script.js"></script>
 </body>
-</html>>
+</html>
