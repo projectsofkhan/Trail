@@ -79,19 +79,19 @@ document.addEventListener('DOMContentLoaded', function() {
             return "Hello?";
         }
         else if (question === "Sir, I am Detective, working on Eric Petrove's case, Can you help me?") {
-            return "Oh, thanks I'm glad that someone is here to find, him. Yes i will be happy to help you.";
+            return "Oh, thanks I'm glad that someone is here to find him. Yes I will be happy to help you.";
         }
         else if (question === "Thanks sir, I need some information about his friends family and persons he usually talk to") {
             return "His friends are Sahil, Dyere and Ahmet.";
         }
         else if (question === "Sir who's Ahmet") {
-            return "Ahmet was his friend his family belongs to a very rich famil. his family shifted him south Korea for study,";
+            return "Ahmet was his friend. His family belongs to a very rich family. His family shifted him to South Korea for study.";
         }
         else if (question === "Yes, sir do you know more about him") {
-            return "No sorry, I don't know much about him it's my first year at the school";
+            return "No sorry, I don't know much about him. It's my first year at the school.";
         }
         else if (question === "Thanks a lot sir") {
-            return "welcome mr feel free to ask anything, but now I have some work so we'll be talk later";
+            return "Welcome Mr. Feel free to ask anything, but now I have some work so we'll talk later.";
         }
         else {
             return "Nice talking to you!";
@@ -145,11 +145,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function initChat() {
         console.log("Chat started");
         updateChoiceButton();
-
-        // Add welcome message after a short delay
-        setTimeout(() => {
-            addMessage("Hi there! Ready to chat?", 'received');
-        }, 1000);
+        
+        // NO welcome message - first message must be from user
+        // User will click the button to start the conversation
     }
 
     // Add event listener to the button
@@ -160,6 +158,12 @@ document.addEventListener('DOMContentLoaded', function() {
     initChat();
     setInterval(updateTime, 60000);
 
-    // Make function available globally (optional now that we have event listener)
+    // Make function available globally
     window.selectChoice = selectChoice;
 });
+
+/*
+setTimeout(() => {
+    addMessage("Hi there! Ready to chat?", 'received');
+}, 1000);
+*/
