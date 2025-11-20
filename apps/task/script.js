@@ -123,3 +123,40 @@ window.onload = function() {
     updateTime();
     setInterval(updateTime, 60000);
 };
+
+
+
+
+
+
+
+// Add this to messages, phone, gallery, etc. - ALL APPS
+
+/**
+ * AUTO-REDIRECT SYSTEM for all apps
+ */
+function initializeAutoRedirect() {
+    window.addEventListener('beforeunload', function() {
+        console.log('🔄 App closing - redirecting to home...');
+        
+        if (window.opener && !window.opener.closed) {
+            try {
+                window.opener.location.href = window.location.origin + '/Trail/';
+                console.log('✅ Home tab redirected!');
+            } catch (error) {
+                console.log('⚠️ Could not redirect, focusing home tab...');
+                try {
+                    window.opener.focus();
+                } catch (focusError) {
+                    console.log('❌ Could not focus home tab');
+                }
+            }
+        }
+    });
+}
+
+// Call this in your window.onload
+window.onload = function() {
+    // Your existing app code...
+    initializeAutoRedirect(); // Add this line
+};
