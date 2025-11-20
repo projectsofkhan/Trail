@@ -316,42 +316,47 @@
     </div>
 
     <script>
-        // ========== SIMPLE TASK PROGRESSION SYSTEM ==========
+        // Updated contacts data
+const contacts = [
+    { name: 'Mr. Ray', avatar: '👨‍💼', lastMessage: 'See you at the meeting', time: '10:30 AM', unread: 1 },
+    { name: 'Dyere', avatar: '👨‍🔧', lastMessage: 'The repair is done', time: 'Yesterday', unread: 0 },
+    { name: 'Sahil', avatar: '👨‍🎓', lastMessage: 'Hey whats the homework?', time: 'Yesterday', unread: 0 },
+    { name: 'Mom', avatar: '👩', lastMessage: 'Call me when free', time: '11/15/23', unread: 0 },
+    { name: 'Sister', avatar: '👧', lastMessage: 'Hey bro mom asking for you for the dinner come home fast', time: '11/14/23', unread: 0 },
+    { name: 'Feisher', avatar: '👨‍💻', lastMessage: 'Code review done', time: '11/13/23', unread: 0 },
+    { name: 'Dad', avatar: '👨', lastMessage: 'Dinner at 7', time: '11/12/23', unread: 0 },
+    { name: 'Layari', avatar: '👩‍🎨', lastMessage: 'Design ready', time: '11/11/23', unread: 0 },
+    { name: 'Dan', avatar: '👨‍💼', lastMessage: 'Project launch', time: '11/10/23', unread: 0 },
+    { name: 'Falco', avatar: '👨‍✈️', lastMessage: 'Flight confirmed', time: '11/09/23', unread: 0 }
+];
+
+// ========== TASK PROGRESSION SYSTEM ==========
 const TaskProgress = {
-    // Initialize task progress
     init() {
         if (!localStorage.getItem('taskProgress')) {
             localStorage.setItem('taskProgress', JSON.stringify({}));
         }
     },
 
-    // Complete a task
     completeTask(taskId) {
         const progress = this.getProgress();
         progress[taskId] = true;
         localStorage.setItem('taskProgress', JSON.stringify(progress));
-        
-        // Show completion popup
         this.showTaskCompletePopup(taskId);
-        
         console.log(`✅ Task completed: ${taskId}`);
     },
 
-    // Check if task is completed
     isTaskCompleted(taskId) {
         const progress = this.getProgress();
         return !!progress[taskId];
     },
 
-    // Get all progress
     getProgress() {
         return JSON.parse(localStorage.getItem('taskProgress') || '{}');
     },
 
-    // Show task completion popup
     showTaskCompletePopup(taskId) {
         if (taskId === 'chat_mr_ray') {
-            // Create popup
             const popup = document.createElement('div');
             popup.style.cssText = `
                 position: fixed;
@@ -365,7 +370,6 @@ const TaskProgress = {
                 z-index: 1000;
                 text-align: center;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-                animation: fadeIn 0.3s ease;
             `;
             
             popup.innerHTML = `
@@ -375,11 +379,7 @@ const TaskProgress = {
             `;
             
             document.body.appendChild(popup);
-            
-            // Remove popup after 3 seconds
-            setTimeout(() => {
-                popup.remove();
-            }, 3000);
+            setTimeout(() => popup.remove(), 3000);
         }
     }
 };
@@ -387,7 +387,77 @@ const TaskProgress = {
 // Initialize task system
 TaskProgress.init();
 
-// ========== UPDATED CHAT NAVIGATION ==========
+/**
+ * Back Button - Closes app tab and returns to home
+ */
+function initializeBackButton() {
+    // Get the back button
+    const backButton = document.querySelector('.back-button');
+
+    if (backButton) {
+        backButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            closeAppAndReturnHome();
+        });
+    }
+
+    // Also support Android back button
+    window.addEventListener('popstate', function() {
+        closeAppAndReturnHome();
+    });
+
+    // Support browser back button
+    window.onkeydown = function(e) {
+        if (e.key === 'Escape') {
+            closeAppAndReturnHome();
+        }
+    };
+}
+
+/**
+ * Close app tab and focus home screen
+ */
+function closeAppAndReturnHome() {
+    console.log('🔙 Closing Messages and returning to home...');
+
+    // Try to focus the home tab first
+    if (window.opener && !window.opener.closed) {
+        try {
+            window.opener.focus();
+            console.log('✅ Home tab focused');
+        } catch (error) {
+            console.log('⚠️ Could not focus home tab');
+        }
+    }
+
+    // Close this app tab
+    setTimeout(() => {
+        window.close();
+    }, 50);
+}
+
+/**
+ * AUTO-REDIRECT SYSTEM for all apps
+ */
+function initializeAutoRedirect() {
+    window.addEventListener('beforeunload', function() {
+        console.log('🔄 Messages closing - redirecting to home...');
+
+        if (window.opener && !window.opener.closed) {
+            try {
+                window.opener.location.href = window.location.origin + '/Trail/';
+                console.log('✅ Home tab redirected!');
+            } catch (error) {
+                console.log('⚠️ Could not redirect, focusing home tab...');
+                try {
+                    window.opener.focus();
+                } catch (focusError) {
+                    console.log('❌ Could not focus home tab');
+                }
+            }
+        }
+    });
+}
 
 // Format contact name for URL
 function formatContactName(contactName) {
@@ -418,85 +488,9 @@ function openChat(contactName) {
     }
 }
 
-// ========== UPDATED CONTACTS RENDERING ==========
-
-// Updated contacts data with progression
-const contacts = [
-    { 
-        name: 'Mr. Ray', 
-        avatar: '👨‍💼', 
-        lastMessage: 'See you at the meeting', 
-        time: '10:30 AM', 
-        unread: 1
-    },
-    { 
-        name: 'Dyere', 
-        avatar: '👨‍🔧', 
-        lastMessage: 'The repair is done', 
-        time: 'Yesterday', 
-        unread: 0
-    },
-    { 
-        name: 'Sahil', 
-        avatar: '👨‍🎓', 
-        lastMessage: 'Hey whats the homework?', 
-        time: 'Yesterday', 
-        unread: 0,
-        requiresTask: 'chat_mr_ray' // Only shows after Mr. Ray chat
-    },
-    { 
-        name: 'Mom', 
-        avatar: '👩', 
-        lastMessage: 'Call me when free', 
-        time: '11/15/23', 
-        unread: 0
-    },
-    { 
-        name: 'Sister', 
-        avatar: '👧', 
-        lastMessage: 'Hey bro mom asking for you for the dinner come home fast', 
-        time: '11/14/23', 
-        unread: 0
-    },
-    { 
-        name: 'Feisher', 
-        avatar: '👨‍💻', 
-        lastMessage: 'Code review done', 
-        time: '11/13/23', 
-        unread: 0
-    },
-    { 
-        name: 'Dad', 
-        avatar: '👨', 
-        lastMessage: 'Dinner at 7', 
-        time: '11/12/23', 
-        unread: 0
-    },
-    { 
-        name: 'Layari', 
-        avatar: '👩‍🎨', 
-        lastMessage: 'Design ready', 
-        time: '11/11/23', 
-        unread: 0
-    },
-    { 
-        name: 'Dan', 
-        avatar: '👨‍💼', 
-        lastMessage: 'Project launch', 
-        time: '11/10/23', 
-        unread: 0
-    },
-    { 
-        name: 'Falco', 
-        avatar: '👨‍✈️', 
-        lastMessage: 'Flight confirmed', 
-        time: '11/09/23', 
-        unread: 0
-    }
-];
-
 // Render contacts with task-based filtering
 function renderContacts(filter = '') {
+    const contactsList = document.getElementById('contactsList');
     if (!contactsList) return;
 
     contactsList.innerHTML = '';
@@ -505,11 +499,12 @@ function renderContacts(filter = '') {
         // Apply search filter
         const matchesSearch = contact.name.toLowerCase().includes(filter.toLowerCase());
         
-        // Apply task-based visibility (only for Sahil)
-        const isVisible = !contact.requiresTask || 
-                         (contact.requiresTask && TaskProgress.isTaskCompleted(contact.requiresTask));
+        // Hide Sahil if Mr. Ray task not completed
+        if (contact.name === 'Sahil' && !TaskProgress.isTaskCompleted('chat_mr_ray')) {
+            return false;
+        }
         
-        return matchesSearch && isVisible;
+        return matchesSearch;
     });
 
     filteredContacts.forEach(contact => {
@@ -531,6 +526,46 @@ function renderContacts(filter = '') {
 
         contactsList.appendChild(contactElement);
     });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const currentTimeElement = document.getElementById('current-time');
+    const contactsList = document.getElementById('contactsList');
+    const searchInput = document.getElementById('searchInput');
+
+    // Update time
+    function updateTime() {
+        if (currentTimeElement) {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            currentTimeElement.textContent = `${hours}:${minutes}`;
+        }
+    }
+
+    // Search functionality
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            renderContacts(this.value);
+        });
+    }
+
+    updateTime();
+    renderContacts();
+    setInterval(updateTime, 60000);
+    initializeBackButton();    // 🆕 Back button navigation
+    initializeAutoRedirect();  // 🆕 Auto-redirect system
+
+    console.log('💬 Messages App Ready - Task progression system active!');
+});
+
+// Make functions global
+window.openChat = openChat;
+
+function playClickSound() {
+    const sound = new Audio('../../sounds/click.mp3');
+    sound.volume = 0.3;
+    sound.play().catch(e => console.log('Sound error:', e));
 }
     </script>
 </body>
