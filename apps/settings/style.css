@@ -539,3 +539,24 @@ body {
 .turn-off-option .music-title {
     color: #FF6B6B;
 }
+
+
+
+
+/* Remove default button focus styles */
+.back-button {
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Remove focus outline for all buttons */
+button {
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Optional: Add custom focus style if you want */
+.back-button:focus {
+    background: rgba(255, 215, 0, 0.1);
+    /* Don't add outline here */
+}
