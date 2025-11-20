@@ -20,6 +20,12 @@
     -webkit-touch-callout: none !important;
 }
 
+/* Remove focus outline for all buttons */
+button {
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
 body {
     display: flex;
     justify-content: center;
@@ -120,6 +126,7 @@ body {
     color: white;
 }
 
+/* Enhanced Back Button - No White Highlight */
 .back-button {
     color: white;
     text-decoration: none;
@@ -130,6 +137,11 @@ body {
     align-items: center;
     justify-content: center;
     border-radius: 10px;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    background: none;
+    cursor: pointer;
 }
 
 .back-button:active {
@@ -210,6 +222,8 @@ body {
     align-items: center;
     gap: 12px;
     transition: all 0.2s ease;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .task-item:active {
@@ -227,6 +241,8 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .task-checkbox.checked {
@@ -268,6 +284,8 @@ body {
     border: none;
     cursor: pointer;
     transition: all 0.2s ease;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .hint-button:active {
@@ -328,6 +346,8 @@ body {
     object-fit: cover;
     cursor: pointer;
     transition: transform 0.2s ease;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .ad-image:active {
@@ -351,6 +371,8 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .see-hint-button:active {
