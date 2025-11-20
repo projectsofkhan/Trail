@@ -29,7 +29,7 @@
 
             <div class="app-page">
                 <div class="app-header dark">
-                    <a href="https://projectsofkhan.github.io/Trail/" class="back-button">←</a>
+                    <button class="back-button" onclick="closeAppAndReturnHome()">←</button>
                     <div class="app-title">Contacts</div>
                     <div style="width: 40px;"></div>
                 </div>
@@ -98,7 +98,6 @@
                                     <div class="contact-lock">🔒</div>
                                 </div>
 
-                                <div 
                                 <div class="contact-item locked" onclick="showPasswordPrompt('Dad')">
                                     <div class="contact-avatar">👨</div>
                                     <div class="contact-info">
@@ -126,12 +125,12 @@
                     <div class="password-title">Enter Password</div>
                     <div class="password-subtitle" id="passwordContactName">to access this contact</div>
                 </div>
-                
+
                 <div class="password-input-container">
                     <input type="password" id="passwordInput" class="password-input" placeholder="Enter password" maxlength="4">
                     <div class="password-hint">4-digit PIN</div>
                 </div>
-                
+
                 <div class="password-actions">
                     <button class="password-button cancel" onclick="closePasswordPrompt()">Cancel</button>
                     <button class="password-button submit" onclick="checkPassword()">Unlock</button>
