@@ -76,16 +76,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Get fixed answer for question
     function getAnswer(question) {
         if (question === "Hello!") {
-            return "Hello! who are you??";
+            return "Hello?";
         }
         else if (question === "Sir, I am Detective, working on Eric Petrove's case, Can you help me?") {
             return "Oh, thanks I'm glad that someone is here to find, him. Yes i will be happy to help you.";
         }
-        else if (question === "Thanks sir, I need some information about his friends family and persons he usually talk to") {
-            return "Eric is a kind hearted person, usually talks to his friends Sahil, Dyere and Ahmet, all are good friends.";
+        else if (question === "Thanks sir, I need some information about his friends ") {
+            return "His friends are Sahil, Dyere and Ahmet.";
         }
         else if (question === "Sir who's Ahmet") {
-            return "Ahmet was his friend, maybe you was surprised after hearing that he have one more best friend right? Ahmet belongs to a very rich family, his family shifted him south Korea for study,";
+            return "Ahmet was his friend his family belongs to a very rich famil. his family shifted him south Korea for study,";
         }
         else if (question === "Yes, sir do you know more about him") {
             return "No sorry, I don't know much about him it's my first year at the school";
@@ -146,12 +146,13 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("Chat started");
         updateChoiceButton();
 
-        // Add welcome message after a short delay
+        /*
+ Add welcome message after a short delay
         setTimeout(() => {
             addMessage("Hi there! Ready to chat?", 'received');
         }, 1000);
     }
-
+       */
     // Start everything
     updateTime();
     initChat();
