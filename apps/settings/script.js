@@ -5,19 +5,45 @@ let bgMusic1 = null;
 let bgMusic2 = null;
 
 /**
+ * AUTO-REDIRECT SYSTEM - When user closes Settings, return to Home
+ */
+function initializeAutoRedirect() {
+    window.addEventListener('beforeunload', function() {
+        console.log('🔄 Settings closing - attempting to redirect home...');
+        
+        if (window.opener && !window.opener.closed) {
+            try {
+                // Try to redirect home tab back to home screen
+                window.opener.location.href = window.location.origin + '/Trail/';
+                console.log('✅ Success: Home tab redirected!');
+            } catch (error) {
+                console.log('⚠️ Could not redirect home tab:', error.message);
+                // Fallback: just focus the home tab
+                try {
+                    window.opener.focus();
+                    console.log('✅ Home tab focused instead');
+                } catch (focusError) {
+                    console.log('❌ Could not focus home tab');
+                }
+            }
+        }
+    });
+}
+
+/**
  * Initializes background music
  */
 function initializeMusic() {
     bgMusic1 = document.getElementById('bgMusic1');
     bgMusic2 = document.getElementById('bgMusic2');
-    
+
     if (bgMusic1) {
-        bgMusic1.volume = 0.05; // 5% volume - very low
+        bgMusic1.volume = 0.05;
     }
     if (bgMusic2) {
-        bgMusic2.volume = 0.05; // 5% volume - very low
+        bgMusic2.volume = 0.05;
     }
-    
+
     // Update button status to show "Off"
     const musicStatus = document.getElementById('musicStatus');
     if (musicStatus) {
@@ -52,7 +78,7 @@ function closeMusicSelection() {
 function turnOffMusic() {
     musicOn = false;
     currentMusic = null;
-    
+
     // Stop all music
     if (bgMusic1) {
         bgMusic1.pause();
@@ -62,14 +88,14 @@ function turnOffMusic() {
         bgMusic2.pause();
         bgMusic2.currentTime = 0;
     }
-    
+
     // Update UI
     const musicStatus = document.getElementById('musicStatus');
     if (musicStatus) {
         musicStatus.textContent = 'Off';
         musicStatus.style.color = '#FF6B6B';
     }
-    
+
     // Close the selection overlay
     closeMusicSelection();
 }
@@ -81,9 +107,9 @@ function selectMusic(musicType) {
     // Stop any currently playing music
     if (bgMusic1) bgMusic1.pause();
     if (bgMusic2) bgMusic2.pause();
-    
+
     let selectedMusic = null;
-    
+
     if (musicType === 'music1') {
         selectedMusic = bgMusic1;
         currentMusic = 'music1';
@@ -91,12 +117,12 @@ function selectMusic(musicType) {
         selectedMusic = bgMusic2;
         currentMusic = 'music2';
     }
-    
+
     if (selectedMusic) {
         // Turn music ON
         musicOn = true;
         selectedMusic.currentTime = 0;
-        
+
         selectedMusic.play().catch(error => {
             console.log('Failed to play music:', error);
             document.addEventListener('click', function startMusic() {
@@ -104,7 +130,7 @@ function selectMusic(musicType) {
                 document.removeEventListener('click', startMusic);
             }, { once: true });
         });
-        
+
         // Update UI
         const musicStatus = document.getElementById('musicStatus');
         if (musicStatus) {
@@ -112,7 +138,7 @@ function selectMusic(musicType) {
             musicStatus.style.color = '#4CAF50';
         }
     }
-    
+
     // Close the selection overlay
     closeMusicSelection();
 }
@@ -126,7 +152,7 @@ function toggleMusic() {
         showMusicSelection();
         return;
     }
-    
+
     // If music is on, turn it off
     turnOffMusic();
 }
@@ -214,66 +240,12 @@ function openZeeAi() {
     window.open('https://projectsofkhan.github.io/zeeAi/', '_blank');
 }
 
-/**
- * Keep music playing in background - prevents auto-pause
- */
-function keepMusicAlive() {
-    if (musicOn && currentMusic) {
-        let currentPlayer = currentMusic === 'music1' ? bgMusic1 : bgMusic2;
-        if (currentPlayer && currentPlayer.paused) {
-            // If music got paused by browser, restart it
-            currentPlayer.play().catch(e => {
-                console.log('Background music restarted');
-            });
-        }
-    }
-}
-
 // Initialize when page loads
 window.onload = function() {
     updateTime();
     setInterval(updateTime, 60000);
     initializeMusic();
+    initializeAutoRedirect(); // 🆕 AUTO-REDIRECT SYSTEM
     
-    // Start background music keeper
-    setInterval(keepMusicAlive, 10000); // Check every 10 seconds
+    console.log('⚙️ Settings App Ready - Auto-redirect enabled!');
 };
-
-// Handle page visibility changes - MUSIC CONTINUES IN BACKGROUND
-document.addEventListener('visibilitychange', function() {
-    if (musicOn && currentMusic) {
-        let currentPlayer = currentMusic === 'music1' ? bgMusic1 : bgMusic2;
-        if (currentPlayer) {
-            if (document.hidden) {
-                // Page is in background - DON'T pause, let music continue
-                console.log('Music continues playing in background');
-                // Ensure music is still playing
-                if (currentPlayer.paused) {
-                    currentPlayer.play().catch(e => {});
-                }
-            } else {
-                // Page is visible again - ensure music is playing
-                if (currentPlayer.paused) {
-                    currentPlayer.play().catch(e => {});
-                }
-            }
-        }
-    }
-});
-
-// Prevent browser from auto-pausing music
-window.addEventListener('beforeunload', function() {
-    // This helps keep audio context alive
-    if (bgMusic1) bgMusic1.load();
-    if (bgMusic2) bgMusic2.load();
-});
-
-// Additional protection: resume music on any user interaction
-document.addEventListener('click', function() {
-    if (musicOn && currentMusic) {
-        let currentPlayer = currentMusic === 'music1' ? bgMusic1 : bgMusic2;
-        if (currentPlayer && currentPlayer.paused) {
-            currentPlayer.play().catch(e => {});
-        }
-    }
-});
