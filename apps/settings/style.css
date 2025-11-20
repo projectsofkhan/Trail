@@ -37,6 +37,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .music-selection-container h3 {
@@ -62,6 +64,8 @@
     border: 1px solid #333;
     cursor: pointer;
     transition: all 0.2s ease;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .music-option:hover {
@@ -93,6 +97,7 @@
     color: #888;
     font-size: 12px;
 }
+
 /* Mobile Phone Theme - Black Theme */
 :root {
     --phone-width: 340px;
@@ -102,6 +107,7 @@
     --status-bar-height: 35px;
 }
 
+/* Global Reset and Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -113,6 +119,12 @@
     -ms-user-select: none !important;
     user-select: none !important;
     -webkit-touch-callout: none !important;
+}
+
+/* Remove focus outline for all buttons */
+button {
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -203,6 +215,7 @@ body {
     background: #000000;
 }
 
+/* App Header with Back Button */
 .app-header {
     display: flex;
     align-items: center;
@@ -218,6 +231,7 @@ body {
     color: white;
 }
 
+/* Enhanced Back Button - No White Highlight */
 .back-button {
     color: white;
     text-decoration: none;
@@ -228,6 +242,11 @@ body {
     align-items: center;
     justify-content: center;
     border-radius: 10px;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    background: none;
+    cursor: pointer;
 }
 
 .back-button:active {
@@ -302,6 +321,8 @@ body {
     transition: all 0.3s ease;
     box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
     border: 1px solid #444;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .try-pro-box:active {
@@ -354,6 +375,8 @@ body {
     border: 1px solid #333;
     min-width: 0;
     box-sizing: border-box;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .audio-button:active {
@@ -413,6 +436,8 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     border: 1px solid #333;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .bottom-button:active {
@@ -502,6 +527,8 @@ body {
     opacity: 0;
     transform: scale(0.8);
     transition: all 0.3s ease;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .close-try-pro:active {
@@ -526,6 +553,8 @@ body {
     border-radius: 2px;
     z-index: 10;
 }
+
+/* Turn Off Option */
 .turn-off-option {
     border: 1px solid #FF6B6B !important;
     background: rgba(255, 107, 107, 0.1) !important;
@@ -538,25 +567,4 @@ body {
 
 .turn-off-option .music-title {
     color: #FF6B6B;
-}
-
-
-
-
-/* Remove default button focus styles */
-.back-button {
-    outline: none;
-    -webkit-tap-highlight-color: transparent;
-}
-
-/* Remove focus outline for all buttons */
-button {
-    outline: none;
-    -webkit-tap-highlight-color: transparent;
-}
-
-/* Optional: Add custom focus style if you want */
-.back-button:focus {
-    background: rgba(255, 215, 0, 0.1);
-    /* Don't add outline here */
 }
