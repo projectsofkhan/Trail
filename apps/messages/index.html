@@ -316,7 +316,7 @@
     </div>
 
     <script>
-        // Updated contacts data
+        // Updated contacts data - Sahil always visible
 const contacts = [
     { name: 'Mr. Ray', avatar: '👨‍💼', lastMessage: 'See you at the meeting', time: '10:30 AM', unread: 1 },
     { name: 'Dyere', avatar: '👨‍🔧', lastMessage: 'The repair is done', time: 'Yesterday', unread: 0 },
@@ -538,15 +538,10 @@ function openChat(contactName) {
         const realUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/index.html`;
         console.log(`🔓 Chat unlocked - redirecting to: ${realUrl}`);
         window.location.href = realUrl;
-        
-        // Mark Mr. Ray chat as completed when user opens it (will trigger popup)
-        if (formattedName === 'misterray' && !TaskProgress.isTaskCompleted('chat_mr_ray')) {
-            TaskProgress.completeTask('chat_mr_ray');
-        }
     }
 }
 
-// Render contacts with task-based filtering
+// Render contacts - Sahil always visible
 function renderContacts(filter = '') {
     const contactsList = document.getElementById('contactsList');
     if (!contactsList) return;
@@ -555,14 +550,7 @@ function renderContacts(filter = '') {
 
     const filteredContacts = contacts.filter(contact => {
         // Apply search filter
-        const matchesSearch = contact.name.toLowerCase().includes(filter.toLowerCase());
-        
-        // Hide Sahil if Mr. Ray task not completed
-        if (contact.name === 'Sahil' && !TaskProgress.isTaskCompleted('chat_mr_ray')) {
-            return false;
-        }
-        
-        return matchesSearch;
+        return contact.name.toLowerCase().includes(filter.toLowerCase());
     });
 
     filteredContacts.forEach(contact => {
@@ -570,13 +558,16 @@ function renderContacts(filter = '') {
         contactElement.className = 'contact-item';
         contactElement.onclick = () => openChat(contact.name);
 
-        // Add lock icon for locked contacts (Sahil before task completion)
+        // Show lock icon for Sahil if task not completed
         const isLocked = contact.name === 'Sahil' && !TaskProgress.isTaskCompleted('chat_mr_ray');
         
         contactElement.innerHTML = `
             <div class="contact-avatar">${contact.avatar}</div>
             <div class="contact-info">
-                <div class="contact-name">${contact.name}</div>
+                <div class="contact-name">
+                    ${contact.name}
+                    ${isLocked ? ' <span style="color: #ff6b6b; font-size: 0.8em;">🔒</span>' : ''}
+                </div>
                 <div class="contact-last-message">${contact.lastMessage}</div>
             </div>
             <div style="display: flex; flex-direction: column; align-items: flex-end;">
@@ -627,6 +618,14 @@ function playClickSound() {
     const sound = new Audio('../../sounds/click.mp3');
     sound.volume = 0.3;
     sound.play().catch(e => console.log('Sound error:', e));
+}
+
+// ========== FUNCTION TO CALL FROM CHAT PAGES ==========
+// Call this function when Mr. Ray chat ends
+function completeMrRayChat() {
+    if (!TaskProgress.isTaskCompleted('chat_mr_ray')) {
+        TaskProgress.completeTask('chat_mr_ray');
+    }
 }
     </script>
 </body>
