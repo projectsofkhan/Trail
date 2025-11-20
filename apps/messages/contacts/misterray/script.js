@@ -5,7 +5,7 @@ let messages = [];
 const questions = [
     "Hello!",
     "Sir, I am Detective, working on Eric Petrove's case, Can you help me?",
-    "Thanks sir, I need some information about his friends family and persons he usually talk to",
+    "Thanks sir, I need some information about his friends.",
     "Sir who's Ahmet",
     "Yes, sir do you know more about him",
     "Thanks a lot sir"
