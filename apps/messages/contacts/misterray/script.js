@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
         else if (question === "Sir, I am Detective, working on Eric Petrove's case, Can you help me?") {
             return "Oh, thanks I'm glad that someone is here to find, him. Yes i will be happy to help you.";
         }
-        else if (question === "Thanks sir, I need some information about his friends ") {
+        else if (question === "Thanks sir, I need some information about his friends family and persons he usually talk to") {
             return "His friends are Sahil, Dyere and Ahmet.";
         }
         else if (question === "Sir who's Ahmet") {
@@ -146,18 +146,20 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("Chat started");
         updateChoiceButton();
 
-        /*
- Add welcome message after a short delay
+        // Add welcome message after a short delay
         setTimeout(() => {
             addMessage("Hi there! Ready to chat?", 'received');
         }, 1000);
     }
-       */
+
+    // Add event listener to the button
+    choiceButton.addEventListener('click', selectChoice);
+
     // Start everything
     updateTime();
     initChat();
     setInterval(updateTime, 60000);
 
-    // Make function available globally
+    // Make function available globally (optional now that we have event listener)
     window.selectChoice = selectChoice;
 });
