@@ -316,179 +316,222 @@
     </div>
 
     <script>
-        // Updated contacts data
-        const contacts = [
-            { name: 'Mr. Ray', avatar: '👨‍💼', lastMessage: 'See you at the meeting', time: '10:30 AM', unread: 0 },
-            { name: 'Dyere', avatar: '👨‍🔧', lastMessage: 'The repair is done', time: 'Yesterday', unread: 0 },
-            { name: 'Sahil', avatar: '👨‍🎓', lastMessage: 'Hey whats the homework?', time: 'Yesterday', unread: 0 },
-            { name: 'Mom', avatar: '👩', lastMessage: 'Call me when free', time: '11/15/23', unread: 0 },
-            { name: 'Sister', avatar: '👧', lastMessage: 'Hey bro mom asking for you for the dinner come home fast', time: '11/14/23', unread: 0 },
-            { name: 'Feisher', avatar: '👨‍💻', lastMessage: 'Code review done', time: '11/13/23', unread: 0 },
-            { name: 'Dad', avatar: '👨', lastMessage: 'Dinner at 7', time: '11/12/23', unread: 0 },
-            { name: 'Layari', avatar: '👩‍🎨', lastMessage: 'Design ready', time: '11/11/23', unread: 0 },
-            { name: 'Dan', avatar: '👨‍💼', lastMessage: 'Project launch', time: '11/10/23', unread: 0 },
-            { name: 'Falco', avatar: '👨‍✈️', lastMessage: 'Flight confirmed', time: '11/09/23', unread: 0 }
-        ];
-
-        /**
-         * Back Button - Closes app tab and returns to home
-         */
-        function initializeBackButton() {
-            // Get the back button
-            const backButton = document.querySelector('.back-button');
-            
-            if (backButton) {
-                backButton.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    closeAppAndReturnHome();
-                });
-            }
-            
-            // Also support Android back button
-            window.addEventListener('popstate', function() {
-                closeAppAndReturnHome();
-            });
-
-            // Support browser back button
-            window.onkeydown = function(e) {
-                if (e.key === 'Escape') {
-                    closeAppAndReturnHome();
-                }
-            };
+        // ========== SIMPLE TASK PROGRESSION SYSTEM ==========
+const TaskProgress = {
+    // Initialize task progress
+    init() {
+        if (!localStorage.getItem('taskProgress')) {
+            localStorage.setItem('taskProgress', JSON.stringify({}));
         }
+    },
 
-        /**
-         * Close app tab and focus home screen
-         */
-        function closeAppAndReturnHome() {
-            console.log('🔙 Closing Messages and returning to home...');
+    // Complete a task
+    completeTask(taskId) {
+        const progress = this.getProgress();
+        progress[taskId] = true;
+        localStorage.setItem('taskProgress', JSON.stringify(progress));
+        
+        // Show completion popup
+        this.showTaskCompletePopup(taskId);
+        
+        console.log(`✅ Task completed: ${taskId}`);
+    },
+
+    // Check if task is completed
+    isTaskCompleted(taskId) {
+        const progress = this.getProgress();
+        return !!progress[taskId];
+    },
+
+    // Get all progress
+    getProgress() {
+        return JSON.parse(localStorage.getItem('taskProgress') || '{}');
+    },
+
+    // Show task completion popup
+    showTaskCompletePopup(taskId) {
+        if (taskId === 'chat_mr_ray') {
+            // Create popup
+            const popup = document.createElement('div');
+            popup.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: #128C7E;
+                color: white;
+                padding: 20px;
+                border-radius: 15px;
+                z-index: 1000;
+                text-align: center;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                animation: fadeIn 0.3s ease;
+            `;
             
-            // Try to focus the home tab first
-            if (window.opener && !window.opener.closed) {
-                try {
-                    window.opener.focus();
-                    console.log('✅ Home tab focused');
-                } catch (error) {
-                    console.log('⚠️ Could not focus home tab');
-                }
-            }
+            popup.innerHTML = `
+                <h3 style="margin-bottom: 10px;">🎉 Task Completed!</h3>
+                <p style="margin-bottom: 5px;"><strong>Chat with Mr. Ray</strong></p>
+                <p style="font-size: 14px; opacity: 0.9;">Sahil contact unlocked!</p>
+            `;
             
-            // Close this app tab
+            document.body.appendChild(popup);
+            
+            // Remove popup after 3 seconds
             setTimeout(() => {
-                window.close();
-            }, 50);
+                popup.remove();
+            }, 3000);
         }
+    }
+};
 
-        /**
-         * AUTO-REDIRECT SYSTEM for all apps
-         */
-        function initializeAutoRedirect() {
-            window.addEventListener('beforeunload', function() {
-                console.log('🔄 Messages closing - redirecting to home...');
+// Initialize task system
+TaskProgress.init();
 
-                if (window.opener && !window.opener.closed) {
-                    try {
-                        window.opener.location.href = window.location.origin + '/Trail/';
-                        console.log('✅ Home tab redirected!');
-                    } catch (error) {
-                        console.log('⚠️ Could not redirect, focusing home tab...');
-                        try {
-                            window.opener.focus();
-                        } catch (focusError) {
-                            console.log('❌ Could not focus home tab');
-                        }
-                    }
-                }
-            });
+// ========== UPDATED CHAT NAVIGATION ==========
+
+// Format contact name for URL
+function formatContactName(contactName) {
+    if (contactName === 'Mr. Ray') return 'misterray';
+    return contactName.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+// Smart chat navigation - checks task progress
+function openChat(contactName) {
+    const formattedName = formatContactName(contactName);
+    
+    // Only Sahil requires task completion
+    if (contactName === 'Sahil' && !TaskProgress.isTaskCompleted('chat_mr_ray')) {
+        // Task not completed - go to locked version
+        const lockedUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/sahil/locked.html`;
+        console.log(`🔒 Sahil chat locked - redirecting to: ${lockedUrl}`);
+        window.location.href = lockedUrl;
+    } else {
+        // Task completed or no requirement - go to real chat
+        const realUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/index.html`;
+        console.log(`🔓 Chat unlocked - redirecting to: ${realUrl}`);
+        window.location.href = realUrl;
+        
+        // Mark Mr. Ray chat as completed when user opens it
+        if (formattedName === 'misterray') {
+            TaskProgress.completeTask('chat_mr_ray');
         }
+    }
+}
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const currentTimeElement = document.getElementById('current-time');
-            const contactsList = document.getElementById('contactsList');
-            const searchInput = document.getElementById('searchInput');
+// ========== UPDATED CONTACTS RENDERING ==========
 
-            // Update time
-            function updateTime() {
-                if (currentTimeElement) {
-                    const now = new Date();
-                    const hours = now.getHours();
-                    const minutes = now.getMinutes().toString().padStart(2, '0');
-                    currentTimeElement.textContent = `${hours}:${minutes}`;
-                }
-            }
+// Updated contacts data with progression
+const contacts = [
+    { 
+        name: 'Mr. Ray', 
+        avatar: '👨‍💼', 
+        lastMessage: 'See you at the meeting', 
+        time: '10:30 AM', 
+        unread: 1
+    },
+    { 
+        name: 'Dyere', 
+        avatar: '👨‍🔧', 
+        lastMessage: 'The repair is done', 
+        time: 'Yesterday', 
+        unread: 0
+    },
+    { 
+        name: 'Sahil', 
+        avatar: '👨‍🎓', 
+        lastMessage: 'Hey whats the homework?', 
+        time: 'Yesterday', 
+        unread: 0,
+        requiresTask: 'chat_mr_ray' // Only shows after Mr. Ray chat
+    },
+    { 
+        name: 'Mom', 
+        avatar: '👩', 
+        lastMessage: 'Call me when free', 
+        time: '11/15/23', 
+        unread: 0
+    },
+    { 
+        name: 'Sister', 
+        avatar: '👧', 
+        lastMessage: 'Hey bro mom asking for you for the dinner come home fast', 
+        time: '11/14/23', 
+        unread: 0
+    },
+    { 
+        name: 'Feisher', 
+        avatar: '👨‍💻', 
+        lastMessage: 'Code review done', 
+        time: '11/13/23', 
+        unread: 0
+    },
+    { 
+        name: 'Dad', 
+        avatar: '👨', 
+        lastMessage: 'Dinner at 7', 
+        time: '11/12/23', 
+        unread: 0
+    },
+    { 
+        name: 'Layari', 
+        avatar: '👩‍🎨', 
+        lastMessage: 'Design ready', 
+        time: '11/11/23', 
+        unread: 0
+    },
+    { 
+        name: 'Dan', 
+        avatar: '👨‍💼', 
+        lastMessage: 'Project launch', 
+        time: '11/10/23', 
+        unread: 0
+    },
+    { 
+        name: 'Falco', 
+        avatar: '👨‍✈️', 
+        lastMessage: 'Flight confirmed', 
+        time: '11/09/23', 
+        unread: 0
+    }
+];
 
-            // Format contact name for URL
-            function formatContactName(contactName) {
-                // Special case for Mr. Ray = Misterray
-                if (contactName === 'Mr. Ray') {
-                    return 'misterray';
-                }
-                // For other names, convert to lowercase and remove special characters
-                return contactName.toLowerCase().replace(/[^a-z0-9]/g, '');
-            }
+// Render contacts with task-based filtering
+function renderContacts(filter = '') {
+    if (!contactsList) return;
 
-            // Open contact chat
-            function openChat(contactName) {
-                const formattedName = formatContactName(contactName);
-                const url = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/index.html`;
-                window.location.href = url;
-            }
+    contactsList.innerHTML = '';
 
-            // Render contacts list
-            function renderContacts(filter = '') {
-                if (!contactsList) return;
+    const filteredContacts = contacts.filter(contact => {
+        // Apply search filter
+        const matchesSearch = contact.name.toLowerCase().includes(filter.toLowerCase());
+        
+        // Apply task-based visibility (only for Sahil)
+        const isVisible = !contact.requiresTask || 
+                         (contact.requiresTask && TaskProgress.isTaskCompleted(contact.requiresTask));
+        
+        return matchesSearch && isVisible;
+    });
 
-                contactsList.innerHTML = '';
+    filteredContacts.forEach(contact => {
+        const contactElement = document.createElement('div');
+        contactElement.className = 'contact-item';
+        contactElement.onclick = () => openChat(contact.name);
 
-                const filteredContacts = contacts.filter(contact => 
-                    contact.name.toLowerCase().includes(filter.toLowerCase())
-                );
+        contactElement.innerHTML = `
+            <div class="contact-avatar">${contact.avatar}</div>
+            <div class="contact-info">
+                <div class="contact-name">${contact.name}</div>
+                <div class="contact-last-message">${contact.lastMessage}</div>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                <div class="message-time">${contact.time}</div>
+                ${contact.unread > 0 ? `<div class="unread-badge">${contact.unread}</div>` : ''}
+            </div>
+        `;
 
-                filteredContacts.forEach(contact => {
-                    const contactElement = document.createElement('div');
-                    contactElement.className = 'contact-item';
-                    contactElement.onclick = () => openChat(contact.name);
-
-                    contactElement.innerHTML = `
-                        <div class="contact-avatar">${contact.avatar}</div>
-                        <div class="contact-info">
-                            <div class="contact-name">${contact.name}</div>
-                            <div class="contact-last-message">${contact.lastMessage}</div>
-                        </div>
-                        <div style="display: flex; flex-direction: column; align-items: flex-end;">
-                            <div class="message-time">${contact.time}</div>
-                            ${contact.unread > 0 ? `<div class="unread-badge">${contact.unread}</div>` : ''}
-                        </div>
-                    `;
-
-                    contactsList.appendChild(contactElement);
-                });
-            }
-
-            // Search functionality
-            if (searchInput) {
-                searchInput.addEventListener('input', function() {
-                    renderContacts(this.value);
-                });
-            }
-
-            updateTime();
-            renderContacts();
-            setInterval(updateTime, 60000);
-            initializeBackButton();    // 🆕 Back button navigation
-            initializeAutoRedirect();  // 🆕 Auto-redirect system
-            
-            console.log('💬 Messages App Ready - Back button closes tab!');
-        });
-
-        // Make functions global
-        window.openChat = openChat;
-
-        function playClickSound() {
-            const sound = new Audio('../../sounds/click.mp3');
-            sound.volume = 0.3;
-            sound.play().catch(e => console.log('Sound error:', e));
-        }
+        contactsList.appendChild(contactElement);
+    });
+}
     </script>
 </body>
 </html>
