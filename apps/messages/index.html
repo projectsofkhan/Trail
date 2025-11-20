@@ -357,29 +357,87 @@ const TaskProgress = {
 
     showTaskCompletePopup(taskId) {
         if (taskId === 'chat_mr_ray') {
+            // Create beautiful popup
             const popup = document.createElement('div');
             popup.style.cssText = `
                 position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: #128C7E;
-                color: white;
-                padding: 20px;
-                border-radius: 15px;
-                z-index: 1000;
-                text-align: center;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+                animation: fadeIn 0.3s ease;
             `;
-            
+
             popup.innerHTML = `
-                <h3 style="margin-bottom: 10px;">🎉 Task Completed!</h3>
-                <p style="margin-bottom: 5px;"><strong>Chat with Mr. Ray</strong></p>
-                <p style="font-size: 14px; opacity: 0.9;">Sahil contact unlocked!</p>
+                <div style="
+                    background: linear-gradient(135deg, #128C7E, #25D366);
+                    color: white;
+                    padding: 30px;
+                    border-radius: 20px;
+                    text-align: center;
+                    max-width: 280px;
+                    margin: 20px;
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+                    animation: slideUp 0.5s ease;
+                ">
+                    <div style="font-size: 3rem; margin-bottom: 15px;">🎉</div>
+                    <h3 style="margin: 0 0 10px 0; font-size: 1.4rem; font-weight: 600;">Task Completed!</h3>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; margin: 15px 0;">
+                        <div style="font-size: 1.1rem; font-weight: 500; margin-bottom: 5px;">Chat with Mr. Ray</div>
+                        <div style="font-size: 0.9rem; opacity: 0.9;">Completed Successfully</div>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.15); padding: 12px; border-radius: 10px; margin: 15px 0;">
+                        <div style="font-size: 1.8rem; margin-right: 10px;">🔓</div>
+                        <div style="text-align: left;">
+                            <div style="font-size: 0.9rem; font-weight: 500;">New Contact Unlocked!</div>
+                            <div style="font-size: 0.8rem; opacity: 0.9;">Sahil is now available</div>
+                        </div>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" style="
+                        background: white;
+                        color: #128C7E;
+                        border: none;
+                        padding: 12px 30px;
+                        border-radius: 25px;
+                        font-weight: 600;
+                        font-size: 1rem;
+                        cursor: pointer;
+                        margin-top: 10px;
+                        transition: all 0.2s ease;
+                    ">Continue</button>
+                </div>
+                
+                <style>
+                    @keyframes fadeIn {
+                        from { opacity: 0; }
+                        to { opacity: 1; }
+                    }
+                    @keyframes slideUp {
+                        from { 
+                            opacity: 0;
+                            transform: translateY(30px) scale(0.9);
+                        }
+                        to { 
+                            opacity: 1;
+                            transform: translateY(0) scale(1);
+                        }
+                    }
+                </style>
             `;
-            
+
             document.body.appendChild(popup);
-            setTimeout(() => popup.remove(), 3000);
+
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (popup.parentElement) {
+                    popup.remove();
+                }
+            }, 5000);
         }
     }
 };
@@ -471,8 +529,8 @@ function openChat(contactName) {
     
     // Only Sahil requires task completion
     if (contactName === 'Sahil' && !TaskProgress.isTaskCompleted('chat_mr_ray')) {
-        // Task not completed - go to locked version
-        const lockedUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/sahil/locked.html`;
+        // Task not completed - go to generic locked page
+        const lockedUrl = `https://projectsofkhan.github.io/Trail/apps/messages/lockedchat.html`;
         console.log(`🔒 Sahil chat locked - redirecting to: ${lockedUrl}`);
         window.location.href = lockedUrl;
     } else {
@@ -481,8 +539,8 @@ function openChat(contactName) {
         console.log(`🔓 Chat unlocked - redirecting to: ${realUrl}`);
         window.location.href = realUrl;
         
-        // Mark Mr. Ray chat as completed when user opens it
-        if (formattedName === 'misterray') {
+        // Mark Mr. Ray chat as completed when user opens it (will trigger popup)
+        if (formattedName === 'misterray' && !TaskProgress.isTaskCompleted('chat_mr_ray')) {
             TaskProgress.completeTask('chat_mr_ray');
         }
     }
@@ -512,6 +570,9 @@ function renderContacts(filter = '') {
         contactElement.className = 'contact-item';
         contactElement.onclick = () => openChat(contact.name);
 
+        // Add lock icon for locked contacts (Sahil before task completion)
+        const isLocked = contact.name === 'Sahil' && !TaskProgress.isTaskCompleted('chat_mr_ray');
+        
         contactElement.innerHTML = `
             <div class="contact-avatar">${contact.avatar}</div>
             <div class="contact-info">
