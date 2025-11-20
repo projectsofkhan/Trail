@@ -5,12 +5,61 @@ let bgMusic1 = null;
 let bgMusic2 = null;
 
 /**
+ * Back Button - Closes app tab and returns to home
+ */
+function initializeBackButton() {
+    // Get the back button
+    const backButton = document.querySelector('.back-button');
+    
+    if (backButton) {
+        backButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            closeAppAndReturnHome();
+        });
+    }
+    
+    // Also support Android back button
+    window.addEventListener('popstate', function() {
+        closeAppAndReturnHome();
+    });
+
+    // Support browser back button
+    window.onkeydown = function(e) {
+        if (e.key === 'Escape') {
+            closeAppAndReturnHome();
+        }
+    };
+}
+
+/**
+ * Close app tab and focus home screen
+ */
+function closeAppAndReturnHome() {
+    console.log('🔙 Closing Settings and returning to home...');
+    
+    // Try to focus the home tab first
+    if (window.opener && !window.opener.closed) {
+        try {
+            window.opener.focus();
+            console.log('✅ Home tab focused');
+        } catch (error) {
+            console.log('⚠️ Could not focus home tab');
+        }
+    }
+    
+    // Close this app tab
+    setTimeout(() => {
+        window.close();
+    }, 50);
+}
+
+/**
  * AUTO-REDIRECT SYSTEM - When user closes Settings, return to Home
  */
 function initializeAutoRedirect() {
     window.addEventListener('beforeunload', function() {
         console.log('🔄 Settings closing - attempting to redirect home...');
-        
+
         if (window.opener && !window.opener.closed) {
             try {
                 // Try to redirect home tab back to home screen
@@ -245,7 +294,8 @@ window.onload = function() {
     updateTime();
     setInterval(updateTime, 60000);
     initializeMusic();
-    initializeAutoRedirect(); // 🆕 AUTO-REDIRECT SYSTEM
-    
-    console.log('⚙️ Settings App Ready - Auto-redirect enabled!');
+    initializeBackButton();    // 🆕 Back button navigation
+    initializeAutoRedirect();  // 🆕 Auto-redirect system
+
+    console.log('⚙️ Settings App Ready - Back button closes tab!');
 };
