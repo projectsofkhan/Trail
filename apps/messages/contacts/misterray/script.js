@@ -1,11 +1,12 @@
 let currentStep = 0;
 let messages = [];
+let isProcessing = false; // Add this to prevent double execution
 
 // Questions and their fixed answers
 const questions = [
     "Hello!",
     "Sir, I am Detective, working on Eric Petrove's case, Can you help me?",
-    "Thanks sir, I need some information about his friends.",
+    "Thanks sir, I need some information about his friends family and persons he usually talk to",
     "Sir who's Ahmet",
     "Yes, sir do you know more about him",
     "Thanks a lot sir"
@@ -111,7 +112,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle choice selection
     function selectChoice() {
-        if (currentStep >= questions.length) return;
+        // Prevent double execution
+        if (isProcessing || currentStep >= questions.length) return;
+        
+        isProcessing = true; // Set flag to prevent double clicks
 
         // Get current question
         const question = questions[currentStep];
@@ -136,6 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update button for next question
             setTimeout(() => {
                 updateChoiceButton();
+                isProcessing = false; // Reset flag after processing complete
             }, 500);
 
         }, 1000);
@@ -146,8 +151,12 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("Chat started");
         updateChoiceButton();
         
-        // NO welcome message - first message must be from user
-        // User will click the button to start the conversation
+        // Welcome message (commented out - uncomment if needed)
+        
+        setTimeout(() => {
+            addMessage("Hi there! Ready to chat?", 'received');
+        }, 1000);
+        
     }
 
     // Add event listener to the button
@@ -158,12 +167,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initChat();
     setInterval(updateTime, 60000);
 
-    // Make function available globally
+    // Keep global function but it's protected by isProcessing flag
     window.selectChoice = selectChoice;
 });
-
-/*
-setTimeout(() => {
-    addMessage("Hi there! Ready to chat?", 'received');
-}, 1000);
-*/
