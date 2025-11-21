@@ -241,13 +241,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function initChat() {
         console.log("Chat started");
         updateChoiceButton();
-/*
+
         // Welcome message after a short delay
         setTimeout(() => {
             addMessage("", 'received');
         }, 1000);
     }
-*/
+
 
     // Add event listener to the button
     choiceButton.addEventListener('click', selectChoice);
