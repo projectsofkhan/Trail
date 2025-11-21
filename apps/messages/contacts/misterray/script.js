@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Welcome message after a short delay
         setTimeout(() => {
-            addMessage("", 'received');
+            addMessage('received');
         }, 1000);
     }
 
