@@ -14,7 +14,6 @@ const questions = [
 
 // ========== TASK COMPLETION FUNCTION ==========
 function completeMrRayChat() {
-    // Create beautiful popup
     const popup = document.createElement('div');
     popup.style.cssText = `
         position: fixed;
@@ -70,37 +69,24 @@ function completeMrRayChat() {
         </div>
         
         <style>
-            @keyframes fadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
-            }
+            @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
             @keyframes slideUp {
-                from { 
-                    opacity: 0;
-                    transform: translateY(30px) scale(0.9);
-                }
-                to { 
-                    opacity: 1;
-                    transform: translateY(0) scale(1);
-                }
+                from { opacity: 0; transform: translateY(30px) scale(0.9); }
+                to { opacity: 1; transform: translateY(0) scale(1); }
             }
         </style>
     `;
 
     document.body.appendChild(popup);
 
-    // Save to localStorage
     const progress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
     progress['chat_mr_ray'] = true;
     localStorage.setItem('taskProgress', JSON.stringify(progress));
 
     console.log('✅ Mr. Ray chat completed - Sahil unlocked!');
 
-    // Auto-remove after 5 seconds
     setTimeout(() => {
-        if (popup.parentElement) {
-            popup.remove();
-        }
+        if (popup.parentElement) popup.remove();
     }, 5000);
 }
 
@@ -109,89 +95,60 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatMessages = document.getElementById('chatMessages');
     const choiceButton = document.getElementById('choiceBtn');
 
-    // Create audio elements for sounds
     const sentSound = new Audio('sent.mp3');
     const receiveSound = new Audio('recieve.mp3');
 
-    // Update time
     function updateTime() {
         if (currentTimeElement) {
             const now = new Date();
-            const hours = now.getHours();
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            currentTimeElement.textContent = `${hours}:${minutes}`;
+            const h = now.getHours();
+            const m = now.getMinutes().toString().padStart(2, '0');
+            currentTimeElement.textContent = `${h}:${m}`;
         }
     }
 
-    // Play sound
     function playSound(sound) {
         sound.currentTime = 0;
-        sound.play().catch(e => {
-            console.log('Audio play failed:', e);
-        });
+        sound.play().catch(() => {});
     }
 
-    // Add message to chat
     function addMessage(text, type) {
         const now = new Date();
-        const time = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+        const t = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
 
-        // Create message element
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${type}`;
-        messageDiv.innerHTML = `
+        const div = document.createElement('div');
+        div.className = `message ${type}`;
+        div.innerHTML = `
             <div class="message-content">${text}</div>
-            <div class="message-time">${time}</div>
+            <div class="message-time">${t}</div>
         `;
 
-        // Add to chat
-        chatMessages.appendChild(messageDiv);
-
-        // Scroll to bottom
+        chatMessages.appendChild(div);
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
-        // Also add to messages array for tracking
-        messages.push({
-            id: messages.length + 1,
-            content: text,
-            time: time,
-            type: type
-        });
+        messages.push({ id: messages.length + 1, content: text, time: t, type });
 
-        // Play sound based on message type
-        if (type === 'sent') {
-            playSound(sentSound);
-        } else if (type === 'received') {
-            playSound(receiveSound);
-        }
+        if (type === 'sent') playSound(sentSound);
+        else playSound(receiveSound);
     }
 
-    // Get fixed answer for question
     function getAnswer(question) {
-        if (question === "Hello!") {
-            return "Hello?";
-        }
-        else if (question === "Sir, I am Detective, working on Eric Petrove's case, Can you help me?") {
-            return "Oh, thanks I'm glad that someone is here to find him. Yes I will be happy to help you.";
-        }
-        else if (question === "Thanks sir, I need some information about his friends family and persons he usually talk to") {
-            return "His friends are Sahil, Dyere and Ahmet.";
-        }
-        else if (question === "Sir who's Ahmet") {
-            return "Ahmet was his friend. His family belongs to a very rich family. His family shifted him to South Korea for study.";
-        }
-        else if (question === "Yes, sir do you know more about him") {
-            return "No sorry, I don't know much about him. It's my first year at the school.";
-        }
-        else if (question === "Thanks a lot sir") {
-            return "Welcome Mr. Feel free to ask anything, but now I have some work so we'll talk later.";
-        }
-        else {
-            return "Nice talking to you!";
-        }
+        const map = {
+            "Hello!": "Hello?",
+            "Sir, I am Detective, working on Eric Petrove's case, Can you help me?":
+                "Oh, thanks I'm glad that someone is here to find him. Yes I will be happy to help you.",
+            "Thanks sir, I need some information about his friends family and persons he usually talk to":
+                "His friends are Sahil, Dyere and Ahmet.",
+            "Sir who's Ahmet":
+                "Ahmet was his friend. His family belongs to a very rich family. His family shifted him to South Korea for study.",
+            "Yes, sir do you know more about him":
+                "No sorry, I don't know much about him. It's my first year at the school.",
+            "Thanks a lot sir":
+                "Welcome Mr. Feel free to ask anything, but now I have some work so we'll talk later."
+        };
+        return map[question] || "Nice talking to you!";
     }
 
-    // Update the choice button
     function updateChoiceButton() {
         if (currentStep < questions.length) {
             choiceButton.textContent = questions[currentStep];
@@ -202,31 +159,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Handle choice selection
     function selectChoice() {
-        // Prevent double execution
         if (isProcessing || currentStep >= questions.length) return;
 
         isProcessing = true;
-        const question = questions[currentStep];
+        const q = questions[currentStep];
         choiceButton.disabled = true;
 
-        console.log("Sending:", question);
-        addMessage(question, 'sent');
+        addMessage(q, 'sent');
 
         setTimeout(() => {
-            const answer = getAnswer(question);
-            console.log("Replying:", answer);
-            addMessage(answer, 'received');
+            const ans = getAnswer(q);
+            addMessage(ans, 'received');
 
             currentStep++;
 
-            // 🆕 CHECK IF THIS WAS THE LAST MESSAGE - COMPLETE TASK
             if (currentStep >= questions.length) {
-                // This was the final message - complete the task after a delay
-                setTimeout(() => {
-                    completeMrRayChat();
-                }, 1000);
+                setTimeout(completeMrRayChat, 1000);
             }
 
             setTimeout(() => {
@@ -237,27 +186,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1000);
     }
 
-    // Initialize chat
+    // ✔ FIXED — initChat properly closed
     function initChat() {
         console.log("Chat started");
         updateChoiceButton();
-
-        // Welcome message after a short delay
-        setTimeout(() => {
-            addMessage('received');
-        }, 1000);
     }
 
-
-    // Add event listener to the button
+    // ✔ FIXED — event listener placed OUTSIDE initChat
     choiceButton.addEventListener('click', selectChoice);
 
-    // Start everything
     updateTime();
     initChat();
     setInterval(updateTime, 60000);
 
-    // Make function global
     window.selectChoice = selectChoice;
     window.completeMrRayChat = completeMrRayChat;
 });
