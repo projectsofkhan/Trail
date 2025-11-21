@@ -1,285 +1,263 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
+let currentStep = 0;
+let messages = [];
+let isProcessing = false;
+
+// Questions and their fixed answers
+const questions = [
+    "Hello!",
+    "Sir, I am Detective, working on Eric Petrove's case, Can you help me?",
+    "Thanks sir, I need some information about his friends family and persons he usually talk to",
+    "Sir who's Ahmet",
+    "Yes, sir do you know more about him",
+    "Thanks a lot sir"
+];
+
+// ========== TASK COMPLETION FUNCTION ==========
+function completeMrRayChat() {
+    // Create beautiful popup
+    const popup = document.createElement('div');
+    popup.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        animation: fadeIn 0.3s ease;
+    `;
+
+    popup.innerHTML = `
+        <div style="
+            background: linear-gradient(135deg, #128C7E, #25D366);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 280px;
+            margin: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s ease;
+        ">
+            <div style="font-size: 3rem; margin-bottom: 15px;">🎉</div>
+            <h3 style="margin: 0 0 10px 0; font-size: 1.4rem; font-weight: 600;">Task Completed!</h3>
+            <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; margin: 15px 0;">
+                <div style="font-size: 1.1rem; font-weight: 500; margin-bottom: 5px;">Chat with Mr. Ray</div>
+                <div style="font-size: 0.9rem; opacity: 0.9;">Completed Successfully</div>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.15); padding: 12px; border-radius: 10px; margin: 15px 0;">
+                <div style="font-size: 1.8rem; margin-right: 10px;">🔓</div>
+                <div style="text-align: left;">
+                    <div style="font-size: 0.9rem; font-weight: 500;">New Contact Unlocked!</div>
+                    <div style="font-size: 0.8rem; opacity: 0.9;">Sahil is now available</div>
+                </div>
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()" style="
+                background: white;
+                color: #128C7E;
+                border: none;
+                padding: 12px 30px;
+                border-radius: 25px;
+                font-weight: 600;
+                font-size: 1rem;
+                cursor: pointer;
+                margin-top: 10px;
+                transition: all 0.2s ease;
+            ">Continue</button>
+        </div>
+        
+        <style>
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @keyframes slideUp {
+                from { 
+                    opacity: 0;
+                    transform: translateY(30px) scale(0.9);
+                }
+                to { 
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+            }
+        </style>
+    `;
+
+    document.body.appendChild(popup);
+
+    // Save to localStorage
+    const progress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
+    progress['chat_mr_ray'] = true;
+    localStorage.setItem('taskProgress', JSON.stringify(progress));
+
+    console.log('✅ Mr. Ray chat completed - Sahil unlocked!');
+
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (popup.parentElement) {
+            popup.remove();
+        }
+    }, 5000);
 }
 
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Inter', sans-serif;
-    background: #333333;
-    min-height: 100vh;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+document.addEventListener('DOMContentLoaded', function() {
+    const currentTimeElement = document.getElementById('current-time');
+    const chatMessages = document.getElementById('chatMessages');
+    const choiceButton = document.getElementById('choiceBtn');
 
-/* Mobile Phone Frame */
-.phone-container {
-    width: 340px;
-    height: 680px;
-    background-color: #1a1a1a;
-    border-radius: 30px;
-    padding: 8px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
-    position: relative;
-    overflow: hidden;
-}
+    // Create audio elements for sounds
+    const sentSound = new Audio('sent.mp3');
+    const receiveSound = new Audio('recieve.mp3');
 
-.notch {
-    position: absolute;
-    top: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 130px;
-    height: 25px;
-    background-color: #1a1a1a;
-    border-radius: 0 0 15px 15px;
-    z-index: 10;
-}
-
-.screen {
-    width: 100%;
-    height: calc(100% - 16px);
-    background-color: #000;
-    border-radius: 22px;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden;
-}
-
-/* Status Bar */
-.status-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: white;
-    font-size: 11px;
-    font-weight: 500;
-    padding: 0 15px;
-    height: 35px;
-    background-color: rgba(0, 0, 0, 0.2);
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 3;
-}
-
-.status-bar .left-icons, .status-bar .right-icons { 
-    display: flex; 
-    align-items: center; 
-}
-
-.status-bar span { 
-    margin-right: 8px; 
-}
-
-.status-bar .center-text { 
-    font-size: 12px; 
-    font-weight: 500; 
-}
-
-/* App Structure */
-.app-page {
-    flex: 1;
-    background: #FFFFFF !important;
-    display: flex;
-    flex-direction: column;
-    margin-top: 35px;
-    height: calc(100% - 35px);
-}
-
-/* Chat Header */
-.chat-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 15px;
-    background: #128C7E !important;
-    color: white;
-    height: 60px;
-    flex-shrink: 0;
-    border-bottom: 1px solid #0a6b5e;
-}
-
-.back-button {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.8rem;
-    cursor: pointer;
-    padding: 8px 12px;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    transition: all 0.2s ease;
-    border-radius: 8px;
-    font-weight: bold;
-}
-
-.back-button:active {
-    background: rgba(255, 255, 255, 0.2);
-    transform: scale(0.95);
-}
-
-.contact-info {
-    display: flex;
-    align-items: center;
-    flex: 1;
-    margin-left: 10px;
-}
-
-.contact-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    margin-right: 12px;
-}
-
-.contact-details {
-    flex: 1;
-}
-
-.contact-name {
-    font-weight: 600;
-    font-size: 16px;
-    margin-bottom: 2px;
-}
-
-.contact-status {
-    font-size: 12px;
-    opacity: 0.8;
-}
-
-.header-spacer {
-    width: 40px;
-}
-
-/* Chat Messages */
-.chat-messages {
-    flex: 1;
-    background: #e5ddd5 !important;
-    padding: 15px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-/* Message Bubbles */
-.message {
-    max-width: 70%;
-    padding: 12px 16px;
-    border-radius: 18px;
-    margin-bottom: 8px;
-    position: relative;
-    animation: fadeIn 0.3s ease;
-}
-
-.message.sent {
-    align-self: flex-end;
-    background: #dcf8c6;
-    border-bottom-right-radius: 4px;
-}
-
-.message.received {
-    align-self: flex-start;
-    background: white;
-    border-bottom-left-radius: 4px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}
-
-.message-content {
-    font-size: 14px;
-    line-height: 1.4;
-    color: #333;
-}
-
-.message-time {
-    font-size: 11px;
-    color: #999;
-    text-align: right;
-    margin-top: 4px;
-}
-
-.message.received .message-time {
-    text-align: left;
-}
-
-/* Choice Container */
-.choice-container {
-    padding: 15px;
-    background: #f0f0f0 !important;
-    border-top: 1px solid #e0e0e0;
-    display: flex;
-    justify-content: center;
-}
-
-.choice-button {
-    background: #128C7E;
-    border: none;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 20px;
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    min-width: 200px;
-    text-align: center;
-}
-
-.choice-button:active {
-    background: #0a6b5e;
-    transform: scale(0.95);
-}
-
-.choice-button:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-    transform: none;
-}
-
-/* Home Bar */
-.home-bar {
-    position: absolute;
-    bottom: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 120px;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.4);
-    border-radius: 2px;
-    z-index: 10;
-}
-
-/* Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
+    // Update time
+    function updateTime() {
+        if (currentTimeElement) {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            currentTimeElement.textContent = `${hours}:${minutes}`;
+        }
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+
+    // Play sound
+    function playSound(sound) {
+        sound.currentTime = 0;
+        sound.play().catch(e => {
+            console.log('Audio play failed:', e);
+        });
     }
-}
 
-.page-transition {
-    animation: fadeOut 0.3s ease;
-}
+    // Add message to chat
+    function addMessage(text, type) {
+        const now = new Date();
+        const time = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
 
-@keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
-}
+        // Create message element
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}`;
+        messageDiv.innerHTML = `
+            <div class="message-content">${text}</div>
+            <div class="message-time">${time}</div>
+        `;
+
+        // Add to chat
+        chatMessages.appendChild(messageDiv);
+
+        // Scroll to bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Also add to messages array for tracking
+        messages.push({
+            id: messages.length + 1,
+            content: text,
+            time: time,
+            type: type
+        });
+
+        // Play sound based on message type
+        if (type === 'sent') {
+            playSound(sentSound);
+        } else if (type === 'received') {
+            playSound(receiveSound);
+        }
+    }
+
+    // Get fixed answer for question
+    function getAnswer(question) {
+        if (question === "Hello!") {
+            return "Hello?";
+        }
+        else if (question === "Sir, I am Detective, working on Eric Petrove's case, Can you help me?") {
+            return "Oh, thanks I'm glad that someone is here to find him. Yes I will be happy to help you.";
+        }
+        else if (question === "Thanks sir, I need some information about his friends family and persons he usually talk to") {
+            return "His friends are Sahil, Dyere and Ahmet.";
+        }
+        else if (question === "Sir who's Ahmet") {
+            return "Ahmet was his friend. His family belongs to a very rich family. His family shifted him to South Korea for study.";
+        }
+        else if (question === "Yes, sir do you know more about him") {
+            return "No sorry, I don't know much about him. It's my first year at the school.";
+        }
+        else if (question === "Thanks a lot sir") {
+            return "Welcome Mr. Feel free to ask anything, but now I have some work so we'll talk later.";
+        }
+        else {
+            return "Nice talking to you!";
+        }
+    }
+
+    // Update the choice button
+    function updateChoiceButton() {
+        if (currentStep < questions.length) {
+            choiceButton.textContent = questions[currentStep];
+            choiceButton.disabled = false;
+        } else {
+            choiceButton.textContent = "Chat Ended";
+            choiceButton.disabled = true;
+        }
+    }
+
+    // Handle choice selection
+    function selectChoice() {
+        // Prevent double execution
+        if (isProcessing || currentStep >= questions.length) return;
+
+        isProcessing = true;
+        const question = questions[currentStep];
+        choiceButton.disabled = true;
+
+        console.log("Sending:", question);
+        addMessage(question, 'sent');
+
+        setTimeout(() => {
+            const answer = getAnswer(question);
+            console.log("Replying:", answer);
+            addMessage(answer, 'received');
+
+            currentStep++;
+
+            // 🆕 CHECK IF THIS WAS THE LAST MESSAGE - COMPLETE TASK
+            if (currentStep >= questions.length) {
+                // This was the final message - complete the task after a delay
+                setTimeout(() => {
+                    completeMrRayChat();
+                }, 1000);
+            }
+
+            setTimeout(() => {
+                updateChoiceButton();
+                isProcessing = false;
+            }, 500);
+
+        }, 1000);
+    }
+
+    // Initialize chat
+    function initChat() {
+        console.log("Chat started");
+        updateChoiceButton();
+
+        // Welcome message after a short delay
+        setTimeout(() => {
+            ('received');
+        }, 1000);
+    }
+
+
+    // Add event listener to the button
+    choiceButton.addEventListener('click', selectChoice);
+
+    // Start everything
+    updateTime();
+    initChat();
+    setInterval(updateTime, 60000);
+
+    // Make function global
+    window.selectChoice = selectChoice;
+    window.completeMrRayChat = completeMrRayChat;
+});
