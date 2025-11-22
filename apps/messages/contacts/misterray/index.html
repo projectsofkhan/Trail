@@ -382,48 +382,22 @@
         // ========== BACK BUTTON FUNCTION ==========
         function closeAppAndReturnHome() {
             console.log('🔙 Closing Mr. Ray chat and returning to messages...');
-
-            // Try to focus the home tab first
-            if (window.opener && !window.opener.closed) {
-                try {
-                    window.opener.focus();
-                    console.log('✅ Messages tab focused');
-                } catch (error) {
-                    console.log('⚠️ Could not focus messages tab');
-                }
-            }
-
-            // Close this chat tab
-            setTimeout(() => {
-                window.close();
-            }, 50);
-        }
-
-        // ========== AUTO-REDIRECT SYSTEM ==========
-        function initializeAutoRedirect() {
-            window.addEventListener('beforeunload', function() {
-                console.log('🔄 Mr. Ray chat closing - redirecting to messages...');
-
-                if (window.opener && !window.opener.closed) {
-                    try {
-                        // Redirect messages tab back to messages home
-                        window.opener.location.href = 'https://projectsofkhan.github.io/Trail/apps/messages/index.html';
-                        console.log('✅ Messages tab redirected!');
-                    } catch (error) {
-                        console.log('⚠️ Could not redirect, focusing messages tab...');
-                        try {
-                            window.opener.focus();
-                        } catch (focusError) {
-                            console.log('❌ Could not focus messages tab');
-                        }
-                    }
-                }
-            });
+            
+            // Redirect directly to messages home
+            window.location.href = 'https://projectsofkhan.github.io/Trail/apps/messages/index.html';
         }
 
         // ========== TASK COMPLETION FUNCTION ==========
         function completeMrRayChat() {
+            // Play task completion sound
+            const taskSound = new Audio('projectsofkhan.github.io/Trail/apps/task/task.mp3');
+            taskSound.volume = 0.6;
+            taskSound.play().catch(e => {
+                console.log('Task sound error:', e);
+            });
+
             const popup = document.createElement('div');
+            popup.id = 'taskCompletePopup';
             popup.style.cssText = `
                 position: fixed;
                 top: 0;
@@ -449,6 +423,7 @@
                     margin: 20px;
                     box-shadow: 0 20px 40px rgba(0,0,0,0.3);
                     animation: slideUp 0.5s ease;
+                    position: relative;
                 ">
                     <div style="font-size: 3rem; margin-bottom: 15px;">🎉</div>
                     <h3 style="margin: 0 0 10px 0; font-size: 1.4rem; font-weight: 600;">Task Completed!</h3>
@@ -463,7 +438,7 @@
                             <div style="font-size: 0.8rem; opacity: 0.9;">Sahil is now available</div>
                         </div>
                     </div>
-                    <button onclick="closePopup()" style="
+                    <button onclick="closeTaskPopup()" style="
                         background: white;
                         color: #128C7E;
                         border: none;
@@ -475,6 +450,26 @@
                         margin-top: 10px;
                         transition: all 0.2s ease;
                     ">Continue</button>
+                    
+                    <!-- Close button in top right corner -->
+                    <button onclick="closeTaskPopup()" style="
+                        position: absolute;
+                        top: 10px;
+                        right: 15px;
+                        background: none;
+                        border: none;
+                        color: white;
+                        font-size: 1.5rem;
+                        cursor: pointer;
+                        padding: 5px;
+                        border-radius: 50%;
+                        width: 30px;
+                        height: 30px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        transition: all 0.2s ease;
+                    ">×</button>
                 </div>
                 
                 <style>
@@ -497,14 +492,12 @@
 
             // Auto-remove after 8 seconds
             setTimeout(() => {
-                if (popup.parentElement) {
-                    popup.remove();
-                }
+                closeTaskPopup();
             }, 8000);
         }
 
-        function closePopup() {
-            const popup = document.querySelector('div[style*="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8);"]');
+        function closeTaskPopup() {
+            const popup = document.getElementById('taskCompletePopup');
             if (popup) {
                 popup.remove();
             }
@@ -521,7 +514,7 @@
                 return;
             }
 
-            // Sound files (using Dyere's sound names)
+            // Sound files
             const sentSound = new Audio('sent.mp3');
             const receiveSound = new Audio('recieve.mp3');
 
@@ -636,7 +629,6 @@
             function initChat() {
                 console.log("💬 Chat with Mr. Ray initialized");
                 updateChoiceButton();
-                // No welcome message
             }
 
             // Event listeners
@@ -646,12 +638,11 @@
             updateTime();
             initChat();
             setInterval(updateTime, 60000);
-            initializeAutoRedirect(); // Initialize auto-redirect system
 
             // Make functions globally available
             window.selectChoice = selectChoice;
             window.completeMrRayChat = completeMrRayChat;
-            window.closePopup = closePopup;
+            window.closeTaskPopup = closeTaskPopup;
             window.closeAppAndReturnHome = closeAppAndReturnHome;
         });
     </script>
