@@ -182,6 +182,7 @@ body {
 .tasks-section {
     padding: 20px;
     flex: 1;
+    min-height: 0; /* Prevents squeezing */
 }
 
 .tasks-container {
@@ -189,12 +190,18 @@ body {
     border-radius: 15px;
     padding: 20px;
     border: 1px solid #333;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .task-list {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
 }
 
 .task-item {
@@ -202,17 +209,19 @@ body {
     border-radius: 12px;
     padding: 18px;
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* Better for multi-line content */
     gap: 15px;
     transition: all 0.2s ease;
     outline: none;
     -webkit-tap-highlight-color: transparent;
     border: 2px solid #333;
+    min-height: 80px; /* Prevents squeezing */
 }
 
 .task-item.completed {
     border-color: #27ae60;
     background: #2d2d2d;
+    opacity: 0.8;
 }
 
 .task-item:active {
@@ -229,6 +238,8 @@ body {
     justify-content: center;
     font-size: 14px;
     font-weight: bold;
+    flex-shrink: 0; /* Prevents squeezing */
+    margin-top: 2px;
 }
 
 .task-status.pending {
@@ -243,6 +254,7 @@ body {
 
 .task-content {
     flex: 1;
+    min-width: 0; /* Prevents text overflow */
 }
 
 .task-title {
@@ -250,12 +262,20 @@ body {
     font-size: 16px;
     font-weight: 600;
     margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .task-description {
     color: #ccc;
     font-size: 14px;
     font-weight: 400;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .hint-button {
@@ -271,6 +291,8 @@ body {
     transition: all 0.2s ease;
     outline: none;
     -webkit-tap-highlight-color: transparent;
+    flex-shrink: 0; /* Prevents squeezing */
+    white-space: nowrap;
 }
 
 .hint-button:active {
@@ -294,6 +316,15 @@ body {
     font-size: 14px;
     font-weight: 500;
     line-height: 1.4;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    color: #888;
+    font-size: 14px;
+    padding: 40px 20px;
+    font-style: italic;
 }
 
 /* Ad Overlay */
@@ -384,4 +415,22 @@ body {
     background-color: rgba(255, 255, 255, 0.4);
     border-radius: 2px;
     z-index: 10;
+}
+
+/* Scrollbar Styling */
+.task-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.task-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.task-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+}
+
+.task-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
 }
