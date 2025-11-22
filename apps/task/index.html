@@ -71,7 +71,18 @@
 
         <div class="home-bar"></div>
     </div>
-
+<!-- Task Details Overlay -->
+<div id="taskDetailsOverlay" class="task-details-overlay">
+    <div class="task-details-container">
+        <div class="task-details-title" id="taskDetailsTitle">Task Details</div>
+        <div class="task-details-description" id="taskDetailsDescription"></div>
+        <div class="task-details-hint" id="taskDetailsHintSection" style="display: none;">
+            <div class="task-details-hint-title">Hint:</div>
+            <div class="task-details-hint-text" id="taskDetailsHint"></div>
+        </div>
+        <button class="task-details-close" onclick="closeTaskDetails()">Close</button>
+    </div>
+</div>
     <script src="https://projectsofkhan.github.io/Trail/apps/task/taskprogress.js"></script>
     <script src="script.js"></script>
 </body>
