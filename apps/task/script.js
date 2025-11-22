@@ -4,21 +4,17 @@ const gameTasks = {
         title: 'Talk to Mr. Ray',
         description: 'Start a conversation with Mr. Ray in the Messages app to gather information about Eric Petrove. Complete the full conversation to unlock the next contact.',
         hint: 'Go to Messages app → Click on Mr. Ray → Complete all conversation steps',
-        unlocks: ['find_ahmet']
+        unlocks: ['talk_sahil']
     },
-    'find_ahmet': {
-        title: 'Find Ahmet',
-        description: 'After talking to Mr. Ray, locate Ahmet in your contacts list. He might have crucial information about the case.',
-        hint: 'Check your contacts list after completing the Mr. Ray conversation',
-        unlocks: ['unlock_secret_photo']
-    },
-    'unlock_secret_photo': {
-        title: 'Discover Secret Photo',
-        description: 'Find the hidden photo in the Gallery app that contains important evidence for the investigation.',
-        hint: 'Look for new photos in Gallery after finding Ahmet in contacts',
-        unlocks: []
+    'talk_sahil': {
+        title: 'Talk to Sahil',
+        description: 'After getting information from Mr. Ray, now talk to Sahil to gather more information about Ahmet and his connections.',
+        hint: 'Check your contacts list after completing the Mr. Ray conversation - Sahil should now be available',
+        unlocks: [] // No more tasks for now
     }
 };
+
+
 
 let hintWatched = JSON.parse(localStorage.getItem('hintWatched') || '{}');
 
