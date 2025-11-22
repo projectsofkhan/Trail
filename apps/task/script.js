@@ -1,19 +1,22 @@
-// Real task data from your game
+// Complete task progression system
 const gameTasks = {
     'chat_mr_ray': {
         title: 'Talk to Mr. Ray',
-        description: 'Start a conversation with Mr. Ray in Messages',
-        hint: 'Go to Messages app and start a chat with Mr. Ray to complete this task.'
+        description: 'Start a conversation with Mr. Ray in Messages app',
+        hint: 'Go to Messages app → Click Mr. Ray → Complete the conversation',
+        unlocks: ['find_ahmet'] // This task unlocks the next one
     },
     'find_ahmet': {
         title: 'Find Ahmet',
-        description: 'Locate Ahmet in your contacts',
-        hint: 'Check your contacts after completing Mr. Ray chat'
+        description: 'Locate Ahmet in your contacts list',
+        hint: 'Check your contacts after completing Mr. Ray chat',
+        unlocks: ['unlock_secret_photo']
     },
     'unlock_secret_photo': {
         title: 'Discover Secret Photo',
         description: 'Find the hidden photo in Gallery',
-        hint: 'Look for new photos after finding Ahmet'
+        hint: 'Look for new photos in Gallery after finding Ahmet',
+        unlocks: [] // No more tasks for now
     }
 };
 
@@ -21,7 +24,56 @@ const gameTasks = {
 let hintWatched = JSON.parse(localStorage.getItem('hintWatched') || '{}');
 
 /**
- * Load and display real tasks from taskprogress.js
+ * Check if a task should be visible based on progression
+ */
+function shouldShowTask(taskId) {
+    // First task is always visible
+    if (taskId === 'chat_mr_ray') return true;
+    
+    // Check if any previous task that unlocks this one is completed
+    for (const [prevTaskId, taskData] of Object.entries(gameTasks)) {
+        if (taskData.unlocks && taskData.unlocks.includes(taskId)) {
+            if (isTaskCompleted(prevTaskId)) {
+                return true;
+            }
+        }
+    }
+    
+    return false;
+}
+
+/**
+ * Check if task is completed (with fallback)
+ */
+function isTaskCompleted(taskId) {
+    if (typeof TaskProgress !== 'undefined') {
+        return TaskProgress.isTaskCompleted(taskId);
+    } else {
+        const progress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
+        return !!progress[taskId];
+    }
+}
+
+/**
+ * Get all available tasks (based on progression)
+ */
+function getAvailableTasks() {
+    const availableTasks = [];
+    
+    Object.entries(gameTasks).forEach(([taskId, taskData]) => {
+        if (shouldShowTask(taskId)) {
+            availableTasks.push({
+                id: taskId,
+                ...taskData
+            });
+        }
+    });
+    
+    return availableTasks;
+}
+
+/**
+ * Load and display available tasks
  */
 function loadRealTasks() {
     const taskList = document.getElementById('taskList');
@@ -31,75 +83,40 @@ function loadRealTasks() {
 
     taskList.innerHTML = '';
 
-    // Load tasks from game progression system
-    if (typeof TaskProgress !== 'undefined') {
-        const tasks = TaskProgress.getAllTasks();
-        
-        Object.entries(tasks).forEach(([taskId, task]) => {
-            const taskData = gameTasks[taskId] || {
-                title: taskId.replace(/_/g, ' '),
-                description: 'Complete this task',
-                hint: 'Complete the previous tasks first'
-            };
-
-            const isCompleted = TaskProgress.isTaskCompleted(taskId);
-            const hasWatchedHint = hintWatched[taskId];
-
-            const taskElement = document.createElement('div');
-            taskElement.className = `task-item ${isCompleted ? 'completed' : ''}`;
-            taskElement.innerHTML = `
-                <div class="task-status ${isCompleted ? 'completed' : 'pending'}">
-                    ${isCompleted ? '✓' : '!'}
-                </div>
-                <div class="task-content">
-                    <div class="task-title">${taskData.title}</div>
-                    <div class="task-description">${taskData.description}</div>
-                </div>
-                ${!isCompleted ? `
-                    <button class="hint-button" onclick="handleHint('${taskId}', event)">
-                        ${hasWatchedHint ? 'Hint' : 'Get Hint'}
-                    </button>
-                ` : ''}
-            `;
-
-            taskList.appendChild(taskElement);
-        });
-    } else {
-        // Fallback if taskprogress.js is not available
-        const fallbackTasks = [
-            { 
-                id: 'chat_mr_ray', 
-                title: 'Talk to Mr. Ray', 
-                description: 'Start a conversation with Mr. Ray in Messages',
-                hint: 'Go to Messages app and start a chat with Mr. Ray to complete this task.'
-            }
-        ];
-        
-        fallbackTasks.forEach(task => {
-            const progress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
-            const isCompleted = progress[task.id];
-            const hasWatchedHint = hintWatched[task.id];
-
-            const taskElement = document.createElement('div');
-            taskElement.className = `task-item ${isCompleted ? 'completed' : ''}`;
-            taskElement.innerHTML = `
-                <div class="task-status ${isCompleted ? 'completed' : 'pending'}">
-                    ${isCompleted ? '✓' : '!'}
-                </div>
-                <div class="task-content">
-                    <div class="task-title">${task.title}</div>
-                    <div class="task-description">${task.description}</div>
-                </div>
-                ${!isCompleted ? `
-                    <button class="hint-button" onclick="handleHint('${task.id}', event)">
-                        ${hasWatchedHint ? 'Hint' : 'Get Hint'}
-                    </button>
-                ` : ''}
-            `;
-
-            taskList.appendChild(taskElement);
-        });
+    const availableTasks = getAvailableTasks();
+    
+    if (availableTasks.length === 0) {
+        taskList.innerHTML = `
+            <div class="empty-state">
+                No tasks available yet. Complete previous objectives to unlock new tasks.
+            </div>
+        `;
+        return;
     }
+
+    availableTasks.forEach(task => {
+        const isCompleted = isTaskCompleted(task.id);
+        const hasWatchedHint = hintWatched[task.id];
+
+        const taskElement = document.createElement('div');
+        taskElement.className = `task-item ${isCompleted ? 'completed' : ''}`;
+        taskElement.innerHTML = `
+            <div class="task-status ${isCompleted ? 'completed' : 'pending'}">
+                ${isCompleted ? '✓' : '!'}
+            </div>
+            <div class="task-content">
+                <div class="task-title">${task.title}</div>
+                <div class="task-description">${task.description}</div>
+            </div>
+            ${!isCompleted ? `
+                <button class="hint-button" onclick="handleHint('${task.id}', event)">
+                    ${hasWatchedHint ? 'Hint' : 'Get Hint'}
+                </button>
+            ` : ''}
+        `;
+
+        taskList.appendChild(taskElement);
+    });
 
     // Show hint box if any task has watched hint
     showHintForWatchedTask();
@@ -149,9 +166,10 @@ function showHintForWatchedTask() {
     const hintContent = hintBox.querySelector('.hint-content');
     
     // Find first unwatched task that has a hint
-    for (const taskId in gameTasks) {
-        if (hintWatched[taskId] && !TaskProgress.isTaskCompleted(taskId)) {
-            hintContent.innerHTML = `<strong>Hint:</strong> ${gameTasks[taskId].hint}`;
+    const availableTasks = getAvailableTasks();
+    for (const task of availableTasks) {
+        if (hintWatched[task.id] && !isTaskCompleted(task.id)) {
+            hintContent.innerHTML = `<strong>Hint:</strong> ${task.hint}`;
             hintBox.style.display = 'block';
             return;
         }
@@ -357,7 +375,7 @@ function initializeTaskListener() {
         }
     });
 
-    // Refresh tasks periodically
+    // Refresh tasks every 2 seconds to catch progression
     setInterval(loadRealTasks, 2000);
 }
 
@@ -370,5 +388,5 @@ window.onload = function() {
     loadRealTasks();
     initializeTaskListener();
 
-    console.log('📋 Task Manager Ready - Clean design with hint system!');
+    console.log('📋 Task Manager Ready - Fixed layout and task progression!');
 };
