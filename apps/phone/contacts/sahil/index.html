@@ -57,6 +57,14 @@
                     <div class="call-timer" id="callTimer">00:00</div>
                 </div>
 
+                <!-- Voice Action Section -->
+                <div id="voiceActionSection" class="voice-action-section" style="display: none;">
+                    <div class="action-button" onclick="triggerVoice2()">
+                       
+                        <div class="action-text">Hello! i am Detective, Working on Eric petrove's case. Can we talk now?</div>
+                    </div>
+                </div>
+
                 <div class="call-controls">
                     <div class="control-row">
                         <button class="control-button">
@@ -95,8 +103,11 @@
     <audio id="ringtone" loop>
         <source src="ring.mp3" type="audio/mpeg">
     </audio>
-    <audio id="voiceAudio">
-        <source src="voice.mp3" type="audio/mpeg">
+    <audio id="voice1Audio">
+        <source src="voice1.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="voice2Audio">
+        <source src="voice2.mp3" type="audio/mpeg">
     </audio>
 
     <script src="script.js"></script>
