@@ -122,6 +122,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ========== TASK COMPLETION FUNCTION ==========
     function completeSahilChat() {
+        // Play task completion sound
+        const taskSound = new Audio('https://projectsofkhan.github.io/Trail/apps/task/task.mp3');
+        taskSound.volume = 0.6;
+        taskSound.play().catch(e => {
+            console.log('Task sound error:', e);
+        });
+
         const popup = document.createElement('div');
         popup.style.cssText = `
             position: fixed;
