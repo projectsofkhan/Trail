@@ -160,10 +160,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h3 style="margin: 0 0 10px 0; font-size: 1.4rem; font-weight: 600;">Task Completed</h3>
                 <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; margin: 15px 0;">
                     <div style="font-size: 1.1rem; font-weight: 500; margin-bottom: 5px;">Chat With Sahil</div>
-                    <div style="font-size: 0.9rem; opacity: 0.9;">Completed Successfully</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">Task 2 Completed Successfully</div>
                 </div>
                 <div style="display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.15); padding: 12px; border-radius: 10px; margin: 15px 0;">
-                    <div style="font-size: 1.8rem; margin-right: 10px;">🔒</div>
+                    <div style="font-size: 1.8rem; margin-right: 10px;">🔓</div>
                     <div style="text-align: left;">
                         <div style="font-size: 0.9rem; font-weight: 500;">New Contact Unlocked!</div>
                         <div style="font-size: 0.8rem; opacity: 0.9;">Dyere is now Available</div>
@@ -194,13 +194,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
         document.body.appendChild(popup);
 
-        // Save progress to localStorage
+        // ========== TASK MANAGER INTEGRATION ==========
+        // Save progress to localStorage for Task Manager
         const progress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
+        
+        // Mark Sahil chat as completed
         progress['chat_sahil'] = true;
+        
+        // Mark Task 2 as completed in Task Manager
+        progress['task_2'] = true;
+        
+        // Store the clue about Dyere
         progress['clue_dyere_suspicion'] = true;
+        
+        // Unlock Dyere contact
+        progress['unlock_dyere'] = true;
+        
         localStorage.setItem('taskProgress', JSON.stringify(progress));
 
-        console.log('✅ Sahil chat completed - Dyere suspicion clue unlocked!');
+        console.log('✅ Task 2 completed - Sahil chat finished!');
+        console.log('🔓 Dyere contact unlocked!');
+        console.log('🕵️ Clue gained: Eric warned about Dyere');
+
+        // Notify Task Manager app (if open)
+        if (window.opener && !window.opener.closed) {
+            try {
+                // Send message to parent window to update task progress
+                window.opener.postMessage({
+                    type: 'TASK_COMPLETED',
+                    taskId: 'task_2',
+                    progress: progress
+                }, '*');
+                console.log('📱 Task Manager notified about Task 2 completion');
+            } catch (error) {
+                console.log('⚠️ Could not notify Task Manager');
+            }
+        }
 
         // Auto-remove after 8 seconds
         setTimeout(() => {
