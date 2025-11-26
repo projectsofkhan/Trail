@@ -149,17 +149,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 box-shadow: 0 20px 40px rgba(0,0,0,0.3);
                 animation: slideUp 0.5s ease;
             ">
-                <div style="font-size: 3rem; margin-bottom: 15px;">🕵️</div>
-                <h3 style="margin: 0 0 10px 0; font-size: 1.4rem; font-weight: 600;">Investigation Progress!</h3>
+                <div style="font-size: 3rem; margin-bottom: 15px;">🎉</div>
+                <h3 style="margin: 0 0 10px 0; font-size: 1.4rem; font-weight: 600;">Task Completed</h3>
                 <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; margin: 15px 0;">
-                    <div style="font-size: 1.1rem; font-weight: 500; margin-bottom: 5px;">Sahil Interview Complete</div>
-                    <div style="font-size: 0.9rem; opacity: 0.9;">New Lead: Suspicion on Dyere</div>
+                    <div style="font-size: 1.1rem; font-weight: 500; margin-bottom: 5px;">Chat With Sahil</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">Completed Successfully</div>
                 </div>
                 <div style="display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.15); padding: 12px; border-radius: 10px; margin: 15px 0;">
-                    <div style="font-size: 1.8rem; margin-right: 10px;">🔍</div>
+                    <div style="font-size: 1.8rem; margin-right: 10px;">🔒</div>
                     <div style="text-align: left;">
-                        <div style="font-size: 0.9rem; font-weight: 500;">Clue Unlocked!</div>
-                        <div style="font-size: 0.8rem; opacity: 0.9;">Eric warned about Dyere</div>
+                        <div style="font-size: 0.9rem; font-weight: 500;">New Contact Unlocked!</div>
+                        <div style="font-size: 0.8rem; opacity: 0.9;">Dyere is now Available</div>
                     </div>
                 </div>
                 <button onclick="closePopup()" style="
