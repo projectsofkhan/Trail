@@ -1,10 +1,10 @@
 // Updated contacts data - All contacts visible but most locked
 const contacts = [
-    { name: 'Mr. Ray', avatar: '👨‍💼', lastMessage: 'See you at the meeting', time: '10:30 AM', unread: 1 },
+    { name: 'Mr. Ray', avatar: '👨‍💼', lastMessage: 'Eric Where are you?', time: '10:30 AM', unread: 1 },
     { name: 'Dyere', avatar: '👨‍🔧', lastMessage: 'The repair is done', time: 'Yesterday', unread: 0 },
-    { name: 'Sahil', avatar: '👨‍🎓', lastMessage: 'Hey whats the homework?', time: 'Yesterday', unread: 0 },
-    { name: 'Mom', avatar: '👩', lastMessage: 'Call me when free', time: '11/15/23', unread: 0 },
-    { name: 'Sister', avatar: '👧', lastMessage: 'Hey bro mom asking for you for the dinner come home fast', time: '11/14/23', unread: 0 },
+    { name: 'Sahil', avatar: '👨‍🎓', lastMessage: 'Hey Eric Come where are you?', time: 'Yesterday', unread: 0 },
+    { name: 'Mom', avatar: '👩', lastMessage: 'Hey come home son.', time: '11/15/23', unread: 0 },
+    { name: 'Sister', avatar: '👧', lastMessage: 'Hey bro we are missing you where are you?', time: '11/14/23', unread: 0 },
     { name: 'Feisher', avatar: '👨‍💻', lastMessage: 'Code review done', time: '11/13/23', unread: 0 },
     { name: 'Dad', avatar: '👨', lastMessage: 'Dinner at 7', time: '11/12/23', unread: 0 },
     { name: 'Layari', avatar: '👩‍🎨', lastMessage: 'Design ready', time: '11/11/23', unread: 0 },
