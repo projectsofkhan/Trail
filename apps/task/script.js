@@ -2,14 +2,14 @@
 const gameTasks = {
     'chat_mr_ray': {
         title: 'Talk to Mr. Ray',
-        description: 'Start a conversation with Mr. Ray in the Messages app to gather information about Eric Petrove. Complete the full conversation to unlock the next contact.',
+        description: 'Start a conversation with Mr.Ray and know about Eric, his friend, and him.',
         hint: 'Go to Messages app → Click on Mr. Ray → Complete all conversation steps',
         unlocks: ['talk_sahil']
     },
     'talk_sahil': {
         title: 'Talk to Sahil',
-        description: 'After getting information from Mr. Ray, now talk to Sahil to gather more information about Ahmet and his connections.',
-        hint: 'Check your contacts list after completing the Mr. Ray conversation - Sahil should now be available',
+        description: 'Now Talk To Sahil Eric's close friend.',
+        hint: 'Go to Messages app → Click On Sahil → Complete All Conversation.',
         unlocks: [] // No more tasks for now
     }
 };
