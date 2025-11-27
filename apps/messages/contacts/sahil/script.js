@@ -121,80 +121,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ========== TASK COMPLETION FUNCTION ==========
-    function completeSahilChat() {
-        // Play task completion sound
-        const taskSound = new Audio('https://projectsofkhan.github.io/Trail/apps/task/task.mp3');
-        taskSound.volume = 0.6;
-        taskSound.play().catch(e => {
-            console.log('Task sound error:', e);
-        });
-
-        const popup = document.createElement('div');
-        popup.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            animation: fadeIn 0.3s ease;
-        `;
-
-        popup.innerHTML = `
-            <div style="
-                background: linear-gradient(135deg, #128C7E, #25D366);
-                color: white;
-                padding: 30px;
-                border-radius: 20px;
-                text-align: center;
-                max-width: 280px;
-                margin: 20px;
-                box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-                animation: slideUp 0.5s ease;
-            ">
-                <div style="font-size: 3rem; margin-bottom: 15px;">🎉</div>
-                <h3 style="margin: 0 0 10px 0; font-size: 1.4rem; font-weight: 600;">Task Completed</h3>
-                <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; margin: 15px 0;">
-                    <div style="font-size: 1.1rem; font-weight: 500; margin-bottom: 5px;">Chat With Sahil</div>
-                    <div style="font-size: 0.9rem; opacity: 0.9;">Task 2 Completed Successfully</div>
-                </div>
-                <div style="display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.15); padding: 12px; border-radius: 10px; margin: 15px 0;">
-                    <div style="font-size: 1.8rem; margin-right: 10px;">🔓</div>
-                    <div style="text-align: left;">
-                        <div style="font-size: 0.9rem; font-weight: 500;">New Contact Unlocked!</div>
-                        <div style="font-size: 0.8rem; opacity: 0.9;">Dyere is now Available</div>
-                    </div>
-                </div>
-                <button onclick="closePopup()" style="
-                    background: white;
-                    color: #128C7E;
-                    border: none;
-                    padding: 12px 30px;
-                    border-radius: 25px;
-                    font-weight: 600;
-                    font-size: 1rem;
-                    cursor: pointer;
-                    margin-top: 10px;
-                    transition: all 0.2s ease;
-                ">Continue Investigation</button>
-            </div>
-            
-            <style>
-                @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-                @keyframes slideUp {
-                    from { opacity: 0; transform: translateY(30px) scale(0.9); }
-                    to { opacity: 1; transform: translateY(0) scale(1); }
-                }
-            </style>
-        `;
-
-        document.body.appendChild(popup);
-
-        // ========== TASK COMPLETION FUNCTION ==========
 function completeSahilChat() {
     // Play task completion sound
     const taskSound = new Audio('https://projectsofkhan.github.io/Trail/apps/task/task.mp3');
@@ -203,26 +129,29 @@ function completeSahilChat() {
         console.log('Task sound error:', e);
     });
 
-    // ✅ USE THE TASKPROGRESS SYSTEM PROPERLY
-    if (window.TaskProgress && TaskProgress.completeTask) {
+    // ✅ USE THE TASKPROGRESS SYSTEM DIRECTLY
+    if (window.TaskProgress && typeof TaskProgress.completeTask === 'function') {
+        console.log('🎯 Using TaskProgress system');
         TaskProgress.completeTask('task_2');
-        console.log('✅ Task 2 completed via TaskProgress system');
     } else {
-        console.log('⚠️ TaskProgress system not available, using direct localStorage');
-        // Fallback: Save directly to localStorage in the correct format
+        console.log('⚠️ TaskProgress not found, saving directly to localStorage');
+        // Direct localStorage save in the format TaskProgress uses
         const progress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
         progress['task_2'] = true;
-        progress['chat_sahil'] = true;
         localStorage.setItem('taskProgress', JSON.stringify(progress));
+        
+        // Trigger storage event to notify other tabs
+        window.dispatchEvent(new Event('storage'));
     }
 
-    // ✅ ALSO SAVE EXTENDED PROGRESS FOR MESSAGES APP
+    // Save extended progress for Messages app
     const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
     extendedProgress.chat_sahil = true;
     extendedProgress.clue_dyere_suspicion = true;
     extendedProgress.unlock_dyere = true;
     localStorage.setItem('extendedProgress', JSON.stringify(extendedProgress));
 
+    console.log('✅ Task 2 completed!');
     console.log('🔓 Dyere contact unlocked!');
     console.log('🕵️ Clue gained: Eric warned about Dyere');
 
