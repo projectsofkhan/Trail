@@ -13,7 +13,7 @@ const contacts = [
 ];
 
 // ========== TASK PROGRESSION SYSTEM ==========
-const TaskProgress = {
+const TaskProgress2 = {
     init() {
         if (!localStorage.getItem('taskProgress')) {
             localStorage.setItem('taskProgress', JSON.stringify({}));
