@@ -129,29 +129,26 @@ function completeSahilChat() {
         console.log('Task sound error:', e);
     });
 
-    // ✅ USE THE TASKPROGRESS SYSTEM DIRECTLY
+    // ✅ COMPLETE IN BOTH SYSTEMS
+    // 1. Complete in TaskProgress system (for Messages app)
     if (window.TaskProgress && typeof TaskProgress.completeTask === 'function') {
-        console.log('🎯 Using TaskProgress system');
+        console.log('🎯 Completing task_2 in TaskProgress system');
         TaskProgress.completeTask('task_2');
-    } else {
-        console.log('⚠️ TaskProgress not found, saving directly to localStorage');
-        // Direct localStorage save in the format TaskProgress uses
-        const progress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
-        progress['task_2'] = true;
-        localStorage.setItem('taskProgress', JSON.stringify(progress));
-        
-        // Trigger storage event to notify other tabs
-        window.dispatchEvent(new Event('storage'));
     }
 
-    // Save extended progress for Messages app
+    // 2. Complete in gameTasks system (for Task Manager app)
+    const progress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
+    progress['talk_sahil'] = true; // This is the key your Task Manager is looking for!
+    localStorage.setItem('taskProgress', JSON.stringify(progress));
+
+    // 3. Save extended progress for Messages app
     const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
     extendedProgress.chat_sahil = true;
     extendedProgress.clue_dyere_suspicion = true;
     extendedProgress.unlock_dyere = true;
     localStorage.setItem('extendedProgress', JSON.stringify(extendedProgress));
 
-    console.log('✅ Task 2 completed!');
+    console.log('✅ Task "talk_sahil" completed for Task Manager!');
     console.log('🔓 Dyere contact unlocked!');
     console.log('🕵️ Clue gained: Eric warned about Dyere');
 
@@ -186,7 +183,7 @@ function completeSahilChat() {
             <h3 style="margin: 0 0 10px 0; font-size: 1.4rem; font-weight: 600;">Task Completed</h3>
             <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; margin: 15px 0;">
                 <div style="font-size: 1.1rem; font-weight: 500; margin-bottom: 5px;">Interview Sahil</div>
-                <div style="font-size: 0.9rem; opacity: 0.9;">Task 2 Completed Successfully</div>
+                <div style="font-size: 0.9rem; opacity: 0.9;">Task Completed Successfully</div>
             </div>
             <div style="display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.15); padding: 12px; border-radius: 10px; margin: 15px 0;">
                 <div style="font-size: 1.8rem; margin-right: 10px;">🔓</div>
@@ -225,9 +222,9 @@ function completeSahilChat() {
         try {
             window.opener.postMessage({
                 type: 'TASK_COMPLETED',
-                taskId: 'task_2'
+                taskId: 'talk_sahil' // Use the correct task ID for Task Manager
             }, '*');
-            console.log('📱 Task Manager notified about Task 2 completion');
+            console.log('📱 Task Manager notified about talk_sahil completion');
         } catch (error) {
             console.log('⚠️ Could not notify Task Manager');
         }
