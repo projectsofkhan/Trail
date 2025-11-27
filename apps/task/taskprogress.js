@@ -9,8 +9,8 @@ const TaskProgress = {
             completed: false,
             unlocks: 'Sahil contact'
         },
-        'task_2': {
-            id: 'task_2',
+        'talk_sahil': {
+            id: 'talk_sahil',
             title: 'Interview Sahil',
             description: 'Question Eric\'s close friend for clues',
             completed: false,
