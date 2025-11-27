@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             choiceButton.textContent = "Conversation Ended";
             choiceButton.disabled = true;
-            
+
             // Complete the task when conversation ends
             setTimeout(() => {
                 completeSahilChat();
@@ -121,119 +121,181 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ========== TASK COMPLETION FUNCTION ==========
-function completeSahilChat() {
-    // Play task completion sound
-    const taskSound = new Audio('https://projectsofkhan.github.io/Trail/apps/task/task.mp3');
-    taskSound.volume = 0.6;
-    taskSound.play().catch(e => {
-        console.log('Task sound error:', e);
-    });
+    function completeSahilChat() {
+        // Play task completion sound
+        const taskSound = new Audio('https://projectsofkhan.github.io/Trail/apps/task/task.mp3');
+        taskSound.volume = 0.6;
+        taskSound.play().catch(e => {
+            console.log('Task sound error:', e);
+        });
 
-    // ✅ COMPLETE IN BOTH SYSTEMS
-    // 1. Complete in TaskProgress system (for Messages app)
-    if (window.TaskProgress && typeof TaskProgress.completeTask === 'function') {
-        console.log('🎯 Completing task_2 in TaskProgress system');
-        TaskProgress.completeTask('task_2');
-    }
-
-    // 2. Complete in gameTasks system (for Task Manager app)
-    const progress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
-    progress['talk_sahil'] = true; // This is the key your Task Manager is looking for!
-    localStorage.setItem('taskProgress', JSON.stringify(progress));
-
-    // 3. Save extended progress for Messages app
-    const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
-    extendedProgress.chat_sahil = true;
-    extendedProgress.clue_dyere_suspicion = true;
-    extendedProgress.unlock_dyere = true;
-    localStorage.setItem('extendedProgress', JSON.stringify(extendedProgress));
-
-    console.log('✅ Task "talk_sahil" completed for Task Manager!');
-    console.log('🔓 Dyere contact unlocked!');
-    console.log('🕵️ Clue gained: Eric warned about Dyere');
-
-    const popup = document.createElement('div');
-    popup.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 10000;
-        animation: fadeIn 0.3s ease;
-    `;
-
-    popup.innerHTML = `
-        <div style="
-            background: linear-gradient(135deg, #128C7E, #25D366);
-            color: white;
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 280px;
-            margin: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            animation: slideUp 0.5s ease;
-        ">
-            <div style="font-size: 3rem; margin-bottom: 15px;">🎉</div>
-            <h3 style="margin: 0 0 10px 0; font-size: 1.4rem; font-weight: 600;">Task Completed</h3>
-            <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; margin: 15px 0;">
-                <div style="font-size: 1.1rem; font-weight: 500; margin-bottom: 5px;">Interview Sahil</div>
-                <div style="font-size: 0.9rem; opacity: 0.9;">Task Completed Successfully</div>
-            </div>
-            <div style="display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.15); padding: 12px; border-radius: 10px; margin: 15px 0;">
-                <div style="font-size: 1.8rem; margin-right: 10px;">🔓</div>
-                <div style="text-align: left;">
-                    <div style="font-size: 0.9rem; font-weight: 500;">New Contact Unlocked!</div>
-                    <div style="font-size: 0.8rem; opacity: 0.9;">Dyere is now Available</div>
-                </div>
-            </div>
-            <button onclick="closePopup()" style="
-                background: white;
-                color: #128C7E;
-                border: none;
-                padding: 12px 30px;
-                border-radius: 25px;
-                font-weight: 600;
-                font-size: 1rem;
-                cursor: pointer;
-                margin-top: 10px;
-                transition: all 0.2s ease;
-            ">Continue Investigation</button>
-        </div>
-        
-        <style>
-            @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-            @keyframes slideUp {
-                from { opacity: 0; transform: translateY(30px) scale(0.9); }
-                to { opacity: 1; transform: translateY(0) scale(1); }
-            }
-        </style>
-    `;
-
-    document.body.appendChild(popup);
-
-    // Notify Task Manager app
-    if (window.opener && !window.opener.closed) {
-        try {
-            window.opener.postMessage({
-                type: 'TASK_COMPLETED',
-                taskId: 'talk_sahil' // Use the correct task ID for Task Manager
-            }, '*');
-            console.log('📱 Task Manager notified about talk_sahil completion');
-        } catch (error) {
-            console.log('⚠️ Could not notify Task Manager');
+        // ✅ COMPLETE IN BOTH SYSTEMS
+        // 1. Complete in TaskProgress system (for Messages app)
+        if (window.TaskProgress && typeof TaskProgress.completeTask === 'function') {
+            console.log('🎯 Completing task_2 in TaskProgress system');
+            TaskProgress.completeTask('task_2');
         }
+
+        // 2. Complete in gameTasks system (for Task Manager app)
+        const progress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
+        progress['talk_sahil'] = true; // This is the key your Task Manager is looking for!
+        localStorage.setItem('taskProgress', JSON.stringify(progress));
+
+        // 3. Save extended progress for Messages app
+        const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
+        extendedProgress.chat_sahil = true;
+        extendedProgress.clue_dyere_suspicion = true;
+        extendedProgress.unlock_dyere = true;
+        localStorage.setItem('extendedProgress', JSON.stringify(extendedProgress));
+
+        console.log('✅ Task "talk_sahil" completed for Task Manager!');
+        console.log('🔓 Dyere contact unlocked!');
+        console.log('🕵️ Clue gained: Eric warned about Dyere');
+
+        const popup = document.createElement('div');
+        popup.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease;
+        `;
+
+        popup.innerHTML = `
+            <div style="
+                background: linear-gradient(135deg, #128C7E, #25D366);
+                color: white;
+                padding: 30px;
+                border-radius: 20px;
+                text-align: center;
+                max-width: 280px;
+                margin: 20px;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+                animation: slideUp 0.5s ease;
+            ">
+                <div style="font-size: 3rem; margin-bottom: 15px;">🎉</div>
+                <h3 style="margin: 0 0 10px 0; font-size: 1.4rem; font-weight: 600;">Task Completed</h3>
+                <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; margin: 15px 0;">
+                    <div style="font-size: 1.1rem; font-weight: 500; margin-bottom: 5px;">Interview Sahil</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">Task Completed Successfully</div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.15); padding: 12px; border-radius: 10px; margin: 15px 0;">
+                    <div style="font-size: 1.8rem; margin-right: 10px;">🔓</div>
+                    <div style="text-align: left;">
+                        <div style="font-size: 0.9rem; font-weight: 500;">New Contact Unlocked!</div>
+                        <div style="font-size: 0.8rem; opacity: 0.9;">Dyere is now Available</div>
+                    </div>
+                </div>
+                <button onclick="closePopup()" style="
+                    background: white;
+                    color: #128C7E;
+                    border: none;
+                    padding: 12px 30px;
+                    border-radius: 25px;
+                    font-weight: 600;
+                    font-size: 1rem;
+                    cursor: pointer;
+                    margin-top: 10px;
+                    transition: all 0.2s ease;
+                ">Continue Investigation</button>
+            </div>
+            
+            <style>
+                @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+                @keyframes slideUp {
+                    from { opacity: 0; transform: translateY(30px) scale(0.9); }
+                    to { opacity: 1; transform: translateY(0) scale(1); }
+                }
+            </style>
+        `;
+
+        document.body.appendChild(popup);
+
+        // Notify Task Manager app
+        if (window.opener && !window.opener.closed) {
+            try {
+                window.opener.postMessage({
+                    type: 'TASK_COMPLETED',
+                    taskId: 'talk_sahil' // Use the correct task ID for Task Manager
+                }, '*');
+                console.log('📱 Task Manager notified about talk_sahil completion');
+            } catch (error) {
+                console.log('⚠️ Could not notify Task Manager');
+            }
+        }
+
+        // Auto-remove after 8 seconds
+        setTimeout(() => {
+            if (popup.parentElement) {
+                popup.remove();
+            }
+        }, 8000);
     }
 
-    // Auto-remove after 8 seconds
-    setTimeout(() => {
-        if (popup.parentElement) {
+    function closePopup() {
+        const popup = document.querySelector('div[style*="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8);"]');
+        if (popup) {
             popup.remove();
         }
-    }, 8000);
-}
+    }
+
+    // Handle choice selection
+    function selectChoice() {
+        if (isProcessing || currentStep >= questions.length) return;
+
+        isProcessing = true;
+        const question = questions[currentStep];
+
+        // Disable button immediately
+        choiceButton.disabled = true;
+
+        console.log("Detective:", question);
+
+        // STEP 1: Send user message immediately
+        addMessage(question, 'sent');
+
+        // STEP 2: Wait 1.5 seconds and send reply (more realistic for conversation)
+        setTimeout(() => {
+            const answer = getAnswer(question);
+            console.log("Sahil:", answer);
+            addMessage(answer, 'received');
+
+            // Move to next question
+            currentStep++;
+
+            // Update button for next question
+            setTimeout(() => {
+                updateChoiceButton();
+                isProcessing = false;
+            }, 1000);
+
+        }, 1500);
+    }
+
+    // Initialize chat
+    function initChat() {
+        console.log("🕵️ Detective chat with Sahil initialized");
+        updateChoiceButton();
+
+        // No welcome message - starts with detective's first question
+    }
+
+    // Event listeners
+    choiceButton.addEventListener('click', selectChoice);
+
+    // Start everything
+    updateTime();
+    initChat();
+    setInterval(updateTime, 60000);
+
+    // Make functions available globally
+    window.selectChoice = selectChoice;
+    window.completeSahilChat = completeSahilChat;
+    window.closePopup = closePopup;
+});
