@@ -10,11 +10,9 @@ const gameTasks = {
         title: 'Talk to Sahil',
         description: 'Now Talk To Sahil Eric\'s close friend.',
         hint: 'Go to Messages app → Click On Sahil → Complete All Conversation.',
-        unlocks: [] // No more tasks for now
+        unlocks: ['unlock_dyere'] // No more tasks for now
     }
 };
-
-
 
 let hintWatched = JSON.parse(localStorage.getItem('hintWatched') || '{}');
 
