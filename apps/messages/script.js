@@ -125,7 +125,7 @@ const TaskProgress2 = {
 };
 
 // Initialize task system
-TaskProgress.init();
+TaskProgress2.init();
 
 /**
  * Back Button - Closes app tab and returns to home
@@ -218,7 +218,7 @@ function openChat(contactName) {
     } 
     // Sahil requires Mr. Ray task completion
     else if (contactName === 'Sahil') {
-        if (TaskProgress.isTaskCompleted('chat_mr_ray')) {
+        if (TaskProgress2.isTaskCompleted('chat_mr_ray')) {
             // Task completed - go to real chat
             const realUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/index.html`;
             console.log(`🔓 Sahil chat unlocked - redirecting to: ${realUrl}`);
@@ -227,6 +227,22 @@ function openChat(contactName) {
             // Task not completed - go to individual locked page
             const lockedUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/locked.html`;
             console.log(`🔒 Sahil chat locked - redirecting to: ${lockedUrl}`);
+            window.location.href = lockedUrl;
+        }
+    }
+    // ✅ ADDED: Dyere requires Sahil task completion
+    else if (contactName === 'Dyere') {
+        // Check extendedProgress since Dyere unlock is stored there
+        const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
+        if (extendedProgress.unlock_dyere) {
+            // Dyere unlocked - go to real chat
+            const realUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/index.html`;
+            console.log(`🔓 Dyere chat unlocked - redirecting to: ${realUrl}`);
+            window.location.href = realUrl;
+        } else {
+            // Dyere not unlocked - go to locked page
+            const lockedUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/locked.html`;
+            console.log(`🔒 Dyere chat locked - redirecting to: ${lockedUrl}`);
             window.location.href = lockedUrl;
         }
     }
