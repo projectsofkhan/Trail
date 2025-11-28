@@ -176,7 +176,7 @@ body {
     flex-shrink: 0;
 }
 
-/* Navigation Controls */
+/* Navigation Controls - Only Home button */
 .nav-controls {
     display: flex;
     gap: 5px;
