@@ -11,7 +11,13 @@ const apps = [
     { id: 'messages', name: 'Messages', icon: '💬', color: '#579AD9', file: 'apps/messages/index.html' },
     { id: 'phone', name: 'Phone', icon: '📞', color: '#6BBF6B', file: 'apps/phone/index.html' },
     { id: 'gallery', name: 'Gallery', icon: '🌄', color: '#6A618F', file: 'apps/gallery/index.html' },
-    { id: 'pixabowl', name: 'Instashan', icon: 'https://projectsofkhan.github.io/pythontodoapp/instashan.jpg', color: '#9B5BBE', file: 'apps/instashan.html' },
+    { 
+        id: 'pixabowl', 
+        name: 'Instashan', 
+        icon: 'https://projectsofkhan.github.io/pythontodoapp/instashan.jpg', 
+        color: '#9B5BBE', 
+        file: 'apps/instashan.html' 
+    },
     { id: 'diary', name: 'Diary', icon: '📖', color: '#A08E77', file: 'apps/diary/index.html' },
     { id: 'browser', name: 'Browser', icon: '🌐', color: '#5D6B9C', file: 'apps/browser/index.html' },
     { id: 'taskmanager', name: 'Tasks', icon: '📋', color: '#FF6B6B', file: 'apps/task/index.html' },
@@ -24,9 +30,38 @@ let currentMusic = null;
 let bgMusic1 = null;
 let bgMusic2 = null;
 
-// Pull-down variables
-let startY = 0;
-let isDragging = false;
+/**
+ * Play click sound function
+ */
+function playClickSound() {
+    const sound = new Audio('https://projectsofkhan.github.io/Trail/sounds/click.mp3');
+    sound.volume = 0.3;
+    sound.play().catch(e => console.log('Sound error:', e));
+}
+
+/**
+ * Setup click sounds for all interactive elements
+ */
+function setupClickSounds() {
+    document.addEventListener('click', function(event) {
+        const target = event.target;
+        const isClickable = (
+            target.tagName === 'BUTTON' ||
+            target.tagName === 'A' ||
+            target.closest('.app-icon') ||
+            target.closest('.music-control-btn') ||
+            target.closest('.status-bar') ||
+            target.closest('.close-panel') ||
+            target.hasAttribute('onclick') ||
+            target.classList.contains('clickable') ||
+            (target.parentElement && target.parentElement.classList.contains('clickable'))
+        );
+
+        if (isClickable) {
+            playClickSound();
+        }
+    });
+}
 
 /**
  * Initialize music system
@@ -34,10 +69,16 @@ let isDragging = false;
 function initializeMusic() {
     bgMusic1 = document.getElementById('bgMusic1');
     bgMusic2 = document.getElementById('bgMusic2');
-    
-    if (bgMusic1) bgMusic1.volume = 0.05;
-    if (bgMusic2) bgMusic2.volume = 0.05;
-    
+
+    if (bgMusic1) {
+        bgMusic1.volume = 0.05;
+        bgMusic1.preload = 'auto';
+    }
+    if (bgMusic2) {
+        bgMusic2.volume = 0.05;
+        bgMusic2.preload = 'auto';
+    }
+
     updateMusicUI();
 }
 
@@ -57,6 +98,8 @@ function updateMusicUI() {
  * Toggle music on/off
  */
 function toggleMusic() {
+    playClickSound();
+    
     if (musicOn) {
         // Turn off music
         musicOn = false;
@@ -75,11 +118,18 @@ function toggleMusic() {
  * Play Music One
  */
 function playMusicOne() {
+    playClickSound();
+    
     if (bgMusic1) {
         if (bgMusic2) bgMusic2.pause();
         bgMusic1.currentTime = 0;
         bgMusic1.play().catch(e => {
-            document.addEventListener('click', () => bgMusic1.play(), {once: true});
+            console.log('Music play failed, waiting for user interaction');
+            // Auto-play will work after user interaction
+            document.addEventListener('click', function enableMusic() {
+                bgMusic1.play();
+                document.removeEventListener('click', enableMusic);
+            }, { once: true });
         });
         musicOn = true;
         currentMusic = 'music1';
@@ -92,11 +142,17 @@ function playMusicOne() {
  * Play Music Two
  */
 function playMusicTwo() {
+    playClickSound();
+    
     if (bgMusic2) {
         if (bgMusic1) bgMusic1.pause();
         bgMusic2.currentTime = 0;
         bgMusic2.play().catch(e => {
-            document.addEventListener('click', () => bgMusic2.play(), {once: true});
+            console.log('Music play failed, waiting for user interaction');
+            document.addEventListener('click', function enableMusic() {
+                bgMusic2.play();
+                document.removeEventListener('click', enableMusic);
+            }, { once: true });
         });
         musicOn = true;
         currentMusic = 'music2';
@@ -109,6 +165,7 @@ function playMusicTwo() {
  * Open control panel
  */
 function openControlPanel() {
+    playClickSound();
     controlPanel.classList.add('open');
 }
 
@@ -116,6 +173,7 @@ function openControlPanel() {
  * Close control panel
  */
 function closeControlPanel() {
+    playClickSound();
     controlPanel.classList.remove('open');
 }
 
@@ -134,10 +192,10 @@ function initializePullDown() {
 
     statusBar.addEventListener('touchmove', function(e) {
         if (!isDragging) return;
-        
+
         const currentY = e.touches[0].clientY;
         const diff = currentY - startY;
-        
+
         // Only trigger if pulling down (positive diff) and significant movement
         if (diff > 60) {
             openControlPanel();
@@ -157,10 +215,10 @@ function initializePullDown() {
 
     statusBar.addEventListener('mousemove', function(e) {
         if (!isDragging) return;
-        
+
         const currentY = e.clientY;
         const diff = currentY - startY;
-        
+
         if (diff > 60) {
             openControlPanel();
             isDragging = false;
@@ -205,13 +263,31 @@ function initializeAppGrid() {
         iconLink.href = app.file;
         iconLink.target = "_blank";
 
-        const iconContent = app.icon.startsWith('http') 
-            ? `<img src="${app.icon}" style="width: 100%; height: 100%; border-radius: 12px; object-fit: cover;" alt="${app.name}">`
-            : `<div style="font-size: 28px; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">${app.icon}</div>`;
+        // Check if the icon is an image URL or emoji
+        const isImageIcon = app.icon.includes('http') || app.icon.includes('.jpg') || app.icon.includes('.png');
+        
+        let iconHTML = '';
+        
+        if (isImageIcon) {
+            // Use img tag for image icons
+            iconHTML = `
+                <img src="${app.icon}" 
+                     alt="${app.name}" 
+                     style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;"
+                     onerror="this.style.display='none'; this.parentElement.innerHTML='📷'; this.parentElement.style.display='flex'; this.parentElement.style.alignItems='center'; this.parentElement.style.justifyContent='center';">
+            `;
+        } else {
+            // Use emoji for regular icons
+            iconHTML = `
+                <div style="font-size: 28px; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
+                    ${app.icon}
+                </div>
+            `;
+        }
 
         iconLink.innerHTML = `
             <div class="app-icon-body" style="background-color: ${app.color}; padding: 0; overflow: hidden;">
-                ${iconContent}
+                ${iconHTML}
             </div>
             <div class="app-icon-label">${app.name}</div>
         `;
@@ -225,6 +301,12 @@ window.onload = function() {
     updateTime();
     initializeMusic();
     initializePullDown();
+    setupClickSounds(); // 🆕 Setup click sounds for all interactions
 
     setInterval(updateTime, 60000);
+
+    console.log('🏠 Home Screen Ready!');
+    console.log('✅ Click sounds enabled for all interactions');
+    console.log('✅ Music system initialized');
+    console.log('✅ Pull-down controls working');
 };
