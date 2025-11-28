@@ -38,8 +38,7 @@
                     <!-- Navigation Bar -->
                     <div class="browser-navbar">
                         <div class="nav-controls">
-                            <button class="nav-button" id="backButton" disabled onclick="goBack()">←</button>
-                            <button class="nav-button" id="forwardButton" disabled onclick="goForward()">→</button>
+                            <!-- Only Home button remains -->
                             <button class="nav-button" id="homeButton" onclick="goHome()">⌂</button>
                         </div>
                         
@@ -82,14 +81,14 @@
                                              onerror="this.style.display='none';">
                                         <div class="suggested-title">Kaveri River</div>
                                     </div>
-                                    <div class="suggested-item" onclick="loadImage('hospital-info.png')">
+                                    <div class="suggested-item" onclick="navigateTo('hospital.com')">
                                         <img src="https://static.vecteezy.com/system/resources/thumbnails/009/350/681/small/building-place-hospital-png.png" 
                                              alt="Hospital" 
                                              class="suggested-image"
                                              onerror="this.style.display='none';">
                                         <div class="suggested-title">Hospital Info</div>
                                     </div>
-                                    <div class="suggested-item" onclick="loadImage('himalaya-info.png')">
+                                    <div class="suggested-item" onclick="navigateTo('himalaya.com')">
                                         <img src="https://www.shutterstock.com/image-vector/breathtaking-animated-mountain-landscape-inspire-600nw-2614074607.jpg" 
                                              alt="Himalaya" 
                                              class="suggested-image"
