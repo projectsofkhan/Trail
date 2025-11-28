@@ -69,6 +69,55 @@ const availableWebsites = {
             
             <p>The Kaveri is considered sacred and is often called the "Ganges of the South".</p>
         `
+    },
+    'hospital.com': {
+        title: 'Hospital Information',
+        content: `
+            <div class="website-body">
+                <img src="https://static.vecteezy.com/system/resources/thumbnails/009/350/681/small/building-place-hospital-png.png" 
+                     alt="Hospital" 
+                     class="curved-image"
+                     onerror="this.style.display='none';">
+                
+                <div class="info-box">
+                    <strong>Hospital Services:</strong><br>
+                    • Emergency Care<br>
+                    • Surgical Procedures<br>
+                    • Maternity Services<br>
+                    • Pediatric Care<br>
+                    • Diagnostic Imaging
+                </div>
+                
+                <p><strong>About Healthcare:</strong><br>
+                Modern hospitals provide comprehensive medical care with advanced technology and specialized medical professionals. They serve as crucial community health centers offering preventive, curative, and rehabilitative services.</p>
+                
+                <p>Hospitals maintain strict hygiene protocols and utilize state-of-the-art equipment to ensure patient safety and effective treatment outcomes.</p>
+            </div>
+        `
+    },
+    'himalaya.com': {
+        title: 'Himalaya Mountains',
+        content: `
+            <div class="website-body">
+                <img src="https://www.shutterstock.com/image-vector/breathtaking-animated-mountain-landscape-inspire-600nw-2614074607.jpg" 
+                     alt="Himalaya" 
+                     class="curved-image"
+                     onerror="this.style.display='none';">
+                
+                <div class="info-box">
+                    <strong>Himalaya Facts:</strong><br>
+                    • Highest peak: Mount Everest (8,848 m)<br>
+                    • Length: 2,400 km (1,500 mi)<br>
+                    • Countries: India, Nepal, Bhutan, China, Pakistan<br>
+                    • Age: Approximately 50 million years
+                </div>
+                
+                <p><strong>About the Himalayas:</strong><br>
+                The Himalayas are the highest mountain range in the world, forming a natural barrier between the Tibetan Plateau and the Indian subcontinent. These majestic mountains are home to diverse ecosystems, rare wildlife, and ancient cultures.</p>
+                
+                <p>The range influences weather patterns across Asia and is the source of major river systems including the Ganges, Indus, and Brahmaputra. The Himalayas continue to grow approximately 1 cm per year due to tectonic plate movements.</p>
+            </div>
+        `
     }
 };
 
@@ -89,8 +138,6 @@ const recentItems = document.getElementById('recentItems');
 const noHistoryMessage = document.getElementById('noHistoryMessage');
 const appNavigation = document.getElementById('appNavigation');
 const appGrid = document.getElementById('appGrid');
-const backButton = document.getElementById('backButton');
-const forwardButton = document.getElementById('forwardButton');
 const homeButton = document.getElementById('homeButton');
 
 /**
@@ -175,19 +222,9 @@ function goBack() {
         currentHistoryIndex--;
         const previousUrl = navigationHistory[currentHistoryIndex];
         loadWebsite(previousUrl);
-        updateNavigationButtons();
     } else {
         // If no more history, go home
         goHome();
-    }
-}
-
-function goForward() {
-    if (currentHistoryIndex < navigationHistory.length - 1) {
-        currentHistoryIndex++;
-        const nextUrl = navigationHistory[currentHistoryIndex];
-        loadWebsite(nextUrl);
-        updateNavigationButtons();
     }
 }
 
@@ -197,18 +234,6 @@ function goHome() {
     searchResults.style.display = 'none';
     websiteContent.style.display = 'none';
     urlInput.value = '';
-    updateNavigationButtons();
-}
-
-function updateNavigationButtons() {
-    if (backButton) {
-        backButton.disabled = currentHistoryIndex <= 0;
-        backButton.style.opacity = currentHistoryIndex <= 0 ? '0.5' : '1';
-    }
-    if (forwardButton) {
-        forwardButton.disabled = currentHistoryIndex >= navigationHistory.length - 1;
-        forwardButton.style.opacity = currentHistoryIndex >= navigationHistory.length - 1 ? '0.5' : '1';
-    }
 }
 
 /**
@@ -341,30 +366,9 @@ function navigateTo(url) {
 
     loadWebsite(url);
     urlInput.value = url;
-    updateNavigationButtons();
 
     // Add to recent history
     addToHistory(url, 'website');
-}
-
-function loadImage(imageName) {
-    playClickSound();
-    // Show loading state
-    websiteContent.innerHTML = `
-        <div style="text-align: center; padding: 40px; color: #888;">
-            <div style="font-size: 48px; margin-bottom: 20px;">⏳</div>
-            Loading ${imageName}...
-        </div>
-    `;
-
-    setTimeout(() => {
-        currentPage = 'website';
-        showImageContent(imageName);
-        urlInput.value = imageName;
-
-        // Add to history
-        addToHistory(imageName, 'image');
-    }, 500);
 }
 
 function addToHistory(item, type) {
@@ -391,8 +395,8 @@ function getTitleFromUrl(url) {
     const titles = {
         'avery-map.com': 'Avery Map - Location Data',
         'kaveri-river.com': 'Kaveri River Information',
-        'hospital-info.png': 'Hospital Information',
-        'himalaya-info.png': 'Himalaya Mountains'
+        'hospital.com': 'Hospital Information',
+        'himalaya.com': 'Himalaya Mountains'
     };
     return titles[url] || url;
 }
@@ -440,9 +444,7 @@ function loadWebsite(url) {
         websiteContent.innerHTML = `
             <div class="website-title">${websiteData.title}</div>
             <div class="website-url">${url}</div>
-            <div class="website-body">
-                ${websiteData.content}
-            </div>
+            ${websiteData.content}
         `;
     }
 }
@@ -463,95 +465,15 @@ function showWebsiteNotFound(url) {
             <p>Available websites:</p>
             <div class="info-box">
                 • avery-map.com<br>
-                • kaveri-river.com
+                • kaveri-river.com<br>
+                • hospital.com<br>
+                • himalaya.com
             </div>
         </div>
     `;
 
     // Add to history even if not found
     addToHistory(url, 'website');
-}
-
-function showImageContent(imageName) {
-    homePage.style.display = 'none';
-    searchResults.style.display = 'none';
-    websiteContent.style.display = 'block';
-
-    let content = '';
-
-    if (imageName === 'hospital-info.png') {
-        content = `
-            <div class="website-title">Hospital Information</div>
-            <div class="website-url">${imageName}</div>
-            <div class="website-body">
-                <img src="https://static.vecteezy.com/system/resources/thumbnails/009/350/681/small/building-place-hospital-png.png" 
-                     alt="Hospital" 
-                     class="curved-image"
-                     onerror="this.style.display='none';">
-                
-                <div class="info-box">
-                    <strong>Hospital Services:</strong><br>
-                    • Emergency Care<br>
-                    • Surgical Procedures<br>
-                    • Maternity Services<br>
-                    • Pediatric Care<br>
-                    • Diagnostic Imaging
-                </div>
-                
-                <p><strong>About Healthcare:</strong><br>
-                Modern hospitals provide comprehensive medical care with advanced technology and specialized medical professionals. They serve as crucial community health centers offering preventive, curative, and rehabilitative services.</p>
-                
-                <p>Hospitals maintain strict hygiene protocols and utilize state-of-the-art equipment to ensure patient safety and effective treatment outcomes.</p>
-            </div>
-        `;
-    } else if (imageName === 'himalaya-info.png') {
-        content = `
-            <div class="website-title">Himalaya Mountains</div>
-            <div class="website-url">${imageName}</div>
-            <div class="website-body">
-                <img src="https://www.shutterstock.com/image-vector/breathtaking-animated-mountain-landscape-inspire-600nw-2614074607.jpg" 
-                     alt="Himalaya" 
-                     class="curved-image"
-                     onerror="this.style.display='none';">
-                
-                <div class="info-box">
-                    <strong>Himalaya Facts:</strong><br>
-                    • Highest peak: Mount Everest (8,848 m)<br>
-                    • Length: 2,400 km (1,500 mi)<br>
-                    • Countries: India, Nepal, Bhutan, China, Pakistan<br>
-                    • Age: Approximately 50 million years
-                </div>
-                
-                <p><strong>About the Himalayas:</strong><br>
-                The Himalayas are the highest mountain range in the world, forming a natural barrier between the Tibetan Plateau and the Indian subcontinent. These majestic mountains are home to diverse ecosystems, rare wildlife, and ancient cultures.</p>
-                
-                <p>The range influences weather patterns across Asia and is the source of major river systems including the Ganges, Indus, and Brahmaputra. The Himalayas continue to grow approximately 1 cm per year due to tectonic plate movements.</p>
-            </div>
-        `;
-    } else {
-        content = `
-            <div class="website-title">${imageName}</div>
-            <div class="website-url">${imageName}</div>
-            <div class="website-body">
-                <div class="info-box">
-                    <strong>Image File:</strong> ${imageName}<br>
-                    <strong>Type:</strong> PNG Image<br>
-                    <strong>Size:</strong> 2.4 MB<br>
-                    <strong>Last Modified:</strong> Today
-                </div>
-                <div style="background: #1a1a1a; height: 200px; display: flex; align-items: center; justify-content: center; border-radius: 10px; margin: 20px 0; border: 1px solid #333;">
-                    <div style="text-align: center; color: #888;">
-                        <div style="font-size: 48px; margin-bottom: 10px;">🖼️</div>
-                        <div>${imageName}</div>
-                        <div style="font-size: 12px; margin-top: 5px;">Image preview</div>
-                    </div>
-                </div>
-                <p>This is an image file. In a real application, the actual image would be displayed here.</p>
-            </div>
-        `;
-    }
-
-    websiteContent.innerHTML = content;
 }
 
 // Play click sound function
@@ -610,9 +532,7 @@ window.onload = function() {
         });
     }
 
-    // Initialize navigation buttons
-    if (backButton) backButton.addEventListener('click', goBack);
-    if (forwardButton) forwardButton.addEventListener('click', goForward);
+    // Initialize home button
     if (homeButton) homeButton.addEventListener('click', goHome);
 
     // Show home page initially
@@ -623,9 +543,8 @@ window.onload = function() {
     // Initialize empty history
     updateHistoryDisplay();
 
-    console.log('🌐 Browser Ready - Fixed version loaded!');
-    console.log('✅ Navigation buttons added and working');
-    console.log('✅ InstaShan icon fixed with image display');
-    console.log('✅ Back button: Browser history + App close');
-    console.log('✅ Fixed navigation history management');
+    console.log('🌐 Browser Ready - Updated version loaded!');
+    console.log('✅ Removed forward/backward buttons - Only Home button remains');
+    console.log('✅ Updated URLs: hospital.com & himalaya.com');
+    console.log('✅ Click sounds enabled for all interactions');
 };
