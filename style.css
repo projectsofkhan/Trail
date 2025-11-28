@@ -23,6 +23,12 @@
     -webkit-touch-callout: none !important;
 }
 
+/* Remove focus outline for all buttons */
+button {
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
 body {
     display: flex;
     justify-content: center;
@@ -84,6 +90,12 @@ body {
     top: 0;
     width: 100%;
     z-index: 3;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.status-bar:active {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .status-bar .left-icons, .status-bar .right-icons { 
@@ -173,6 +185,7 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
     margin-bottom: 5px;
     transition: transform 0.15s ease-out;
+    overflow: hidden;
 }
 
 .app-icon-label {
@@ -255,6 +268,17 @@ a:focus, a:active, a:hover {
     font-size: 20px;
     cursor: pointer;
     padding: 5px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.close-panel:active {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .music-controls {
@@ -275,13 +299,11 @@ a:focus, a:active, a:hover {
     cursor: pointer;
     transition: all 0.2s ease;
     width: 100%;
-}
-
-.music-control-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+    -webkit-tap-highlight-color: transparent;
 }
 
 .music-control-btn:active {
+    background: rgba(255, 255, 255, 0.2);
     transform: scale(0.98);
 }
 
