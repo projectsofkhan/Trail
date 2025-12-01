@@ -16,7 +16,7 @@ const apps = [
         name: 'Instashan', 
         icon: 'https://projectsofkhan.github.io/pythontodoapp/instashan.jpg', 
         color: '#9B5BBE', 
-        file: 'apps/instashan.html' 
+        file: 'apps/instashan/index.html' 
     },
     { id: 'diary', name: 'Diary', icon: '📖', color: '#A08E77', file: 'apps/diary/index.html' },
     { id: 'browser', name: 'Browser', icon: '🌐', color: '#5D6B9C', file: 'apps/browser/index.html' },
