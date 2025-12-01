@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -306,24 +305,20 @@
     </div>
 
     <script>
-        // Updated chat data with Indian names and contact links
+        // Updated chat data with the new contacts list
         const chatData = [
-            // Indian contacts
-            { name: 'Rohan', lastMessage: 'How are you? Everything good?', time: '1h ago', avatar: 'R', contact: 'rohan' },
-            { name: 'Priya', lastMessage: 'Should we meet tomorrow?', time: '3h ago', avatar: 'P', contact: 'priya' },
-            
-            // Messaging app contacts with contact links
-            { name: 'Mr. Ray', lastMessage: 'What Happened Eric?', time: '12d ago', avatar: 'R', contact: 'misterray' },
-            { name: 'Sahil', lastMessage: 'Bro where are you??', time: '2h ago', avatar: 'S', contact: 'sahil' },
-            { name: 'Aarav', lastMessage: 'Photos look amazing!', time: '2d ago', avatar: 'A', contact: 'aarav' },
-            { name: 'Wonder Burger Shop', lastMessage:'Okay Sir!', time: '45d ago', avatar: 'D', contact: 'diya' },
-            { name: 'Mom', lastMessage: 'Come home Son 😢', time: '1w ago', avatar: 'M', contact: 'mom' },
-            { name: 'Sister', lastMessage: 'Dinner at 7 tonight!', time: '2d ago', avatar: 'S', contact: 'sister' },
-            { name: 'Dad', lastMessage: 'How is college going?', time: '3d ago', avatar: 'D', contact: 'dad' },
-            { name: 'Vikram', lastMessage: 'Code review completed', time: '4d ago', avatar: 'V', contact: 'vikram' },
-            
-            { name: 'Rahul', lastMessage: 'Project launch next week', time: '6d ago', avatar: 'R', contact: 'rahul' },
-            
+            // Main contacts with contact links
+            { name: 'Mr. Ray', lastMessage: 'Eric Where are you?', time: '10:30 AM', avatar: 'M', contact: 'misterray' },
+            { name: 'Dyere', lastMessage: 'The repair is done', time: 'Yesterday', avatar: 'D', contact: 'dyere' },
+            { name: 'Sahil', lastMessage: 'Hey Eric Come where are you?', time: 'Yesterday', avatar: 'S', contact: 'sahil' },
+            { name: 'Mom', lastMessage: 'Hey come home son.', time: '11/15/23', avatar: '♥️', contact: 'mom' },
+            { name: 'Sister', lastMessage: 'Hey bro we are missing you where are you?', time: '11/14/23', avatar: 'S', contact: 'sister' },
+            { name: 'Feisher', lastMessage: 'Code review done', time: '11/13/23', avatar: 'F', contact: 'feisher' },
+            { name: 'Dad', lastMessage: 'Dinner at 7', time: '11/12/23', avatar: '💚', contact: 'dad' },
+            { name: 'Layari', lastMessage: 'Design ready', time: '11/11/23', avatar: 'L', contact: 'layari' },
+            { name: 'Dan', lastMessage: 'Project launch', time: '11/10/23', avatar: 'D', contact: 'dan' },
+            { name: 'Falco', lastMessage: 'Flight confirmed', time: '11/09/23', avatar: 'F', contact: 'falco' },
+            { name: 'Ahmet', lastMessage: 'Hello there!', time: '1d ago', avatar: 'A', contact: 'ahmet' }
         ];
 
         // Update time
@@ -369,9 +364,9 @@
         }
 
         // Open profile
-function openProfile() {
-    window.location.href = '../profile/profile.html';
-}
+        function openProfile() {
+            window.location.href = '../profile/profile.html';
+        }
 
         // Check login status
         function checkLoginStatus() {
