@@ -1,4 +1,4 @@
-// taskprogress.js - Central Task Progress System
+// taskprogress.js - Add Task 3
 const TaskProgress = {
     // Task definitions
     tasks: {
@@ -15,6 +15,13 @@ const TaskProgress = {
             description: 'Question Eric\'s close friend for clues',
             completed: false,
             unlocks: 'Dyere contact and investigation clues'
+        },
+        'investigate_dyere': {
+            id: 'investigate_dyere',
+            title: 'Investigate Dyere',
+            description: 'Question the car repair guy who was close to Eric',
+            completed: false,
+            unlocks: 'Important clue about Eric\'s last location'
         }
         // Add more tasks here later
     },
