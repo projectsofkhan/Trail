@@ -18,12 +18,8 @@ const TaskProgress2 = {
         if (!localStorage.getItem('taskProgress')) {
             localStorage.setItem('taskProgress', JSON.stringify({}));
         }
-        // Initialize extended progress for additional unlocks
         if (!localStorage.getItem('extendedProgress')) {
-            localStorage.setItem('extendedProgress', JSON.stringify({
-                unlock_dyere: false,
-                unlock_dad: false
-            }));
+            localStorage.setItem('extendedProgress', JSON.stringify({}));
         }
     },
 
@@ -31,31 +27,11 @@ const TaskProgress2 = {
         const progress = this.getProgress();
         progress[taskId] = true;
         localStorage.setItem('taskProgress', JSON.stringify(progress));
-        
-        // Check for chain unlocks
-        this.checkUnlocks(taskId);
-        
         this.showTaskCompletePopup(taskId);
         console.log(`✅ Task completed: ${taskId}`);
-    },
-
-    // Check for additional unlocks based on task completion
-    checkUnlocks(taskId) {
-        const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
         
-        // If "chat_dyere" task is completed (Task 4), unlock Dad
-        if (taskId === 'chat_dyere') {
-            extendedProgress.unlock_dad = true;
-            localStorage.setItem('extendedProgress', JSON.stringify(extendedProgress));
-            console.log('🔓 Dad contact unlocked!');
-        }
-        
-        // If "chat_sahil" task is completed, unlock Dyere
-        if (taskId === 'chat_sahil') {
-            extendedProgress.unlock_dyere = true;
-            localStorage.setItem('extendedProgress', JSON.stringify(extendedProgress));
-            console.log('🔓 Dyere contact unlocked!');
-        }
+        // Check for Dad unlock condition (Mr. Ray + Sahil + Dyere completed)
+        this.checkDadUnlockCondition();
     },
 
     isTaskCompleted(taskId) {
@@ -67,9 +43,36 @@ const TaskProgress2 = {
         return JSON.parse(localStorage.getItem('taskProgress') || '{}');
     },
 
+    checkDadUnlockCondition() {
+        // Dad gets unlocked when ALL THREE are completed:
+        // 1. chat_mr_ray (Mr. Ray)
+        // 2. chat_sahil (Sahil) 
+        // 3. unlock_dyere (Dyere) - from extendedProgress
+        const progress = this.getProgress();
+        const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
+        
+        const isMrRayDone = progress.chat_mr_ray;
+        const isSahilDone = progress.chat_sahil;
+        const isDyereDone = extendedProgress.unlock_dyere;
+        
+        // If all three are true and Dad isn't already unlocked
+        if (isMrRayDone && isSahilDone && isDyereDone && !extendedProgress.unlock_dad) {
+            // Unlock Dad
+            extendedProgress.unlock_dad = true;
+            localStorage.setItem('extendedProgress', JSON.stringify(extendedProgress));
+            
+            // Show special Dad unlock notification
+            setTimeout(() => {
+                this.showDadUnlockPopup();
+            }, 1000);
+            
+            console.log('🎉 Dad contact unlocked! All three tasks completed.');
+        }
+    },
+
     showTaskCompletePopup(taskId) {
         if (taskId === 'chat_mr_ray') {
-            // Create beautiful popup for Mr. Ray completion
+            // Create beautiful popup
             const popup = document.createElement('div');
             popup.style.cssText = `
                 position: fixed;
@@ -143,110 +146,165 @@ const TaskProgress2 = {
             `;
 
             document.body.appendChild(popup);
-        }
-        // Add popup for Dyere completion (Task 4)
-        else if (taskId === 'chat_dyere') {
-            const popup = document.createElement('div');
-            popup.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.8);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 10000;
-                animation: fadeIn 0.3s ease;
-            `;
 
-            popup.innerHTML = `
-                <div style="
-                    background: linear-gradient(135deg, #667eea, #764ba2);
-                    color: white;
-                    padding: 30px;
-                    border-radius: 20px;
-                    text-align: center;
-                    max-width: 300px;
-                    margin: 20px;
-                    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-                    animation: slideUp 0.5s ease;
-                ">
-                    <div style="font-size: 3rem; margin-bottom: 15px;">🎯</div>
-                    <h3 style="margin: 0 0 10px 0; font-size: 1.4rem; font-weight: 600;">Task 4 Completed!</h3>
-                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; margin: 15px 0;">
-                        <div style="font-size: 1.1rem; font-weight: 500; margin-bottom: 5px;">Chat with Dyere</div>
-                        <div style="font-size: 0.9rem; opacity: 0.9;">You've completed the repair task</div>
-                    </div>
-                    <div style="display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.15); padding: 12px; border-radius: 10px; margin: 15px 0;">
-                        <div style="font-size: 1.8rem; margin-right: 10px;">🔓</div>
-                        <div style="text-align: left;">
-                            <div style="font-size: 0.9rem; font-weight: 500;">Family Contact Unlocked!</div>
-                            <div style="font-size: 0.8rem; opacity: 0.9;">Dad is now available</div>
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (popup.parentElement) {
+                    popup.remove();
+                }
+            }, 5000);
+        }
+    },
+
+    showDadUnlockPopup() {
+        // Create special Dad unlock popup
+        const popup = document.createElement('div');
+        popup.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10001;
+            animation: fadeIn 0.5s ease;
+        `;
+
+        popup.innerHTML = `
+            <div style="
+                background: linear-gradient(135deg, #1a237e, #0d47a1);
+                color: white;
+                padding: 35px;
+                border-radius: 25px;
+                text-align: center;
+                max-width: 320px;
+                margin: 20px;
+                box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+                animation: slideUp 0.7s ease;
+                border: 2px solid rgba(255,255,255,0.1);
+            ">
+                <div style="font-size: 4rem; margin-bottom: 20px;">🏆</div>
+                <h2 style="margin: 0 0 15px 0; font-size: 1.8rem; font-weight: 700;">TASK 4 COMPLETED!</h2>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; margin: 20px 0;">
+                    <div style="font-size: 1rem; opacity: 0.9; margin-bottom: 10px;">You've successfully completed:</div>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div style="display: flex; align-items: center; justify-content: center;">
+                            <span style="color: #4CAF50; margin-right: 8px;">✓</span>
+                            <span>Chat with Mr. Ray</span>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: center;">
+                            <span style="color: #4CAF50; margin-right: 8px;">✓</span>
+                            <span>Chat with Sahil</span>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: center;">
+                            <span style="color: #4CAF50; margin-right: 8px;">✓</span>
+                            <span>Chat with Dyere</span>
                         </div>
                     </div>
-                    <button onclick="this.parentElement.parentElement.remove(); window.location.reload();" style="
-                        background: white;
-                        color: #667eea;
-                        border: none;
-                        padding: 12px 30px;
-                        border-radius: 25px;
-                        font-weight: 600;
-                        font-size: 1rem;
-                        cursor: pointer;
-                        margin-top: 10px;
-                        transition: all 0.2s ease;
-                    ">Continue</button>
                 </div>
                 
-                <style>
-                    @keyframes fadeIn {
-                        from { opacity: 0; }
-                        to { opacity: 1; }
+                <div style="
+                    background: linear-gradient(to right, rgba(255,215,0,0.2), rgba(255,215,0,0.1));
+                    border: 2px solid rgba(255,215,0,0.3);
+                    padding: 20px;
+                    border-radius: 15px;
+                    margin: 25px 0;
+                    text-align: left;
+                ">
+                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                        <div style="font-size: 2.5rem; margin-right: 15px;">👨</div>
+                        <div>
+                            <div style="font-size: 1.3rem; font-weight: 600; color: #FFD700;">DAD UNLOCKED!</div>
+                            <div style="font-size: 0.95rem; opacity: 0.9;">Your father is now available to talk</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.9rem; padding-left: 10px; border-left: 3px solid #FFD700; margin-top: 10px;">
+                        <em>"Dinner at 7" - Dad</em>
+                    </div>
+                </div>
+                
+                <button onclick="this.parentElement.parentElement.remove()" style="
+                    background: linear-gradient(to right, #FFD700, #FFC400);
+                    color: #1a237e;
+                    border: none;
+                    padding: 15px 40px;
+                    border-radius: 30px;
+                    font-weight: 700;
+                    font-size: 1.1rem;
+                    cursor: pointer;
+                    margin-top: 10px;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 5px 15px rgba(255,215,0,0.3);
+                " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    Continue to Messages
+                </button>
+                
+                <div style="margin-top: 20px; font-size: 0.85rem; opacity: 0.7;">
+                    New story chapter unlocked!
+                </div>
+            </div>
+            
+            <style>
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @keyframes slideUp {
+                    from { 
+                        opacity: 0;
+                        transform: translateY(50px) scale(0.8);
                     }
-                    @keyframes slideUp {
-                        from { 
-                            opacity: 0;
-                            transform: translateY(30px) scale(0.9);
-                        }
-                        to { 
-                            opacity: 1;
-                            transform: translateY(0) scale(1);
-                        }
+                    to { 
+                        opacity: 1;
+                        transform: translateY(0) scale(1);
                     }
-                </style>
-            `;
+                }
+                @keyframes pulse {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.05); }
+                }
+            </style>
+        `;
 
-            document.body.appendChild(popup);
-        }
+        document.body.appendChild(popup);
+
+        // Add pulsing animation to the trophy
+        setTimeout(() => {
+            const trophy = popup.querySelector('div[style*="font-size: 4rem"]');
+            if (trophy) {
+                trophy.style.animation = 'pulse 2s infinite';
+            }
+        }, 1000);
+
+        // Auto-remove after 8 seconds
+        setTimeout(() => {
+            if (popup.parentElement) {
+                popup.remove();
+            }
+        }, 8000);
     }
 };
 
-// ========== HELPER FUNCTIONS ==========
+// Initialize task system
+TaskProgress2.init();
 
-// Format contact name for URL - FIXED VERSION
+// Format contact name for URL
 function formatContactName(contactName) {
     if (contactName === 'Mr. Ray') return 'misterray';
-    if (contactName === 'Dad') return 'dad';
-    if (contactName === 'Sahil') return 'sahil';
-    if (contactName === 'Dyere') return 'dyere';
-    // For other contacts
     return contactName.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
 // Smart chat navigation - checks task progress
 function openChat(contactName) {
     const formattedName = formatContactName(contactName);
-    const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
-
-    console.log(`🔍 Opening chat for: ${contactName}`);
-    console.log(`🔍 Formatted name: ${formattedName}`);
-    console.log(`🔍 Dad unlocked?`, extendedProgress.unlock_dad);
-    console.log(`🔍 chat_dyere completed?`, TaskProgress2.isTaskCompleted('chat_dyere'));
 
     // Only Mr. Ray is always unlocked
     if (contactName === 'Mr. Ray') {
+        // Mr. Ray always goes to real chat
         const realUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/index.html`;
         console.log(`🔓 Mr. Ray chat - redirecting to: ${realUrl}`);
         window.location.href = realUrl;
@@ -254,10 +312,12 @@ function openChat(contactName) {
     // Sahil requires Mr. Ray task completion
     else if (contactName === 'Sahil') {
         if (TaskProgress2.isTaskCompleted('chat_mr_ray')) {
+            // Task completed - go to real chat
             const realUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/index.html`;
             console.log(`🔓 Sahil chat unlocked - redirecting to: ${realUrl}`);
             window.location.href = realUrl;
         } else {
+            // Task not completed - go to individual locked page
             const lockedUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/locked.html`;
             console.log(`🔒 Sahil chat locked - redirecting to: ${lockedUrl}`);
             window.location.href = lockedUrl;
@@ -265,30 +325,35 @@ function openChat(contactName) {
     }
     // Dyere requires Sahil task completion
     else if (contactName === 'Dyere') {
-        if (extendedProgress.unlock_dyere || TaskProgress2.isTaskCompleted('chat_sahil')) {
+        const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
+        if (extendedProgress.unlock_dyere) {
+            // Dyere unlocked - go to real chat
             const realUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/index.html`;
             console.log(`🔓 Dyere chat unlocked - redirecting to: ${realUrl}`);
             window.location.href = realUrl;
         } else {
+            // Dyere not unlocked - go to locked page
             const lockedUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/locked.html`;
             console.log(`🔒 Dyere chat locked - redirecting to: ${lockedUrl}`);
             window.location.href = lockedUrl;
         }
     }
-    // ✅ Dad requires Dyere task completion (Task 4)
+    // ✅ DAD: Unlocked after completing Mr. Ray + Sahil + Dyere
     else if (contactName === 'Dad') {
-        // FIXED: Check both conditions properly
-        if (extendedProgress.unlock_dad === true || TaskProgress2.isTaskCompleted('chat_dyere')) {
+        const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
+        if (extendedProgress.unlock_dad) {
+            // Dad unlocked - go to real chat
             const realUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/index.html`;
-            console.log(`🎯 DAD UNLOCKED! Redirecting to: ${realUrl}`);
+            console.log(`🔓 Dad chat unlocked - redirecting to: ${realUrl}`);
             window.location.href = realUrl;
         } else {
+            // Dad not unlocked - go to locked page
             const lockedUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/locked.html`;
             console.log(`🔒 Dad chat locked - redirecting to: ${lockedUrl}`);
             window.location.href = lockedUrl;
         }
     }
-    // All other contacts are locked for now
+    // All other contacts are locked for now (individual locked pages)
     else {
         const lockedUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/locked.html`;
         console.log(`🔒 ${contactName} chat locked - redirecting to: ${lockedUrl}`);
@@ -296,108 +361,86 @@ function openChat(contactName) {
     }
 }
 
-// Add this debug function to check current state
-function checkDadStatus() {
-    const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
-    console.log('=== DAD STATUS CHECK ===');
-    console.log('extendedProgress:', extendedProgress);
-    console.log('unlock_dad:', extendedProgress.unlock_dad);
-    console.log('Type of unlock_dad:', typeof extendedProgress.unlock_dad);
-    console.log('chat_dyere completed:', TaskProgress2.isTaskCompleted('chat_dyere'));
-    console.log('Task progress:', TaskProgress2.getProgress());
-}
-
-// Back button functionality
-function initializeBackButton() {
-    const backButton = document.querySelector('.back-button');
-    
-    if (backButton) {
-        backButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            console.log('🔙 Back button clicked - closing app...');
-            
-            // Try to focus home tab
-            if (window.opener && !window.opener.closed) {
-                try {
-                    window.opener.focus();
-                } catch (error) {
-                    console.log('⚠️ Could not focus home tab');
-                }
-            }
-            
-            // Close this tab
-            setTimeout(() => {
-                window.close();
-            }, 100);
-        });
-    }
-}
-
-// Auto-redirect system
-function initializeAutoRedirect() {
-    window.addEventListener('beforeunload', function() {
-        console.log('🔄 Messages closing - redirecting to home...');
-        
-        if (window.opener && !window.opener.closed) {
-            try {
-                window.opener.location.href = window.location.origin + '/Trail/';
-            } catch (error) {
-                console.log('⚠️ Could not redirect home');
-            }
-        }
-    });
-}
-
-// Render contacts function
+// Render contacts - All visible, no lock icons
 function renderContacts(filter = '') {
     const contactsList = document.getElementById('contactsList');
     if (!contactsList) {
         console.error('❌ contactsList element not found!');
+        console.error('Looking for element with id="contactsList"');
         return;
     }
+
+    console.log('🔄 Rendering contacts...');
     
     contactsList.innerHTML = '';
-    
-    const filteredContacts = contacts.filter(contact => 
-        contact.name.toLowerCase().includes(filter.toLowerCase())
-    );
-    
+
+    const filteredContacts = contacts.filter(contact => {
+        // Apply search filter
+        return contact.name.toLowerCase().includes(filter.toLowerCase());
+    });
+
+    console.log(`📱 Found ${filteredContacts.length} contacts to display`);
+
     filteredContacts.forEach(contact => {
         const contactElement = document.createElement('div');
         contactElement.className = 'contact-item';
         contactElement.onclick = () => {
-            console.log(`📱 Clicked contact: ${contact.name}`);
+            console.log(`👆 Clicked on ${contact.name}`);
+            playClickSound();
             openChat(contact.name);
         };
-        
+
         contactElement.innerHTML = `
             <div class="contact-avatar">${contact.avatar}</div>
             <div class="contact-info">
                 <div class="contact-name">${contact.name}</div>
                 <div class="contact-last-message">${contact.lastMessage}</div>
             </div>
-            <div style="display: flex; flex-direction: column; align-items: flex-end;">
+            <div class="contact-meta">
                 <div class="message-time">${contact.time}</div>
                 ${contact.unread > 0 ? `<div class="unread-badge">${contact.unread}</div>` : ''}
             </div>
         `;
-        
+
         contactsList.appendChild(contactElement);
     });
+    
+    console.log('✅ Contacts rendered successfully');
 }
 
-// ========== INITIALIZATION ==========
+function playClickSound() {
+    const sound = new Audio('../../sounds/click.mp3');
+    sound.volume = 0.3;
+    sound.play().catch(e => console.log('Sound error:', e));
+}
 
-// Initialize everything when DOM is loaded
+// Simple back button function
+function closeAppAndReturnHome() {
+    console.log('🔙 Closing Messages and returning to home...');
+    
+    // Try to close the window
+    if (window.opener && !window.opener.closed) {
+        try {
+            window.opener.focus();
+        } catch (error) {
+            console.log('⚠️ Could not focus home tab');
+        }
+    }
+    
+    setTimeout(() => {
+        window.close();
+    }, 50);
+}
+
+// Main initialization
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('📱 DOM Content Loaded - Initializing Messages App...');
+    
     // Initialize task system
     TaskProgress2.init();
     
-    // Initialize UI
-    const currentTimeElement = document.getElementById('current-time');
-    const searchInput = document.getElementById('searchInput');
-    
     // Update time
+    const currentTimeElement = document.getElementById('current-time');
     if (currentTimeElement) {
         function updateTime() {
             const now = new Date();
@@ -410,26 +453,30 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Search functionality
+    const searchInput = document.getElementById('searchInput');
     if (searchInput) {
         searchInput.addEventListener('input', function() {
+            console.log('🔍 Searching for:', this.value);
             renderContacts(this.value);
         });
     }
     
-    // Render contacts
+    // Render contacts initially
     renderContacts();
     
-    // Initialize back button
-    initializeBackButton();
-    
-    // Initialize auto-redirect
-    initializeAutoRedirect();
+    // Add back button event listener
+    const backButton = document.querySelector('.back-button');
+    if (backButton) {
+        backButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            closeAppAndReturnHome();
+        });
+    }
     
     console.log('💬 Messages App Ready!');
-    checkDadStatus(); // Debug: Check Dad status on load
 });
 
-// Make functions global
+// Make functions globally available
 window.openChat = openChat;
-window.checkDadStatus = checkDadStatus;
-window.TaskProgress2 = TaskProgress2;
+window.renderContacts = renderContacts;
+window.closeAppAndReturnHome = closeAppAndReturnHome;
