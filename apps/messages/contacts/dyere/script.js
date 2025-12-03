@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const currentTimeElement = document.getElementById('current-time');
     const chatMessages = document.getElementById('chatMessages');
     const choiceButton = document.getElementById('choiceBtn');
-    
+
     // Status elements
     const contactStatus = document.querySelector('.contact-status');
     const contactName = document.querySelector('.contact-name');
@@ -35,7 +35,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create audio elements for sounds
     const sentSound = new Audio('sent.mp3');
     const receiveSound = new Audio('recieve.mp3');
-    const blockSound = new Audio('https://assets.mixkit.co/active_storage/sfx/288/288-preview.mp3');
+    // Alternative softer sound:
+const blockSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-interface-hint-notification-911.mp3');
+blockSound.volume = 0.3;
 
     // Update time
     function updateTime() {
@@ -100,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
             choiceButton.disabled = true;
             return;
         }
-        
+
         if (currentStep < questions.length) {
             choiceButton.textContent = questions[currentStep];
             choiceButton.disabled = false;
@@ -113,28 +115,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle blocking sequence
     function triggerBlock() {
         dyereBlocked = true;
-        
+
         // Play block sound
         playSound(blockSound);
-        
+
         // Update status
         if (contactStatus) {
             contactStatus.textContent = "Blocked";
             contactStatus.style.color = "#e74c3c";
         }
-        
+
         if (contactName) {
             contactName.innerHTML = "Dyere <span style='color:#e74c3c; font-size:12px; margin-left:5px;'>● Blocked</span>";
         }
-        
+
         // Update button
         updateChoiceButton();
-        
+
         // Show blocked notification
         setTimeout(() => {
             addMessage("You can no longer message this contact.", 'system');
         }, 1500);
-        
+
         // Complete the task
         setTimeout(() => {
             completeDyereTask();
@@ -319,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize chat
     function initChat() {
         console.log("💬 Starting Dyere investigation chat");
-        
+
         // Check if task is already completed
         if (window.TaskProgress && TaskProgress.isTaskCompleted('investigate_dyere')) {
             dyereBlocked = true;
@@ -328,9 +330,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 contactStatus.style.color = "#e74c3c";
             }
         }
-        
+
         updateChoiceButton();
-        
+
         // Add welcome message after a short delay
         setTimeout(() => {
             addMessage("Hey, who's this?", 'received');
