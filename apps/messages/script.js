@@ -17,40 +17,31 @@ const TaskProgress2 = {
     init() {
         console.log('🔄 Initializing Messages Task System...');
         
-        // Load progress from localStorage (sync with Task Manager)
-        const taskProgress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
-        const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
+        // Always check for Dad unlock on init
+        this.checkDadUnlockCondition();
         
-        console.log('📊 Task Manager progress:', taskProgress);
-        console.log('📊 Extended progress:', extendedProgress);
-        
-        if (!localStorage.getItem('taskProgress')) {
-            localStorage.setItem('taskProgress', JSON.stringify({}));
-        }
-        if (!localStorage.getItem('extendedProgress')) {
-            localStorage.setItem('extendedProgress', JSON.stringify({}));
-        }
+        // Set up storage listener
+        this.setupStorageListener();
     },
 
-    // This function syncs with Task Manager's task IDs
-    isTaskCompleted(taskId) {
-        const taskProgress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
-        return !!taskProgress[taskId];
-    },
-
-    // This checks if Dad should be unlocked (after Task 4)
+    // Check if Dad should be unlocked (after Task 4)
     checkDadUnlockCondition() {
+        console.log('🔍 Checking Dad unlock condition...');
+        
         const taskProgress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
         const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
+        
+        console.log('📊 Task progress:', taskProgress);
+        console.log('📊 Extended progress:', extendedProgress);
         
         // Dad gets unlocked when task4_call_dyere is completed
         const isTask4Done = taskProgress.task4_call_dyere;
         
-        console.log('🔍 Checking Dad unlock condition:');
         console.log('   - task4_call_dyere completed:', isTask4Done);
         console.log('   - Dad already unlocked:', extendedProgress.unlock_dad);
         
         if (isTask4Done && !extendedProgress.unlock_dad) {
+            console.log('🎉 Unlocking Dad...');
             // Unlock Dad
             extendedProgress.unlock_dad = true;
             localStorage.setItem('extendedProgress', JSON.stringify(extendedProgress));
@@ -60,12 +51,41 @@ const TaskProgress2 = {
                 this.showDadUnlockPopup();
             }, 1000);
             
-            console.log('🎉 Dad contact unlocked! Task 4 completed.');
+            console.log('✅ Dad contact unlocked! Task 4 completed.');
+        } else if (isTask4Done && extendedProgress.unlock_dad) {
+            console.log('✅ Dad already unlocked from previous session');
         }
+    },
+
+    setupStorageListener() {
+        // Listen for localStorage changes from Task Manager
+        window.addEventListener('storage', (e) => {
+            console.log('📦 Storage event:', e.key);
+            
+            if (e.key === 'taskProgress') {
+                console.log('📢 Task progress updated, checking Dad unlock...');
+                this.checkDadUnlockCondition();
+            }
+            
+            if (e.key === 'extendedProgress') {
+                console.log('📢 Extended progress updated');
+                // Force re-render contacts when Dad gets unlocked
+                if (window.renderContacts) {
+                    window.renderContacts();
+                }
+            }
+        });
+        
+        // Also set up polling to check for changes (in case storage event doesn't fire)
+        setInterval(() => {
+            this.checkDadUnlockCondition();
+        }, 2000);
     },
 
     // Show Dad unlock popup when Task 4 is completed
     showDadUnlockPopup() {
+        console.log('🎬 Showing Dad unlock popup...');
+        
         // Create special Dad unlock popup
         const popup = document.createElement('div');
         popup.style.cssText = `
@@ -131,7 +151,7 @@ const TaskProgress2 = {
                     </div>
                 </div>
                 
-                <button onclick="this.parentElement.parentElement.remove()" style="
+                <button onclick="this.parentElement.parentElement.remove(); location.reload();" style="
                     background: linear-gradient(to right, #FFD700, #FFC400);
                     color: #1a237e;
                     border: none;
@@ -184,10 +204,12 @@ const TaskProgress2 = {
             }
         }, 1000);
 
-        // Auto-remove after 8 seconds
+        // Auto-remove after 8 seconds and reload
         setTimeout(() => {
             if (popup.parentElement) {
                 popup.remove();
+                // Reload to update contacts
+                setTimeout(() => location.reload(), 500);
             }
         }, 8000);
     }
@@ -211,57 +233,48 @@ function openChat(contactName) {
 
     // Only Mr. Ray is always unlocked
     if (contactName === 'Mr. Ray') {
-        // Mr. Ray always goes to real chat
         const realUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/index.html`;
-        console.log(`🔓 Mr. Ray chat - redirecting to: ${realUrl}`);
         window.location.href = realUrl;
     } 
     // Sahil requires Mr. Ray task completion
     else if (contactName === 'Sahil') {
         if (taskProgress.chat_mr_ray) {
-            // Task completed - go to real chat
             const realUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/index.html`;
-            console.log(`🔓 Sahil chat unlocked - redirecting to: ${realUrl}`);
             window.location.href = realUrl;
         } else {
-            // Task not completed - go to individual locked page
             const lockedUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/locked.html`;
-            console.log(`🔒 Sahil chat locked - redirecting to: ${lockedUrl}`);
             window.location.href = lockedUrl;
         }
     }
-    // Dyere requires Sahil task completion (using Task Manager's talk_sahil)
+    // Dyere requires Sahil task completion
     else if (contactName === 'Dyere') {
         if (taskProgress.talk_sahil) {
-            // Task completed - go to real chat
             const realUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/index.html`;
-            console.log(`🔓 Dyere chat unlocked - redirecting to: ${realUrl}`);
             window.location.href = realUrl;
         } else {
-            // Task not completed - go to locked page
             const lockedUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/locked.html`;
-            console.log(`🔒 Dyere chat locked - redirecting to: ${lockedUrl}`);
             window.location.href = lockedUrl;
         }
     }
     // ✅ DAD: Unlocked after completing Task 4 (task4_call_dyere)
     else if (contactName === 'Dad') {
+        console.log('👨 Checking Dad unlock status...');
+        console.log('   - task4_call_dyere:', taskProgress.task4_call_dyere);
+        console.log('   - unlock_dad:', extendedProgress.unlock_dad);
+        
         if (extendedProgress.unlock_dad || taskProgress.task4_call_dyere) {
-            // Dad unlocked - go to real chat
+            console.log('🔓 Dad is unlocked! Going to chat...');
             const realUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/index.html`;
-            console.log(`🔓 Dad chat unlocked - redirecting to: ${realUrl}`);
             window.location.href = realUrl;
         } else {
-            // Dad not unlocked - go to locked page
+            console.log('🔒 Dad is still locked...');
             const lockedUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/locked.html`;
-            console.log(`🔒 Dad chat locked - redirecting to: ${lockedUrl}`);
             window.location.href = lockedUrl;
         }
     }
-    // All other contacts are locked for now (individual locked pages)
+    // All other contacts are locked for now
     else {
         const lockedUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/locked.html`;
-        console.log(`🔒 ${contactName} chat locked - redirecting to: ${lockedUrl}`);
         window.location.href = lockedUrl;
     }
 }
@@ -279,17 +292,13 @@ function renderContacts(filter = '') {
     contactsList.innerHTML = '';
 
     const filteredContacts = contacts.filter(contact => {
-        // Apply search filter
         return contact.name.toLowerCase().includes(filter.toLowerCase());
     });
-
-    console.log(`📱 Found ${filteredContacts.length} contacts to display`);
 
     filteredContacts.forEach(contact => {
         const contactElement = document.createElement('div');
         contactElement.className = 'contact-item';
         contactElement.onclick = () => {
-            console.log(`👆 Clicked on ${contact.name}`);
             playClickSound();
             openChat(contact.name);
         };
@@ -320,9 +329,6 @@ function playClickSound() {
 
 // Simple back button function
 function closeAppAndReturnHome() {
-    console.log('🔙 Closing Messages and returning to home...');
-    
-    // Try to close the window
     if (window.opener && !window.opener.closed) {
         try {
             window.opener.focus();
@@ -336,15 +342,27 @@ function closeAppAndReturnHome() {
     }, 50);
 }
 
+// DEBUG FUNCTION: Manually unlock Dad for testing
+function debugUnlockDad() {
+    console.log('🔓 DEBUG: Manually unlocking Dad...');
+    const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
+    extendedProgress.unlock_dad = true;
+    localStorage.setItem('extendedProgress', JSON.stringify(extendedProgress));
+    
+    const taskProgress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
+    taskProgress.task4_call_dyere = true;
+    localStorage.setItem('taskProgress', JSON.stringify(taskProgress));
+    
+    alert('Dad manually unlocked! Refresh the page.');
+    location.reload();
+}
+
 // Main initialization
 document.addEventListener('DOMContentLoaded', function() {
     console.log('📱 DOM Content Loaded - Initializing Messages App...');
     
     // Initialize task system
     TaskProgress2.init();
-    
-    // Check if Dad should be unlocked (on page load)
-    TaskProgress2.checkDadUnlockCondition();
     
     // Update time
     const currentTimeElement = document.getElementById('current-time');
@@ -363,7 +381,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
         searchInput.addEventListener('input', function() {
-            console.log('🔍 Searching for:', this.value);
             renderContacts(this.value);
         });
     }
@@ -380,18 +397,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Listen for task updates from Task Manager
-    window.addEventListener('storage', function(e) {
-        if (e.key === 'taskProgress' || e.key === 'extendedProgress') {
-            console.log('📢 Storage updated, checking Dad unlock...');
-            TaskProgress2.checkDadUnlockCondition();
-        }
-    });
-    
-    console.log('💬 Messages App Ready - Synced with Task Manager!');
+    console.log('💬 Messages App Ready!');
+    console.log('📝 Debug: Type debugUnlockDad() in console to manually unlock Dad');
 });
 
 // Make functions globally available
 window.openChat = openChat;
 window.renderContacts = renderContacts;
 window.closeAppAndReturnHome = closeAppAndReturnHome;
+window.debugUnlockDad = debugUnlockDad; // Debug function
