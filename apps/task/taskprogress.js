@@ -1,4 +1,4 @@
-// taskprogress.js - Updated with Task 4
+// taskprogress.js - Updated with Task 5
 const TaskProgress = {
     // Task definitions - EXACTLY MATCHING TASK MANAGER
     tasks: {
@@ -31,8 +31,16 @@ const TaskProgress = {
             title: 'Call To Dyere',
             description: 'Call Dyere from the phone app to get more information',
             completed: false,
-            unlocks: 'Location clue about Eric',
+            unlocks: 'Dad contact unlocked & location clue', // ✅ UPDATED
             type: 'call'
+        },
+        'task5_talk_dad': {
+            id: 'task5_talk_dad',
+            title: 'Talk to Eric\'s Dad',
+            description: 'Interview Eric\'s father for family perspective and clues',
+            completed: false,
+            unlocks: 'Laptop clue and garage evidence',
+            type: 'chat'
         }
     },
 
@@ -55,7 +63,7 @@ const TaskProgress = {
             console.log('📢 Task progress updated:', e.detail);
         });
 
-        console.log('✅ Task Progress System Ready - 4 Tasks');
+        console.log('✅ Task Progress System Ready - 5 Tasks');
     },
 
     completeTask(taskId) {
@@ -63,15 +71,28 @@ const TaskProgress = {
             this.tasks[taskId].completed = true;
             this.saveProgress();
             this.notifyChanges();
-            
+
             // Also update gameTasks progress for Task Manager
             this.updateGameTasks(taskId);
             
+            // ✅ AUTOMATICALLY UNLOCK DAD'S CONTACT WHEN TASK 4 COMPLETES
+            if (taskId === 'task4_call_dyere') {
+                this.unlockDadContact();
+            }
+
             console.log(`✅ Task completed: ${taskId}`);
-            
+
             // Play completion sound
             this.playCompletionSound();
         }
+    },
+    
+    // ✅ NEW FUNCTION: Unlock Dad's contact
+    unlockDadContact() {
+        const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
+        extendedProgress.unlock_dad = true;
+        localStorage.setItem('extendedProgress', JSON.stringify(extendedProgress));
+        console.log('🔓 Dad\'s contact unlocked via TaskProgress system!');
     },
 
     updateGameTasks(taskId) {
