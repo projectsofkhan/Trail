@@ -16,10 +16,10 @@ const contacts = [
 const TaskProgress2 = {
     init() {
         console.log('🔄 Initializing Messages Task System...');
-        
+
         // Always check for Dad unlock on init
         this.checkDadUnlockCondition();
-        
+
         // Set up storage listener
         this.setupStorageListener();
     },
@@ -27,31 +27,29 @@ const TaskProgress2 = {
     // Check if Dad should be unlocked (after Task 4)
     checkDadUnlockCondition() {
         console.log('🔍 Checking Dad unlock condition...');
-        
+
         const taskProgress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
         const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
-        
+
         console.log('📊 Task progress:', taskProgress);
         console.log('📊 Extended progress:', extendedProgress);
-        
+
         // Dad gets unlocked when task4_call_dyere is completed
         const isTask4Done = taskProgress.task4_call_dyere;
-        
+
         console.log('   - task4_call_dyere completed:', isTask4Done);
         console.log('   - Dad already unlocked:', extendedProgress.unlock_dad);
-        
+
         if (isTask4Done && !extendedProgress.unlock_dad) {
             console.log('🎉 Unlocking Dad...');
             // Unlock Dad
             extendedProgress.unlock_dad = true;
             localStorage.setItem('extendedProgress', JSON.stringify(extendedProgress));
-            
-            // Show special Dad unlock notification
-            setTimeout(() => {
-                this.showDadUnlockPopup();
-            }, 1000);
-            
+
             console.log('✅ Dad contact unlocked! Task 4 completed.');
+            
+            // Show subtle notification instead of big popup
+            this.showSubtleNotification();
         } else if (isTask4Done && extendedProgress.unlock_dad) {
             console.log('✅ Dad already unlocked from previous session');
         }
@@ -61,12 +59,12 @@ const TaskProgress2 = {
         // Listen for localStorage changes from Task Manager
         window.addEventListener('storage', (e) => {
             console.log('📦 Storage event:', e.key);
-            
+
             if (e.key === 'taskProgress') {
                 console.log('📢 Task progress updated, checking Dad unlock...');
                 this.checkDadUnlockCondition();
             }
-            
+
             if (e.key === 'extendedProgress') {
                 console.log('📢 Extended progress updated');
                 // Force re-render contacts when Dad gets unlocked
@@ -75,143 +73,86 @@ const TaskProgress2 = {
                 }
             }
         });
-        
+
         // Also set up polling to check for changes (in case storage event doesn't fire)
         setInterval(() => {
             this.checkDadUnlockCondition();
         }, 2000);
     },
 
-    // Show Dad unlock popup when Task 4 is completed
-    showDadUnlockPopup() {
-        console.log('🎬 Showing Dad unlock popup...');
+    // Show subtle notification instead of big popup
+    showSubtleNotification() {
+        console.log('📢 Showing subtle notification...');
         
-        // Create special Dad unlock popup
-        const popup = document.createElement('div');
-        popup.style.cssText = `
+        const notification = document.createElement('div');
+        notification.style.cssText = `
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10001;
-            animation: fadeIn 0.5s ease;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #1a237e, #0d47a1);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            z-index: 9999;
+            animation: slideDown 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            text-align: center;
+            min-width: 250px;
+            max-width: 300px;
+            font-size: 14px;
         `;
 
-        popup.innerHTML = `
-            <div style="
-                background: linear-gradient(135deg, #1a237e, #0d47a1);
-                color: white;
-                padding: 35px;
-                border-radius: 25px;
-                text-align: center;
-                max-width: 320px;
-                margin: 20px;
-                box-shadow: 0 25px 50px rgba(0,0,0,0.4);
-                animation: slideUp 0.7s ease;
-                border: 2px solid rgba(255,255,255,0.1);
-            ">
-                <div style="font-size: 4rem; margin-bottom: 20px;">🏆</div>
-                <h2 style="margin: 0 0 15px 0; font-size: 1.8rem; font-weight: 700;">TASK 4 COMPLETED!</h2>
-                
-                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; margin: 20px 0;">
-                    <div style="font-size: 1rem; opacity: 0.9; margin-bottom: 10px;">You've successfully completed Task 4</div>
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                        <div style="display: flex; align-items: center; justify-content: center;">
-                            <span style="color: #4CAF50; margin-right: 8px;">✓</span>
-                            <span>Call to Dyere</span>
-                        </div>
-                        <div style="font-size: 0.9rem; margin-top: 5px; color: #FFD700;">
-                            New information about Eric's location found!
-                        </div>
-                    </div>
-                </div>
-                
-                <div style="
-                    background: linear-gradient(to right, rgba(255,215,0,0.2), rgba(255,215,0,0.1));
-                    border: 2px solid rgba(255,215,0,0.3);
-                    padding: 20px;
-                    border-radius: 15px;
-                    margin: 25px 0;
-                    text-align: left;
-                ">
-                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                        <div style="font-size: 2.5rem; margin-right: 15px;">👨</div>
-                        <div>
-                            <div style="font-size: 1.3rem; font-weight: 600; color: #FFD700;">DAD UNLOCKED!</div>
-                            <div style="font-size: 0.95rem; opacity: 0.9;">Your father is now available to talk</div>
-                        </div>
-                    </div>
-                    <div style="font-size: 0.9rem; padding-left: 10px; border-left: 3px solid #FFD700; margin-top: 10px;">
-                        <em>"Dinner at 7" - Dad</em>
-                    </div>
-                </div>
-                
-                <button onclick="this.parentElement.parentElement.remove(); location.reload();" style="
-                    background: linear-gradient(to right, #FFD700, #FFC400);
-                    color: #1a237e;
-                    border: none;
-                    padding: 15px 40px;
-                    border-radius: 30px;
-                    font-weight: 700;
-                    font-size: 1.1rem;
-                    cursor: pointer;
-                    margin-top: 10px;
-                    transition: all 0.3s ease;
-                    box-shadow: 0 5px 15px rgba(255,215,0,0.3);
-                " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                    Continue to Messages
-                </button>
-                
-                <div style="margin-top: 20px; font-size: 0.85rem; opacity: 0.7;">
-                    Task 5 unlocked: Talk to Eric's Dad
+        notification.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px; justify-content: center;">
+                <span style="font-size: 1.2em;">🔓</span>
+                <div>
+                    <div style="font-size: 14px; font-weight: 600;">Dad Unlocked!</div>
+                    <div style="font-size: 12px; opacity: 0.9;">Task 4 completed - Dad is now available</div>
                 </div>
             </div>
-            
             <style>
-                @keyframes fadeIn {
-                    from { opacity: 0; }
-                    to { opacity: 1; }
-                }
-                @keyframes slideUp {
-                    from { 
-                        opacity: 0;
-                        transform: translateY(50px) scale(0.8);
-                    }
-                    to { 
-                        opacity: 1;
-                        transform: translateY(0) scale(1);
-                    }
-                }
-                @keyframes pulse {
-                    0%, 100% { transform: scale(1); }
-                    50% { transform: scale(1.05); }
+                @keyframes slideDown {
+                    from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+                    to { opacity: 1; transform: translateX(-50%) translateY(0); }
                 }
             </style>
         `;
 
-        document.body.appendChild(popup);
+        document.body.appendChild(notification);
 
-        // Add pulsing animation to the trophy
+        // Auto-remove after 3 seconds
         setTimeout(() => {
-            const trophy = popup.querySelector('div[style*="font-size: 4rem"]');
-            if (trophy) {
-                trophy.style.animation = 'pulse 2s infinite';
-            }
-        }, 1000);
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateX(-50%) translateY(-20px)';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+        
+        // Play subtle sound
+        this.playSubtleSound();
+    },
 
-        // Auto-remove after 8 seconds and reload
-        setTimeout(() => {
-            if (popup.parentElement) {
-                popup.remove();
-                // Reload to update contacts
-                setTimeout(() => location.reload(), 500);
-            }
-        }, 8000);
+    playSubtleSound() {
+        try {
+            // Use a simple beep sound or no sound at all
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            gainNode.gain.value = 0.1;
+            
+            oscillator.start();
+            setTimeout(() => oscillator.stop(), 100);
+        } catch (error) {
+            console.log('🔇 Sound not supported or user blocked audio');
+        }
     }
 };
 
@@ -261,7 +202,7 @@ function openChat(contactName) {
         console.log('👨 Checking Dad unlock status...');
         console.log('   - task4_call_dyere:', taskProgress.task4_call_dyere);
         console.log('   - unlock_dad:', extendedProgress.unlock_dad);
-        
+
         if (extendedProgress.unlock_dad || taskProgress.task4_call_dyere) {
             console.log('🔓 Dad is unlocked! Going to chat...');
             const realUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/index.html`;
@@ -288,7 +229,7 @@ function renderContacts(filter = '') {
     }
 
     console.log('🔄 Rendering contacts...');
-    
+
     contactsList.innerHTML = '';
 
     const filteredContacts = contacts.filter(contact => {
@@ -317,14 +258,38 @@ function renderContacts(filter = '') {
 
         contactsList.appendChild(contactElement);
     });
-    
+
     console.log('✅ Contacts rendered successfully');
 }
 
 function playClickSound() {
-    const sound = new Audio('../../sounds/click.mp3');
-    sound.volume = 0.3;
-    sound.play().catch(e => console.log('Sound error:', e));
+    try {
+        // Use a simple click sound using Web Audio API
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.value = 1000;
+        oscillator.type = 'sine';
+        gainNode.gain.value = 0.1;
+        
+        oscillator.start();
+        setTimeout(() => oscillator.stop(), 50);
+    } catch (error) {
+        // Fallback: Try to play a simple beep using the old method
+        try {
+            const sound = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==');
+            sound.volume = 0.1;
+            sound.play().catch(() => {
+                // If all else fails, just ignore the sound
+            });
+        } catch (e) {
+            // No sound available
+        }
+    }
 }
 
 // Simple back button function
@@ -336,7 +301,7 @@ function closeAppAndReturnHome() {
             console.log('⚠️ Could not focus home tab');
         }
     }
-    
+
     setTimeout(() => {
         window.close();
     }, 50);
@@ -348,22 +313,27 @@ function debugUnlockDad() {
     const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
     extendedProgress.unlock_dad = true;
     localStorage.setItem('extendedProgress', JSON.stringify(extendedProgress));
-    
+
     const taskProgress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
     taskProgress.task4_call_dyere = true;
     localStorage.setItem('taskProgress', JSON.stringify(taskProgress));
+
+    // Show subtle notification
+    TaskProgress2.showSubtleNotification();
     
-    alert('Dad manually unlocked! Refresh the page.');
-    location.reload();
+    // Refresh contacts
+    if (window.renderContacts) {
+        window.renderContacts();
+    }
 }
 
 // Main initialization
 document.addEventListener('DOMContentLoaded', function() {
     console.log('📱 DOM Content Loaded - Initializing Messages App...');
-    
+
     // Initialize task system
     TaskProgress2.init();
-    
+
     // Update time
     const currentTimeElement = document.getElementById('current-time');
     if (currentTimeElement) {
@@ -376,7 +346,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateTime();
         setInterval(updateTime, 60000);
     }
-    
+
     // Search functionality
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
@@ -384,10 +354,10 @@ document.addEventListener('DOMContentLoaded', function() {
             renderContacts(this.value);
         });
     }
-    
+
     // Render contacts initially
     renderContacts();
-    
+
     // Add back button event listener
     const backButton = document.querySelector('.back-button');
     if (backButton) {
@@ -396,7 +366,7 @@ document.addEventListener('DOMContentLoaded', function() {
             closeAppAndReturnHome();
         });
     }
-    
+
     console.log('💬 Messages App Ready!');
     console.log('📝 Debug: Type debugUnlockDad() in console to manually unlock Dad');
 });
