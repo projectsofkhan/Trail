@@ -1,29 +1,31 @@
-// taskprogress.js - Add Task 3
+// taskprogress.js - Updated to match Task Manager
 const TaskProgress = {
-    // Task definitions
+    // Task definitions - EXACTLY MATCHING TASK MANAGER
     tasks: {
         'chat_mr_ray': {
             id: 'chat_mr_ray',
-            title: 'Interview Mr. Ray',
-            description: 'Talk to Eric\'s teacher about his disappearance',
+            title: 'Talk to Mr. Ray',
+            description: 'Start a conversation with Mr.Ray and know about Eric, his friend, and him.',
             completed: false,
-            unlocks: 'Sahil contact'
+            unlocks: 'Sahil contact',
+            type: 'chat'
         },
         'talk_sahil': {
             id: 'talk_sahil',
-            title: 'Interview Sahil',
-            description: 'Question Eric\'s close friend for clues',
+            title: 'Talk to Sahil',
+            description: "Now Talk To Sahil Eric's close friend.",
             completed: false,
-            unlocks: 'Dyere contact and investigation clues'
+            unlocks: 'Dyere contact',
+            type: 'chat'
         },
         'investigate_dyere': {
             id: 'investigate_dyere',
             title: 'Investigate Dyere',
             description: 'Question the car repair guy who was close to Eric',
             completed: false,
-            unlocks: 'Important clue about Eric\'s last location'
+            unlocks: 'Important clue about Eric',
+            type: 'chat'
         }
-        // Add more tasks here later
     },
 
     // Initialize
@@ -34,7 +36,7 @@ const TaskProgress = {
             this.loadProgress();
         }
 
-        // Listen for storage changes (cross-tab communication)
+        // Listen for storage changes
         window.addEventListener('storage', (e) => {
             if (e.key === 'taskProgress') {
                 this.loadProgress();
@@ -46,6 +48,8 @@ const TaskProgress = {
         window.addEventListener('taskProgressUpdated', (e) => {
             console.log('📢 Task progress updated:', e.detail);
         });
+
+        console.log('✅ Task Progress System Ready');
     },
 
     // Complete a task
@@ -54,12 +58,25 @@ const TaskProgress = {
             this.tasks[taskId].completed = true;
             this.saveProgress();
             this.notifyChanges();
-            this.showTaskCompletePopup(taskId);
+            
+            // Also update gameTasks progress for Task Manager
+            this.updateGameTasks(taskId);
+            
             console.log(`✅ Task completed: ${taskId}`);
             
             // Play completion sound
             this.playCompletionSound();
         }
+    },
+
+    // Update gameTasks progress (for Task Manager)
+    updateGameTasks(taskId) {
+        const progress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
+        progress[taskId] = true;
+        localStorage.setItem('taskProgress', JSON.stringify(progress));
+        
+        // Trigger storage event for Task Manager
+        localStorage.setItem('taskProgressUpdate', Date.now());
     },
 
     // Check if task is completed
@@ -82,13 +99,6 @@ const TaskProgress = {
         return Object.keys(this.tasks).length;
     },
 
-    // Get progress percentage
-    getProgressPercentage() {
-        const completed = this.getCompletedCount();
-        const total = this.getTotalCount();
-        return total > 0 ? Math.round((completed / total) * 100) : 0;
-    },
-
     // Save progress to localStorage
     saveProgress() {
         const progress = {};
@@ -96,12 +106,7 @@ const TaskProgress = {
             progress[taskId] = this.tasks[taskId].completed;
         });
         localStorage.setItem('taskProgress', JSON.stringify(progress));
-        localStorage.setItem('lastUpdate', Date.now()); // Trigger storage event
-        
-        // Also save extended progress for other apps
-        const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
-        extendedProgress.tasks = progress;
-        localStorage.setItem('extendedProgress', JSON.stringify(extendedProgress));
+        localStorage.setItem('lastTaskUpdate', Date.now());
     },
 
     // Load progress from localStorage
@@ -120,30 +125,24 @@ const TaskProgress = {
         const event = new CustomEvent('taskProgressUpdated', {
             detail: { 
                 tasks: this.tasks,
-                completedCount: this.getCompletedCount(),
-                totalCount: this.getTotalCount(),
-                percentage: this.getProgressPercentage()
+                completedCount: this.getCompletedCount()
             }
         });
         window.dispatchEvent(event);
 
-        // Also trigger storage event for cross-tab communication
+        // Trigger storage event
         localStorage.setItem('taskProgressUpdate', Date.now());
-        
-        // Notify parent window if in iframe/popup
-        if (window.parent !== window) {
-            window.parent.postMessage({
-                type: 'TASK_PROGRESS_UPDATE',
-                tasks: this.tasks
-            }, '*');
-        }
-        
-        // Notify opener if opened from another window
+
+        // Notify Task Manager if it's the opener
         if (window.opener && !window.opener.closed) {
-            window.opener.postMessage({
-                type: 'TASK_PROGRESS_UPDATE', 
-                tasks: this.tasks
-            }, '*');
+            try {
+                window.opener.postMessage({
+                    type: 'TASK_COMPLETED',
+                    taskId: Object.keys(this.tasks).find(id => !this.tasks[id].completed) || ''
+                }, '*');
+            } catch (e) {
+                console.log('⚠️ Could not notify Task Manager');
+            }
         }
     },
 
@@ -152,7 +151,7 @@ const TaskProgress = {
         const taskSound = new Audio('https://projectsofkhan.github.io/Trail/apps/task/task.mp3');
         taskSound.volume = 0.6;
         taskSound.play().catch(e => {
-            console.log('Task completion sound error:', e);
+            console.log('Task sound error:', e);
         });
     },
 
@@ -168,7 +167,7 @@ const TaskProgress = {
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.9);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -182,7 +181,7 @@ const TaskProgress = {
                 <div style="display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.15); padding: 12px; border-radius: 10px; margin: 15px 0;">
                     <div style="font-size: 1.8rem; margin-right: 10px;">🔓</div>
                     <div style="text-align: left;">
-                        <div style="font-size: 0.9rem; font-weight: 500;">New Unlock!</div>
+                        <div style="font-size: 0.9rem; font-weight: 500;">Unlocked!</div>
                         <div style="font-size: 0.8rem; opacity: 0.9;">${task.unlocks}</div>
                     </div>
                 </div>
@@ -205,7 +204,7 @@ const TaskProgress = {
                 <h3 style="margin: 0 0 10px 0; font-size: 1.4rem; font-weight: 600;">Task Completed!</h3>
                 <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; margin: 15px 0;">
                     <div style="font-size: 1.1rem; font-weight: 500; margin-bottom: 5px;">${task.title}</div>
-                    <div style="font-size: 0.9rem; opacity: 0.9;">Completed Successfully</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">${task.description}</div>
                 </div>
                 ${unlockContent}
                 <button onclick="this.parentElement.parentElement.remove()" style="
@@ -218,24 +217,14 @@ const TaskProgress = {
                     font-size: 1rem;
                     cursor: pointer;
                     margin-top: 10px;
-                    transition: all 0.2s ease;
-                " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Continue</button>
+                ">Continue</button>
             </div>
             
             <style>
-                @keyframes fadeIn { 
-                    from { opacity: 0; } 
-                    to { opacity: 1; } 
-                }
+                @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
                 @keyframes slideUp {
-                    from { 
-                        opacity: 0;
-                        transform: translateY(30px) scale(0.9);
-                    }
-                    to { 
-                        opacity: 1;
-                        transform: translateY(0) scale(1);
-                    }
+                    from { opacity: 0; transform: translateY(30px) scale(0.9); }
+                    to { opacity: 1; transform: translateY(0) scale(1); }
                 }
             </style>
         `;
@@ -250,7 +239,7 @@ const TaskProgress = {
         }, 5000);
     },
 
-    // Reset all progress (for testing)
+    // Reset all progress
     resetAllProgress() {
         Object.keys(this.tasks).forEach(taskId => {
             this.tasks[taskId].completed = false;
@@ -258,17 +247,6 @@ const TaskProgress = {
         this.saveProgress();
         this.notifyChanges();
         console.log('🔄 All task progress reset');
-    },
-
-    // Export progress data
-    exportProgress() {
-        return {
-            tasks: this.tasks,
-            completedCount: this.getCompletedCount(),
-            totalCount: this.getTotalCount(),
-            percentage: this.getProgressPercentage(),
-            timestamp: Date.now()
-        };
     }
 };
 
@@ -278,7 +256,7 @@ TaskProgress.init();
 // Make it global
 window.TaskProgress = TaskProgress;
 
-// Message listener for cross-window communication
+// Message listener
 window.addEventListener('message', function(event) {
     if (event.data && event.data.type === 'TASK_COMPLETED') {
         const { taskId } = event.data;
@@ -286,16 +264,4 @@ window.addEventListener('message', function(event) {
             TaskProgress.completeTask(taskId);
         }
     }
-    
-    if (event.data && event.data.type === 'GET_TASK_PROGRESS') {
-        // Send back current progress
-        event.source.postMessage({
-            type: 'TASK_PROGRESS_DATA',
-            data: TaskProgress.exportProgress()
-        }, event.origin);
-    }
 });
-
-console.log('✅ Task Progress System Loaded');
-console.log('📊 Available tasks:', Object.keys(TaskProgress.tasks));
-console.log('🎯 Completed tasks:', TaskProgress.getCompletedCount() + '/' + TaskProgress.getTotalCount());
