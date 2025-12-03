@@ -13,9 +13,9 @@ const gameTasks = {
         unlocks: ['investigate_dyere']
     },
     'investigate_dyere': {
-        title: 'Task 3: Investigate Dyere',
-        description: 'Question the car repair guy who was close to Eric',
-        hint: 'Go to Messages app → Click On Dyere → Complete the conversation (he will block you)',
+        title: 'Task 3: Talk To Dyere',
+        description: 'Talk to Dyere, and ask him about Eric!',
+        hint: 'Go to Messages app → Click On Dyere → Complete the conversation.',
         unlocks: [] // Last task for now
     }
 };
