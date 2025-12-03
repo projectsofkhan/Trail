@@ -15,6 +15,15 @@ const contacts = [
 // ========== TASK PROGRESSION SYSTEM ==========
 const TaskProgress2 = {
     init() {
+        console.log('🔄 Initializing Messages Task System...');
+        
+        // Load progress from localStorage (sync with Task Manager)
+        const taskProgress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
+        const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
+        
+        console.log('📊 Task Manager progress:', taskProgress);
+        console.log('📊 Extended progress:', extendedProgress);
+        
         if (!localStorage.getItem('taskProgress')) {
             localStorage.setItem('taskProgress', JSON.stringify({}));
         }
@@ -23,40 +32,25 @@ const TaskProgress2 = {
         }
     },
 
-    completeTask(taskId) {
-        const progress = this.getProgress();
-        progress[taskId] = true;
-        localStorage.setItem('taskProgress', JSON.stringify(progress));
-        this.showTaskCompletePopup(taskId);
-        console.log(`✅ Task completed: ${taskId}`);
-        
-        // Check for Dad unlock condition (Mr. Ray + Sahil + Dyere completed)
-        this.checkDadUnlockCondition();
-    },
-
+    // This function syncs with Task Manager's task IDs
     isTaskCompleted(taskId) {
-        const progress = this.getProgress();
-        return !!progress[taskId];
+        const taskProgress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
+        return !!taskProgress[taskId];
     },
 
-    getProgress() {
-        return JSON.parse(localStorage.getItem('taskProgress') || '{}');
-    },
-
+    // This checks if Dad should be unlocked (after Task 4)
     checkDadUnlockCondition() {
-        // Dad gets unlocked when ALL THREE are completed:
-        // 1. chat_mr_ray (Mr. Ray)
-        // 2. chat_sahil (Sahil) 
-        // 3. unlock_dyere (Dyere) - from extendedProgress
-        const progress = this.getProgress();
+        const taskProgress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
         const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
         
-        const isMrRayDone = progress.chat_mr_ray;
-        const isSahilDone = progress.chat_sahil;
-        const isDyereDone = extendedProgress.unlock_dyere;
+        // Dad gets unlocked when task4_call_dyere is completed
+        const isTask4Done = taskProgress.task4_call_dyere;
         
-        // If all three are true and Dad isn't already unlocked
-        if (isMrRayDone && isSahilDone && isDyereDone && !extendedProgress.unlock_dad) {
+        console.log('🔍 Checking Dad unlock condition:');
+        console.log('   - task4_call_dyere completed:', isTask4Done);
+        console.log('   - Dad already unlocked:', extendedProgress.unlock_dad);
+        
+        if (isTask4Done && !extendedProgress.unlock_dad) {
             // Unlock Dad
             extendedProgress.unlock_dad = true;
             localStorage.setItem('extendedProgress', JSON.stringify(extendedProgress));
@@ -66,96 +60,11 @@ const TaskProgress2 = {
                 this.showDadUnlockPopup();
             }, 1000);
             
-            console.log('🎉 Dad contact unlocked! All three tasks completed.');
+            console.log('🎉 Dad contact unlocked! Task 4 completed.');
         }
     },
 
-    showTaskCompletePopup(taskId) {
-        if (taskId === 'chat_mr_ray') {
-            // Create beautiful popup
-            const popup = document.createElement('div');
-            popup.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.8);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 10000;
-                animation: fadeIn 0.3s ease;
-            `;
-
-            popup.innerHTML = `
-                <div style="
-                    background: linear-gradient(135deg, #128C7E, #25D366);
-                    color: white;
-                    padding: 30px;
-                    border-radius: 20px;
-                    text-align: center;
-                    max-width: 280px;
-                    margin: 20px;
-                    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-                    animation: slideUp 0.5s ease;
-                ">
-                    <div style="font-size: 3rem; margin-bottom: 15px;">🎉</div>
-                    <h3 style="margin: 0 0 10px 0; font-size: 1.4rem; font-weight: 600;">Task Completed!</h3>
-                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; margin: 15px 0;">
-                        <div style="font-size: 1.1rem; font-weight: 500; margin-bottom: 5px;">Chat with Mr. Ray</div>
-                        <div style="font-size: 0.9rem; opacity: 0.9;">Completed Successfully</div>
-                    </div>
-                    <div style="display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.15); padding: 12px; border-radius: 10px; margin: 15px 0;">
-                        <div style="font-size: 1.8rem; margin-right: 10px;">🔓</div>
-                        <div style="text-align: left;">
-                            <div style="font-size: 0.9rem; font-weight: 500;">New Contact Unlocked!</div>
-                            <div style="font-size: 0.8rem; opacity: 0.9;">Sahil is now available</div>
-                        </div>
-                    </div>
-                    <button onclick="this.parentElement.parentElement.remove()" style="
-                        background: white;
-                        color: #128C7E;
-                        border: none;
-                        padding: 12px 30px;
-                        border-radius: 25px;
-                        font-weight: 600;
-                        font-size: 1rem;
-                        cursor: pointer;
-                        margin-top: 10px;
-                        transition: all 0.2s ease;
-                    ">Continue</button>
-                </div>
-                
-                <style>
-                    @keyframes fadeIn {
-                        from { opacity: 0; }
-                        to { opacity: 1; }
-                    }
-                    @keyframes slideUp {
-                        from { 
-                            opacity: 0;
-                            transform: translateY(30px) scale(0.9);
-                        }
-                        to { 
-                            opacity: 1;
-                            transform: translateY(0) scale(1);
-                        }
-                    }
-                </style>
-            `;
-
-            document.body.appendChild(popup);
-
-            // Auto-remove after 5 seconds
-            setTimeout(() => {
-                if (popup.parentElement) {
-                    popup.remove();
-                }
-            }, 5000);
-        }
-    },
-
+    // Show Dad unlock popup when Task 4 is completed
     showDadUnlockPopup() {
         // Create special Dad unlock popup
         const popup = document.createElement('div');
@@ -190,19 +99,14 @@ const TaskProgress2 = {
                 <h2 style="margin: 0 0 15px 0; font-size: 1.8rem; font-weight: 700;">TASK 4 COMPLETED!</h2>
                 
                 <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; margin: 20px 0;">
-                    <div style="font-size: 1rem; opacity: 0.9; margin-bottom: 10px;">You've successfully completed:</div>
+                    <div style="font-size: 1rem; opacity: 0.9; margin-bottom: 10px;">You've successfully completed Task 4</div>
                     <div style="display: flex; flex-direction: column; gap: 8px;">
                         <div style="display: flex; align-items: center; justify-content: center;">
                             <span style="color: #4CAF50; margin-right: 8px;">✓</span>
-                            <span>Chat with Mr. Ray</span>
+                            <span>Call to Dyere</span>
                         </div>
-                        <div style="display: flex; align-items: center; justify-content: center;">
-                            <span style="color: #4CAF50; margin-right: 8px;">✓</span>
-                            <span>Chat with Sahil</span>
-                        </div>
-                        <div style="display: flex; align-items: center; justify-content: center;">
-                            <span style="color: #4CAF50; margin-right: 8px;">✓</span>
-                            <span>Chat with Dyere</span>
+                        <div style="font-size: 0.9rem; margin-top: 5px; color: #FFD700;">
+                            New information about Eric's location found!
                         </div>
                     </div>
                 </div>
@@ -244,7 +148,7 @@ const TaskProgress2 = {
                 </button>
                 
                 <div style="margin-top: 20px; font-size: 0.85rem; opacity: 0.7;">
-                    New story chapter unlocked!
+                    Task 5 unlocked: Talk to Eric's Dad
                 </div>
             </div>
             
@@ -289,18 +193,21 @@ const TaskProgress2 = {
     }
 };
 
-// Initialize task system
-TaskProgress2.init();
-
 // Format contact name for URL
 function formatContactName(contactName) {
     if (contactName === 'Mr. Ray') return 'misterray';
     return contactName.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
-// Smart chat navigation - checks task progress
+// Smart chat navigation - checks task progress (SYNCED WITH TASK MANAGER)
 function openChat(contactName) {
     const formattedName = formatContactName(contactName);
+    const taskProgress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
+    const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
+
+    console.log(`🔍 Opening chat for ${contactName}`);
+    console.log('   Task progress:', taskProgress);
+    console.log('   Extended progress:', extendedProgress);
 
     // Only Mr. Ray is always unlocked
     if (contactName === 'Mr. Ray') {
@@ -311,7 +218,7 @@ function openChat(contactName) {
     } 
     // Sahil requires Mr. Ray task completion
     else if (contactName === 'Sahil') {
-        if (TaskProgress2.isTaskCompleted('chat_mr_ray')) {
+        if (taskProgress.chat_mr_ray) {
             // Task completed - go to real chat
             const realUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/index.html`;
             console.log(`🔓 Sahil chat unlocked - redirecting to: ${realUrl}`);
@@ -323,25 +230,23 @@ function openChat(contactName) {
             window.location.href = lockedUrl;
         }
     }
-    // Dyere requires Sahil task completion
+    // Dyere requires Sahil task completion (using Task Manager's talk_sahil)
     else if (contactName === 'Dyere') {
-        const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
-        if (extendedProgress.unlock_dyere) {
-            // Dyere unlocked - go to real chat
+        if (taskProgress.talk_sahil) {
+            // Task completed - go to real chat
             const realUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/index.html`;
             console.log(`🔓 Dyere chat unlocked - redirecting to: ${realUrl}`);
             window.location.href = realUrl;
         } else {
-            // Dyere not unlocked - go to locked page
+            // Task not completed - go to locked page
             const lockedUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/locked.html`;
             console.log(`🔒 Dyere chat locked - redirecting to: ${lockedUrl}`);
             window.location.href = lockedUrl;
         }
     }
-    // ✅ DAD: Unlocked after completing Mr. Ray + Sahil + Dyere
+    // ✅ DAD: Unlocked after completing Task 4 (task4_call_dyere)
     else if (contactName === 'Dad') {
-        const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
-        if (extendedProgress.unlock_dad) {
+        if (extendedProgress.unlock_dad || taskProgress.task4_call_dyere) {
             // Dad unlocked - go to real chat
             const realUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/index.html`;
             console.log(`🔓 Dad chat unlocked - redirecting to: ${realUrl}`);
@@ -366,7 +271,6 @@ function renderContacts(filter = '') {
     const contactsList = document.getElementById('contactsList');
     if (!contactsList) {
         console.error('❌ contactsList element not found!');
-        console.error('Looking for element with id="contactsList"');
         return;
     }
 
@@ -439,6 +343,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize task system
     TaskProgress2.init();
     
+    // Check if Dad should be unlocked (on page load)
+    TaskProgress2.checkDadUnlockCondition();
+    
     // Update time
     const currentTimeElement = document.getElementById('current-time');
     if (currentTimeElement) {
@@ -473,7 +380,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    console.log('💬 Messages App Ready!');
+    // Listen for task updates from Task Manager
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'taskProgress' || e.key === 'extendedProgress') {
+            console.log('📢 Storage updated, checking Dad unlock...');
+            TaskProgress2.checkDadUnlockCondition();
+        }
+    });
+    
+    console.log('💬 Messages App Ready - Synced with Task Manager!');
 });
 
 // Make functions globally available
