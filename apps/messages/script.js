@@ -223,12 +223,15 @@ const TaskProgress2 = {
     }
 };
 
-// Initialize task system when the app loads
-TaskProgress2.init();
+// ========== HELPER FUNCTIONS ==========
 
-// Format contact name for URL
+// Format contact name for URL - FIXED VERSION
 function formatContactName(contactName) {
     if (contactName === 'Mr. Ray') return 'misterray';
+    if (contactName === 'Dad') return 'dad';
+    if (contactName === 'Sahil') return 'sahil';
+    if (contactName === 'Dyere') return 'dyere';
+    // For other contacts
     return contactName.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
@@ -236,6 +239,11 @@ function formatContactName(contactName) {
 function openChat(contactName) {
     const formattedName = formatContactName(contactName);
     const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
+
+    console.log(`🔍 Opening chat for: ${contactName}`);
+    console.log(`🔍 Formatted name: ${formattedName}`);
+    console.log(`🔍 Dad unlocked?`, extendedProgress.unlock_dad);
+    console.log(`🔍 chat_dyere completed?`, TaskProgress2.isTaskCompleted('chat_dyere'));
 
     // Only Mr. Ray is always unlocked
     if (contactName === 'Mr. Ray') {
@@ -269,9 +277,10 @@ function openChat(contactName) {
     }
     // ✅ Dad requires Dyere task completion (Task 4)
     else if (contactName === 'Dad') {
-        if (extendedProgress.unlock_dad || TaskProgress2.isTaskCompleted('chat_dyere')) {
+        // FIXED: Check both conditions properly
+        if (extendedProgress.unlock_dad === true || TaskProgress2.isTaskCompleted('chat_dyere')) {
             const realUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/index.html`;
-            console.log(`🔓 Dad chat unlocked - redirecting to: ${realUrl}`);
+            console.log(`🎯 DAD UNLOCKED! Redirecting to: ${realUrl}`);
             window.location.href = realUrl;
         } else {
             const lockedUrl = `https://projectsofkhan.github.io/Trail/apps/messages/contacts/${formattedName}/locked.html`;
@@ -287,27 +296,80 @@ function openChat(contactName) {
     }
 }
 
-// ========== CONTACT RENDERING FUNCTIONS ==========
+// Add this debug function to check current state
+function checkDadStatus() {
+    const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
+    console.log('=== DAD STATUS CHECK ===');
+    console.log('extendedProgress:', extendedProgress);
+    console.log('unlock_dad:', extendedProgress.unlock_dad);
+    console.log('Type of unlock_dad:', typeof extendedProgress.unlock_dad);
+    console.log('chat_dyere completed:', TaskProgress2.isTaskCompleted('chat_dyere'));
+    console.log('Task progress:', TaskProgress2.getProgress());
+}
 
-// Render contacts - All visible, no lock icons
+// Back button functionality
+function initializeBackButton() {
+    const backButton = document.querySelector('.back-button');
+    
+    if (backButton) {
+        backButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('🔙 Back button clicked - closing app...');
+            
+            // Try to focus home tab
+            if (window.opener && !window.opener.closed) {
+                try {
+                    window.opener.focus();
+                } catch (error) {
+                    console.log('⚠️ Could not focus home tab');
+                }
+            }
+            
+            // Close this tab
+            setTimeout(() => {
+                window.close();
+            }, 100);
+        });
+    }
+}
+
+// Auto-redirect system
+function initializeAutoRedirect() {
+    window.addEventListener('beforeunload', function() {
+        console.log('🔄 Messages closing - redirecting to home...');
+        
+        if (window.opener && !window.opener.closed) {
+            try {
+                window.opener.location.href = window.location.origin + '/Trail/';
+            } catch (error) {
+                console.log('⚠️ Could not redirect home');
+            }
+        }
+    });
+}
+
+// Render contacts function
 function renderContacts(filter = '') {
     const contactsList = document.getElementById('contactsList');
     if (!contactsList) {
         console.error('❌ contactsList element not found!');
         return;
     }
-
+    
     contactsList.innerHTML = '';
-
-    const filteredContacts = contacts.filter(contact => {
-        return contact.name.toLowerCase().includes(filter.toLowerCase());
-    });
-
+    
+    const filteredContacts = contacts.filter(contact => 
+        contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
+    
     filteredContacts.forEach(contact => {
         const contactElement = document.createElement('div');
         contactElement.className = 'contact-item';
-        contactElement.onclick = () => openChat(contact.name);
-
+        contactElement.onclick = () => {
+            console.log(`📱 Clicked contact: ${contact.name}`);
+            openChat(contact.name);
+        };
+        
         contactElement.innerHTML = `
             <div class="contact-avatar">${contact.avatar}</div>
             <div class="contact-info">
@@ -319,41 +381,55 @@ function renderContacts(filter = '') {
                 ${contact.unread > 0 ? `<div class="unread-badge">${contact.unread}</div>` : ''}
             </div>
         `;
-
+        
         contactsList.appendChild(contactElement);
     });
 }
 
-// Initialize the app when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    const currentTimeElement = document.getElementById('current-time');
-    const contactsList = document.getElementById('contactsList');
-    const searchInput = document.getElementById('searchInput');
+// ========== INITIALIZATION ==========
 
+// Initialize everything when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize task system
+    TaskProgress2.init();
+    
+    // Initialize UI
+    const currentTimeElement = document.getElementById('current-time');
+    const searchInput = document.getElementById('searchInput');
+    
     // Update time
-    function updateTime() {
-        if (currentTimeElement) {
+    if (currentTimeElement) {
+        function updateTime() {
             const now = new Date();
             const hours = now.getHours();
             const minutes = now.getMinutes().toString().padStart(2, '0');
             currentTimeElement.textContent = `${hours}:${minutes}`;
         }
+        updateTime();
+        setInterval(updateTime, 60000);
     }
-
+    
     // Search functionality
     if (searchInput) {
         searchInput.addEventListener('input', function() {
             renderContacts(this.value);
         });
     }
-
-    // Initialize everything
-    updateTime();
+    
+    // Render contacts
     renderContacts();
-    setInterval(updateTime, 60000);
-
-    console.log('💬 Messages App Ready - Contacts rendered!');
+    
+    // Initialize back button
+    initializeBackButton();
+    
+    // Initialize auto-redirect
+    initializeAutoRedirect();
+    
+    console.log('💬 Messages App Ready!');
+    checkDadStatus(); // Debug: Check Dad status on load
 });
 
 // Make functions global
 window.openChat = openChat;
+window.checkDadStatus = checkDadStatus;
+window.TaskProgress2 = TaskProgress2;
