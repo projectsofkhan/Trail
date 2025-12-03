@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const currentTimeElement = document.getElementById('current-time');
     const chatMessages = document.getElementById('chatMessages');
     const choiceButton = document.getElementById('choiceBtn');
+    const contactStatus = document.getElementById('contactStatus');
 
     // Create audio elements for sounds
     const sentSound = new Audio('sent.mp3');
@@ -109,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ========== TASK 5 COMPLETION FUNCTION ==========
     function completeDadChat() {
-        // Play completion sound
+        // ✅ PLAY TASK COMPLETION SOUND
         const taskSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3');
         taskSound.volume = 0.3;
         taskSound.play().catch(e => {
@@ -157,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('taskProgressUpdate', Date.now());
     }
 
-    // Show task completion popup
+    // ✅ Show task completion popup
     function showTaskCompletePopup() {
         const popup = document.createElement('div');
         popup.style.cssText = `
@@ -176,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         popup.innerHTML = `
             <div style="
-                background: linear-gradient(135deg, #3498db, #2980b9);
+                background: linear-gradient(135deg, #128C7E, #25D366);
                 color: white;
                 padding: 30px;
                 border-radius: 20px;
@@ -185,31 +186,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 margin: 20px;
                 box-shadow: 0 20px 40px rgba(0,0,0,0.3);
                 animation: slideUp 0.5s ease;
-                border: 2px solid #2c3e50;
+                border: 2px solid #0a6b5e;
             ">
-                <div style="font-size: 3rem; margin-bottom: 15px;">👨‍🦳</div>
+                <div style="font-size: 3rem; margin-bottom: 15px;">🎉</div>
                 <h3 style="margin: 0 0 10px 0; font-size: 1.4rem; font-weight: 600;">Task Completed!</h3>
-                <div style="background: rgba(255,255,255,0.15); padding: 15px; border-radius: 12px; margin: 15px 0;">
+                <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; margin: 15px 0;">
                     <div style="font-size: 1.1rem; font-weight: 500; margin-bottom: 5px;">Talk to Eric's Dad</div>
                     <div style="font-size: 0.9rem; opacity: 0.9;">Investigation complete</div>
                 </div>
-                <div style="display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; margin: 15px 0;">
+                <div style="display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.15); padding: 12px; border-radius: 10px; margin: 15px 0;">
                     <div style="font-size: 1.8rem; margin-right: 10px;">💻</div>
                     <div style="text-align: left;">
                         <div style="font-size: 0.9rem; font-weight: 500;">Critical Clue Found!</div>
                         <div style="font-size: 0.8rem; opacity: 0.9;">Eric's laptop has important evidence</div>
                     </div>
                 </div>
-                <div style="display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; margin: 15px 0;">
+                <div style="display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.15); padding: 12px; border-radius: 10px; margin: 15px 0;">
                     <div style="font-size: 1.8rem; margin-right: 10px;">🏢</div>
                     <div style="text-align: left;">
                         <div style="font-size: 0.9rem; font-weight: 500;">Fight Location</div>
                         <div style="font-size: 0.8rem; opacity: 0.9;">Eric fought with Dyere at the garage</div>
                     </div>
                 </div>
-                <button onclick="this.parentElement.parentElement.remove()" style="
+                <button onclick="closePopup()" style="
                     background: white;
-                    color: #3498db;
+                    color: #128C7E;
                     border: none;
                     padding: 12px 30px;
                     border-radius: 25px;
@@ -274,6 +275,14 @@ document.addEventListener('DOMContentLoaded', function() {
             addMessage(answer, 'received');
 
             currentStep++;
+
+            // Update typing status
+            if (contactStatus && currentStep < questions.length) {
+                contactStatus.textContent = "Typing...";
+                setTimeout(() => {
+                    contactStatus.textContent = "Online";
+                }, 1500);
+            }
 
             // Re-enable button for next question
             setTimeout(() => {
