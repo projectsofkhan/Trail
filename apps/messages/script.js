@@ -12,8 +12,7 @@ const contacts = [
     { name: 'Falco', avatar: '👨‍✈️', lastMessage: 'Flight confirmed', time: '11/09/23', unread: 0 }
 ];
 
-
-    // ========== TASK PROGRESSION SYSTEM ==========
+// ========== TASK PROGRESSION SYSTEM ==========
 const TaskProgress2 = {
     init() {
         if (!localStorage.getItem('taskProgress')) {
@@ -224,6 +223,15 @@ const TaskProgress2 = {
     }
 };
 
+// Initialize task system when the app loads
+TaskProgress2.init();
+
+// Format contact name for URL
+function formatContactName(contactName) {
+    if (contactName === 'Mr. Ray') return 'misterray';
+    return contactName.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
 // Smart chat navigation - checks task progress
 function openChat(contactName) {
     const formattedName = formatContactName(contactName);
@@ -279,6 +287,73 @@ function openChat(contactName) {
     }
 }
 
-// Initialize task system when the app loads
-TaskProgress2.init();
+// ========== CONTACT RENDERING FUNCTIONS ==========
 
+// Render contacts - All visible, no lock icons
+function renderContacts(filter = '') {
+    const contactsList = document.getElementById('contactsList');
+    if (!contactsList) {
+        console.error('❌ contactsList element not found!');
+        return;
+    }
+
+    contactsList.innerHTML = '';
+
+    const filteredContacts = contacts.filter(contact => {
+        return contact.name.toLowerCase().includes(filter.toLowerCase());
+    });
+
+    filteredContacts.forEach(contact => {
+        const contactElement = document.createElement('div');
+        contactElement.className = 'contact-item';
+        contactElement.onclick = () => openChat(contact.name);
+
+        contactElement.innerHTML = `
+            <div class="contact-avatar">${contact.avatar}</div>
+            <div class="contact-info">
+                <div class="contact-name">${contact.name}</div>
+                <div class="contact-last-message">${contact.lastMessage}</div>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                <div class="message-time">${contact.time}</div>
+                ${contact.unread > 0 ? `<div class="unread-badge">${contact.unread}</div>` : ''}
+            </div>
+        `;
+
+        contactsList.appendChild(contactElement);
+    });
+}
+
+// Initialize the app when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    const currentTimeElement = document.getElementById('current-time');
+    const contactsList = document.getElementById('contactsList');
+    const searchInput = document.getElementById('searchInput');
+
+    // Update time
+    function updateTime() {
+        if (currentTimeElement) {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            currentTimeElement.textContent = `${hours}:${minutes}`;
+        }
+    }
+
+    // Search functionality
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            renderContacts(this.value);
+        });
+    }
+
+    // Initialize everything
+    updateTime();
+    renderContacts();
+    setInterval(updateTime, 60000);
+
+    console.log('💬 Messages App Ready - Contacts rendered!');
+});
+
+// Make functions global
+window.openChat = openChat;
