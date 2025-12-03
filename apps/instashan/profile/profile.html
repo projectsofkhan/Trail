@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -405,20 +404,6 @@
             </div>
 
             <div class="app-page">
-                
-
-
-
-
-
-
-
-
-
-
-
-
-
                 <div class="profile-section">
                     <div class="profile-info">
                         <div class="profile-avatar">
@@ -429,7 +414,7 @@
                             <div class="profile-bio">Eric Petrove - Tech enthusiast and car lover. </div>
                             <div class="stats">
                                 <div class="stat">
-                                    <div class="stat-number">12</div>
+                                    <div class="stat-number">11</div>
                                     <div class="stat-label">Posts</div>
                                 </div>
                                 <div class="stat">
@@ -451,13 +436,13 @@
                     </div>
                 </div>
 
-               <div class="bottom-nav">
-    <button class="nav-button active profile-nav-button">
-        <img src="https://projectsofkhan.github.io/pythontodoapp/profileimage.jpg" class="profile-nav-image" alt="Profile">
-    </button>
-    <button class="nav-button" onclick="openReels()">🎥</button>
-    <button class="nav-button" onclick="openChats()">💬</button>
-</div>
+                <div class="bottom-nav">
+                    <button class="nav-button active profile-nav-button">
+                        <img src="https://projectsofkhan.github.io/pythontodoapp/profileimage.jpg" class="profile-nav-image" alt="Profile">
+                    </button>
+                    <button class="nav-button" onclick="openReels()">🎥</button>
+                    <button class="nav-button" onclick="openChats()">💬</button>
+                </div>
             </div>
         </div>
 
@@ -478,7 +463,7 @@
     </div>
 
     <script>
-        // Updated image URLs
+        // Updated image URLs (only 11 posts)
         const profileImage = 'https://projectsofkhan.github.io/pythontodoapp/profileimage.jpg';
         const postImages = [
             'https://projectsofkhan.github.io/pythontodoapp/image1.jpg',
@@ -506,7 +491,7 @@
             "Billie Volleyball Club 🏆",
             "I Love You The Most 💕",
             "The Indian Good is best!",
-            "Rainy days ☔ | Perfect for creativity",
+            "Rainy days ☔ | Perfect for creativity"
         ];
 
         const comments = [
@@ -520,6 +505,7 @@
             ["Diya: You Do it"],
             ["Sister:Hey why you posted it?", "Eric: Don't worry it's in Close Freind!", "Sister: Delete it now bro", "Eric: 😂"],
             ["Priya: 😋", "misterray: Delicious"],
+            ["Rohan: Beautiful shot!", "Sahil: Love the mood"]
         ];
 
         let currentPostIndex = 0;
@@ -543,7 +529,7 @@
 
             postsGrid.innerHTML = '';
 
-            for (let i = 0; i < 12; i++) {
+            for (let i = 0; i < postImages.length; i++) {
                 const postItem = document.createElement('div');
                 postItem.className = 'post-item';
                 postItem.onclick = () => openPost(i);
@@ -560,6 +546,8 @@
 
         // Open post modal
         function openPost(index) {
+            if (index >= postImages.length) return;
+            
             currentPostIndex = index;
             const modal = document.getElementById('postModal');
             const modalImage = document.getElementById('modalImage');
@@ -570,17 +558,17 @@
             if (postImages[index]) {
                 modalImage.src = postImages[index];
             }
-            
+
             modalBio.textContent = postBios[index];
-            modalComments.innerHTML = comments[index].join('<br>');
-            
+            modalComments.innerHTML = comments[index] ? comments[index].join('<br>') : '';
+
             // Set like button state
             if (likedPosts[index]) {
                 likeButton.classList.add('liked');
             } else {
                 likeButton.classList.remove('liked');
             }
-            
+
             modal.style.display = 'flex';
         }
 
@@ -594,24 +582,26 @@
         function toggleLike() {
             const likeButton = document.getElementById('likeButton');
             likedPosts[currentPostIndex] = !likedPosts[currentPostIndex];
-            
+
             if (likedPosts[currentPostIndex]) {
                 likeButton.classList.add('liked');
             } else {
                 likeButton.classList.remove('liked');
             }
-            
+
             localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
         }
 
         // Open chats
-function openChats() {
-    window.location.href = '../chats/chats.html';
-}
-// Open reels
-function openReels() {
-    window.location.href = 'https://projectsofkhan.github.io/123/reels.html';
-}
+        function openChats() {
+            window.location.href = '../chats/chats.html';
+        }
+
+        // Open reels
+        function openReels() {
+            window.location.href = 'https://projectsofkhan.github.io/123/reels.html';
+        }
+
         // Check login status
         function checkLoginStatus() {
             if (localStorage.getItem('instashan_logged_in') !== 'true') {
