@@ -1,16 +1,22 @@
 // Complete task progression system
 const gameTasks = {
     'chat_mr_ray': {
-        title: 'Talk to Mr. Ray',
+        title: 'Task 1: Talk to Mr. Ray',
         description: 'Start a conversation with Mr.Ray and know about Eric, his friend, and him.',
         hint: 'Go to Messages app → Click on Mr. Ray → Complete all conversation steps',
         unlocks: ['talk_sahil']
     },
     'talk_sahil': {
-        title: 'Talk to Sahil',
-        description: 'Now Talk To Sahil Eric\'s close friend.',
+        title: 'Task 2: Talk to Sahil',
+        description: "Now Talk To Sahil Eric's close friend.",
         hint: 'Go to Messages app → Click On Sahil → Complete All Conversation.',
-        unlocks: ['unlock_dyere'] // No more tasks for now
+        unlocks: ['investigate_dyere']
+    },
+    'investigate_dyere': {
+        title: 'Task 3: Investigate Dyere',
+        description: 'Question the car repair guy who was close to Eric',
+        hint: 'Go to Messages app → Click On Dyere → Complete the conversation (he will block you)',
+        unlocks: [] // Last task for now
     }
 };
 
@@ -18,9 +24,6 @@ let hintWatched = JSON.parse(localStorage.getItem('hintWatched') || '{}');
 
 // Short helper functions
 function isTaskCompleted(taskId) {
-    if (typeof TaskProgress !== 'undefined') {
-        return TaskProgress.isTaskCompleted(taskId);
-    }
     const progress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
     return !!progress[taskId];
 }
@@ -47,7 +50,7 @@ function loadRealTasks() {
     if (!taskList) return;
 
     const availableTasks = getAvailableTasks();
-    
+
     taskList.innerHTML = availableTasks.length === 0 ? `
         <div class="empty-state">No tasks available. Complete previous objectives.</div>
     ` : '';
@@ -77,6 +80,21 @@ function loadRealTasks() {
     });
 
     showHintForWatchedTask();
+    
+    // Update progress counter
+    updateProgressCounter();
+}
+
+// Update progress counter
+function updateProgressCounter() {
+    const completed = Object.keys(gameTasks).filter(id => isTaskCompleted(id)).length;
+    const total = Object.keys(gameTasks).length;
+    
+    // Update in header if you want
+    const progressElement = document.querySelector('.app-title');
+    if (progressElement && completed > 0) {
+        progressElement.textContent = `Task Manager (${completed}/${total})`;
+    }
 }
 
 // Task details modal
@@ -90,14 +108,14 @@ function showTaskDetails(task) {
     if (overlay && title && description) {
         title.textContent = task.title;
         description.textContent = task.description;
-        
+
         if (hintWatched[task.id] && !isTaskCompleted(task.id)) {
             hintText.textContent = task.hint;
             hintSection.style.display = 'block';
         } else {
             hintSection.style.display = 'none';
         }
-        
+
         overlay.style.display = 'flex';
     }
 }
@@ -130,7 +148,7 @@ function showHintForWatchedTask() {
     const hintBox = document.getElementById('hintBox');
     const hintContent = hintBox.querySelector('.hint-content');
     const task = getAvailableTasks().find(t => hintWatched[t.id] && !isTaskCompleted(t.id));
-    
+
     if (task && hintBox && hintContent) {
         hintContent.innerHTML = `<strong>Hint:</strong> ${task.hint}`;
         hintBox.style.display = 'block';
@@ -148,7 +166,7 @@ function markHintAsWatched(taskId) {
 function showAd(taskId) {
     const elements = ['adOverlay', 'adImage', 'adTimer', 'seeHintBtn', 'adText']
         .map(id => document.getElementById(id));
-    
+
     if (elements.some(el => !el)) return;
 
     const [overlay, image, timer, hintBtn, text] = elements;
@@ -188,7 +206,7 @@ function showHint() {
     const hintBtn = document.getElementById('seeHintBtn');
     const taskId = hintBtn.getAttribute('data-taskid');
     const task = gameTasks[taskId];
-    
+
     if (task) {
         markHintAsWatched(taskId);
         showDirectHint(task.hint);
@@ -200,9 +218,9 @@ function showHint() {
 function closeAd() {
     const elements = ['adOverlay', 'adTimer', 'seeHintBtn', 'adText', 'adImage']
         .map(id => document.getElementById(id));
-    
+
     const [overlay, timer, hintBtn, text, image] = elements;
-    
+
     if (overlay) overlay.style.display = 'none';
     if (timer) {
         timer.style.display = 'block';
@@ -265,14 +283,102 @@ function updateTime() {
     }
 }
 
-function initializeTaskListener() {
-    window.addEventListener('taskProgressUpdated', loadRealTasks);
-    window.addEventListener('storage', (e) => {
-        if (e.key === 'taskProgress' || e.key === 'taskProgressUpdate') {
+// ========== CRITICAL: TASK UPDATE LISTENER ==========
+function setupTaskUpdateListener() {
+    console.log('👂 Setting up task update listener...');
+    
+    // 1. Listen for messages from chat windows
+    window.addEventListener('message', function(event) {
+        console.log('📬 Message received:', event.data);
+        
+        if (event.data && event.data.type === 'TASK_COMPLETED') {
+            const taskId = event.data.taskId;
+            console.log('✅ Task completed via message:', taskId);
+            
+            // Update localStorage
+            const progress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
+            progress[taskId] = true;
+            localStorage.setItem('taskProgress', JSON.stringify(progress));
+            
+            // Force refresh
             loadRealTasks();
+            
+            // Show notification
+            showTaskNotification(taskId);
         }
     });
-    setInterval(loadRealTasks, 2000);
+    
+    // 2. Listen for storage changes
+    window.addEventListener('storage', function(e) {
+        console.log('💾 Storage change:', e.key);
+        if (e.key === 'taskProgress' || e.key === 'taskProgressUpdate') {
+            setTimeout(loadRealTasks, 100);
+        }
+    });
+    
+    // 3. Listen for custom events
+    window.addEventListener('taskProgressUpdated', function(e) {
+        console.log('📢 Task progress event:', e.detail);
+        loadRealTasks();
+    });
+    
+    // 4. Also poll every 2 seconds to catch updates
+    setInterval(() => {
+        loadRealTasks();
+    }, 2000);
+}
+
+// Show notification when task completes
+function showTaskNotification(taskId) {
+    const taskNames = {
+        'chat_mr_ray': 'Talk to Mr. Ray',
+        'talk_sahil': 'Talk to Sahil',
+        'investigate_dyere': 'Investigate Dyere'
+    };
+    
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 70px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        z-index: 9999;
+        animation: slideDown 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.2);
+        text-align: center;
+        min-width: 250px;
+    `;
+    
+    notification.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px; justify-content: center;">
+            <span style="font-size: 1.2em;">✅</span>
+            <div>
+                <div style="font-size: 14px; font-weight: 600;">Task Completed!</div>
+                <div style="font-size: 12px;">${taskNames[taskId] || 'Task'}</div>
+            </div>
+        </div>
+        <style>
+            @keyframes slideDown {
+                from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+                to { opacity: 1; transform: translateX(-50%) translateY(0); }
+            }
+        </style>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateX(-50%) translateY(-20px)';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
 }
 
 // Initialize app
@@ -282,6 +388,6 @@ window.onload = function() {
     initializeBackButton();
     initializeAutoRedirect();
     loadRealTasks();
-    initializeTaskListener();
-    console.log('📋 Task Manager Ready - Compact design with details modal!');
+    setupTaskUpdateListener(); // CRITICAL: Add this line
+    console.log('📋 Task Manager Ready with live updates!');
 };
