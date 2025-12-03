@@ -22,6 +22,12 @@ const gameTasks = {
         title: 'Task 4: Call To Dyere',
         description: 'Call Dyere from the phone app to get more information',
         hint: 'Go to Phone app → Dial Dyere\'s number → Listen to the call',
+        unlocks: ['task5_talk_dad'] // ✅ THIS AUTOMATICALLY UNLOCKS TASK 5
+    },
+    'task5_talk_dad': {
+        title: 'Task 5: Talk to Eric\'s Dad',
+        description: 'Interview Eric\'s father for family perspective and clues',
+        hint: 'Go to Messages app → Click on Dad → Complete all conversation steps',
         unlocks: [] // Last task for now
     }
 };
@@ -90,7 +96,7 @@ function loadRealTasks() {
 function updateProgressCounter() {
     const completed = Object.keys(gameTasks).filter(id => isTaskCompleted(id)).length;
     const total = Object.keys(gameTasks).length;
-    
+
     const progressElement = document.querySelector('.app-title');
     if (progressElement && completed > 0) {
         progressElement.textContent = `Task Manager (${completed}/${total})`;
@@ -281,35 +287,43 @@ function updateTime() {
 
 function setupTaskUpdateListener() {
     console.log('👂 Setting up task update listener...');
-    
+
     window.addEventListener('message', function(event) {
         console.log('📬 Message received:', event.data);
-        
+
         if (event.data && event.data.type === 'TASK_COMPLETED') {
             const taskId = event.data.taskId;
             console.log('✅ Task completed via message:', taskId);
-            
+
             const progress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
             progress[taskId] = true;
             localStorage.setItem('taskProgress', JSON.stringify(progress));
-            
+
+            // ✅ AUTOMATICALLY UNLOCK DAD'S CONTACT WHEN TASK 4 COMPLETES
+            if (taskId === 'task4_call_dyere') {
+                const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
+                extendedProgress.unlock_dad = true; // ✅ Unlocks Dad
+                localStorage.setItem('extendedProgress', JSON.stringify(extendedProgress));
+                console.log('🔓 Dad\'s contact unlocked automatically!');
+            }
+
             loadRealTasks();
             showTaskNotification(taskId);
         }
     });
-    
+
     window.addEventListener('storage', function(e) {
         console.log('💾 Storage change:', e.key);
         if (e.key === 'taskProgress' || e.key === 'taskProgressUpdate') {
             setTimeout(loadRealTasks, 100);
         }
     });
-    
+
     window.addEventListener('taskProgressUpdated', function(e) {
         console.log('📢 Task progress event:', e.detail);
         loadRealTasks();
     });
-    
+
     setInterval(loadRealTasks, 2000);
 }
 
@@ -318,9 +332,10 @@ function showTaskNotification(taskId) {
         'chat_mr_ray': 'Talk to Mr. Ray',
         'talk_sahil': 'Talk to Sahil',
         'investigate_dyere': 'Investigate Dyere',
-        'task4_call_dyere': 'Call To Dyere'
+        'task4_call_dyere': 'Call To Dyere',
+        'task5_talk_dad': 'Talk to Eric\'s Dad'
     };
-    
+
     const notification = document.createElement('div');
     notification.style.cssText = `
         position: fixed;
@@ -339,13 +354,20 @@ function showTaskNotification(taskId) {
         text-align: center;
         min-width: 250px;
     `;
-    
+
+    // ✅ SHOW "DAD UNLOCKED" IN NOTIFICATION FOR TASK 4
+    let contactUnlock = '';
+    if (taskId === 'task4_call_dyere') {
+        contactUnlock = `<div style="font-size: 11px; margin-top: 3px; opacity: 0.9;">🔓 Dad's contact unlocked!</div>`;
+    }
+
     notification.innerHTML = `
         <div style="display: flex; align-items: center; gap: 10px; justify-content: center;">
             <span style="font-size: 1.2em;">✅</span>
             <div>
                 <div style="font-size: 14px; font-weight: 600;">Task Completed!</div>
                 <div style="font-size: 12px;">${taskNames[taskId] || 'Task'}</div>
+                ${contactUnlock}
             </div>
         </div>
         <style>
@@ -355,9 +377,9 @@ function showTaskNotification(taskId) {
             }
         </style>
     `;
-    
+
     document.body.appendChild(notification);
-    
+
     setTimeout(() => {
         notification.style.opacity = '0';
         notification.style.transform = 'translateX(-50%) translateY(-20px)';
@@ -372,5 +394,5 @@ window.onload = function() {
     initializeAutoRedirect();
     loadRealTasks();
     setupTaskUpdateListener();
-    console.log('📋 Task Manager Ready with 4 tasks!');
+    console.log('📋 Task Manager Ready with 5 tasks!');
 };
