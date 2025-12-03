@@ -1,4 +1,4 @@
-// taskprogress.js - Updated to match Task Manager
+// taskprogress.js - Updated with Task 4
 const TaskProgress = {
     // Task definitions - EXACTLY MATCHING TASK MANAGER
     tasks: {
@@ -25,6 +25,14 @@ const TaskProgress = {
             completed: false,
             unlocks: 'Important clue about Eric',
             type: 'chat'
+        },
+        'task4_call_dyere': {
+            id: 'task4_call_dyere',
+            title: 'Call To Dyere',
+            description: 'Call Dyere from the phone app to get more information',
+            completed: false,
+            unlocks: 'Location clue about Eric',
+            type: 'call'
         }
     },
 
@@ -36,7 +44,6 @@ const TaskProgress = {
             this.loadProgress();
         }
 
-        // Listen for storage changes
         window.addEventListener('storage', (e) => {
             if (e.key === 'taskProgress') {
                 this.loadProgress();
@@ -44,15 +51,13 @@ const TaskProgress = {
             }
         });
 
-        // Listen for custom events
         window.addEventListener('taskProgressUpdated', (e) => {
             console.log('📢 Task progress updated:', e.detail);
         });
 
-        console.log('✅ Task Progress System Ready');
+        console.log('✅ Task Progress System Ready - 4 Tasks');
     },
 
-    // Complete a task
     completeTask(taskId) {
         if (this.tasks[taskId]) {
             this.tasks[taskId].completed = true;
@@ -69,37 +74,29 @@ const TaskProgress = {
         }
     },
 
-    // Update gameTasks progress (for Task Manager)
     updateGameTasks(taskId) {
         const progress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
         progress[taskId] = true;
         localStorage.setItem('taskProgress', JSON.stringify(progress));
-        
-        // Trigger storage event for Task Manager
         localStorage.setItem('taskProgressUpdate', Date.now());
     },
 
-    // Check if task is completed
     isTaskCompleted(taskId) {
         return this.tasks[taskId]?.completed || false;
     },
 
-    // Get all tasks
     getAllTasks() {
         return this.tasks;
     },
 
-    // Get completed tasks count
     getCompletedCount() {
         return Object.values(this.tasks).filter(task => task.completed).length;
     },
 
-    // Get total tasks count
     getTotalCount() {
         return Object.keys(this.tasks).length;
     },
 
-    // Save progress to localStorage
     saveProgress() {
         const progress = {};
         Object.keys(this.tasks).forEach(taskId => {
@@ -109,7 +106,6 @@ const TaskProgress = {
         localStorage.setItem('lastTaskUpdate', Date.now());
     },
 
-    // Load progress from localStorage
     loadProgress() {
         const progress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
         Object.keys(this.tasks).forEach(taskId => {
@@ -119,9 +115,7 @@ const TaskProgress = {
         });
     },
 
-    // Notify all apps about changes
     notifyChanges() {
-        // Dispatch custom event
         const event = new CustomEvent('taskProgressUpdated', {
             detail: { 
                 tasks: this.tasks,
@@ -130,10 +124,8 @@ const TaskProgress = {
         });
         window.dispatchEvent(event);
 
-        // Trigger storage event
         localStorage.setItem('taskProgressUpdate', Date.now());
 
-        // Notify Task Manager if it's the opener
         if (window.opener && !window.opener.closed) {
             try {
                 window.opener.postMessage({
@@ -146,16 +138,14 @@ const TaskProgress = {
         }
     },
 
-    // Play completion sound
     playCompletionSound() {
-        const taskSound = new Audio('https://projectsofkhan.github.io/Trail/apps/task/task.mp3');
-        taskSound.volume = 0.6;
+        const taskSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3');
+        taskSound.volume = 0.3;
         taskSound.play().catch(e => {
             console.log('Task sound error:', e);
         });
     },
 
-    // Show completion popup
     showTaskCompletePopup(taskId) {
         const task = this.tasks[taskId];
         if (!task) return;
@@ -231,7 +221,6 @@ const TaskProgress = {
 
         document.body.appendChild(popup);
 
-        // Auto-remove after 5 seconds
         setTimeout(() => {
             if (popup.parentElement) {
                 popup.remove();
@@ -239,7 +228,6 @@ const TaskProgress = {
         }, 5000);
     },
 
-    // Reset all progress
     resetAllProgress() {
         Object.keys(this.tasks).forEach(taskId => {
             this.tasks[taskId].completed = false;
