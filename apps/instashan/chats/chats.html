@@ -293,12 +293,12 @@
                 </div>
 
                 <div class="bottom-nav">
-    <button class="nav-button profile-nav-button" onclick="openProfile()">
-        <img src="https://projectsofkhan.github.io/pythontodoapp/profileimage.jpg" class="profile-nav-image" alt="Profile">
-    </button>
-    <button class="nav-button" onclick="openReels()">🎥</button>
-    <button class="nav-button active">💬</button>
-</div>
+                    <button class="nav-button profile-nav-button" onclick="openProfile()">
+                        <img src="https://projectsofkhan.github.io/pythontodoapp/profileimage.jpg" class="profile-nav-image" alt="Profile">
+                    </button>
+                    <button class="nav-button" onclick="openReels()">🎥</button>
+                    <button class="nav-button active">💬</button>
+                </div>
             </div>
         </div>
 
@@ -306,7 +306,7 @@
     </div>
 
     <script>
-        // Updated chat data with the new contacts list
+        // Updated chat data with Feisher, Layari, and Dad removed
         const chatData = [
             // Main contacts with contact links
             { name: 'Mr. Ray', lastMessage: 'Eric Where are you?', time: '10:30 AM', avatar: 'M', contact: 'misterray' },
@@ -314,9 +314,6 @@
             { name: 'Sahil', lastMessage: 'Hey Eric Come where are you?', time: 'Yesterday', avatar: 'S', contact: 'sahil' },
             { name: 'Mom', lastMessage: 'Hey come home son.', time: '11/15/23', avatar: '♥️', contact: 'mom' },
             { name: 'Sister', lastMessage: 'Hey bro we are missing you where are you?', time: '11/14/23', avatar: 'S', contact: 'sister' },
-            { name: 'Feisher', lastMessage: 'Code review done', time: '11/13/23', avatar: 'F', contact: 'feisher' },
-            { name: 'Dad', lastMessage: 'Dinner at 7', time: '11/12/23', avatar: '💚', contact: 'dad' },
-            { name: 'Layari', lastMessage: 'Design ready', time: '11/11/23', avatar: 'L', contact: 'layari' },
             { name: 'Dan', lastMessage: 'Project launch', time: '11/10/23', avatar: 'D', contact: 'dan' },
             { name: 'Falco', lastMessage: 'Flight confirmed', time: '11/09/23', avatar: 'F', contact: 'falco' },
             { name: 'Ahmet', lastMessage: 'Hello there!', time: '1d ago', avatar: 'A', contact: 'ahmet' }
@@ -368,10 +365,12 @@
         function openProfile() {
             window.location.href = '../profile/profile.html';
         }
-// Open reels
-function openReels() {
-    window.location.href = 'https://projectsofkhan.github.io/123/reels.html';
-}
+        
+        // Open reels
+        function openReels() {
+            window.location.href = 'https://projectsofkhan.github.io/123/reels.html';
+        }
+
         // Check login status
         function checkLoginStatus() {
             if (localStorage.getItem('instashan_logged_in') !== 'true') {
