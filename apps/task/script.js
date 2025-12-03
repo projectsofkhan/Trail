@@ -13,16 +13,21 @@ const gameTasks = {
         unlocks: ['investigate_dyere']
     },
     'investigate_dyere': {
-        title: 'Task 3: Talk To Dyere',
-        description: 'Talk to Dyere, and ask him about Eric!',
-        hint: 'Go to Messages app → Click On Dyere → Complete the conversation.',
+        title: 'Task 3: Investigate Dyere',
+        description: 'Question the car repair guy who was close to Eric',
+        hint: 'Go to Messages app → Click On Dyere → Complete the conversation (he will block you)',
+        unlocks: ['task4_call_dyere']
+    },
+    'task4_call_dyere': {
+        title: 'Task 4: Call To Dyere',
+        description: 'Call Dyere from the phone app to get more information',
+        hint: 'Go to Phone app → Dial Dyere\'s number → Listen to the call',
         unlocks: [] // Last task for now
     }
 };
 
 let hintWatched = JSON.parse(localStorage.getItem('hintWatched') || '{}');
 
-// Short helper functions
 function isTaskCompleted(taskId) {
     const progress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
     return !!progress[taskId];
@@ -44,7 +49,6 @@ function getAvailableTasks() {
         .map(([taskId, taskData]) => ({ id: taskId, ...taskData }));
 }
 
-// Main task loading
 function loadRealTasks() {
     const taskList = document.getElementById('taskList');
     if (!taskList) return;
@@ -80,24 +84,19 @@ function loadRealTasks() {
     });
 
     showHintForWatchedTask();
-    
-    // Update progress counter
     updateProgressCounter();
 }
 
-// Update progress counter
 function updateProgressCounter() {
     const completed = Object.keys(gameTasks).filter(id => isTaskCompleted(id)).length;
     const total = Object.keys(gameTasks).length;
     
-    // Update in header if you want
     const progressElement = document.querySelector('.app-title');
     if (progressElement && completed > 0) {
         progressElement.textContent = `Task Manager (${completed}/${total})`;
     }
 }
 
-// Task details modal
 function showTaskDetails(task) {
     const overlay = document.getElementById('taskDetailsOverlay');
     const title = document.getElementById('taskDetailsTitle');
@@ -125,7 +124,6 @@ function closeTaskDetails() {
     if (overlay) overlay.style.display = 'none';
 }
 
-// Hint system
 function handleHint(taskId, event) {
     event.stopPropagation();
     const task = gameTasks[taskId];
@@ -162,7 +160,6 @@ function markHintAsWatched(taskId) {
     localStorage.setItem('hintWatched', JSON.stringify(hintWatched));
 }
 
-// Ad system
 function showAd(taskId) {
     const elements = ['adOverlay', 'adImage', 'adTimer', 'seeHintBtn', 'adText']
         .map(id => document.getElementById(id));
@@ -231,7 +228,6 @@ function closeAd() {
     if (image) image.onclick = null;
 }
 
-// App functionality
 function initializeBackButton() {
     const backButton = document.querySelector('.back-button');
     if (backButton) {
@@ -283,11 +279,9 @@ function updateTime() {
     }
 }
 
-// ========== CRITICAL: TASK UPDATE LISTENER ==========
 function setupTaskUpdateListener() {
     console.log('👂 Setting up task update listener...');
     
-    // 1. Listen for messages from chat windows
     window.addEventListener('message', function(event) {
         console.log('📬 Message received:', event.data);
         
@@ -295,20 +289,15 @@ function setupTaskUpdateListener() {
             const taskId = event.data.taskId;
             console.log('✅ Task completed via message:', taskId);
             
-            // Update localStorage
             const progress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
             progress[taskId] = true;
             localStorage.setItem('taskProgress', JSON.stringify(progress));
             
-            // Force refresh
             loadRealTasks();
-            
-            // Show notification
             showTaskNotification(taskId);
         }
     });
     
-    // 2. Listen for storage changes
     window.addEventListener('storage', function(e) {
         console.log('💾 Storage change:', e.key);
         if (e.key === 'taskProgress' || e.key === 'taskProgressUpdate') {
@@ -316,24 +305,20 @@ function setupTaskUpdateListener() {
         }
     });
     
-    // 3. Listen for custom events
     window.addEventListener('taskProgressUpdated', function(e) {
         console.log('📢 Task progress event:', e.detail);
         loadRealTasks();
     });
     
-    // 4. Also poll every 2 seconds to catch updates
-    setInterval(() => {
-        loadRealTasks();
-    }, 2000);
+    setInterval(loadRealTasks, 2000);
 }
 
-// Show notification when task completes
 function showTaskNotification(taskId) {
     const taskNames = {
         'chat_mr_ray': 'Talk to Mr. Ray',
         'talk_sahil': 'Talk to Sahil',
-        'investigate_dyere': 'Investigate Dyere'
+        'investigate_dyere': 'Investigate Dyere',
+        'task4_call_dyere': 'Call To Dyere'
     };
     
     const notification = document.createElement('div');
@@ -373,7 +358,6 @@ function showTaskNotification(taskId) {
     
     document.body.appendChild(notification);
     
-    // Remove after 3 seconds
     setTimeout(() => {
         notification.style.opacity = '0';
         notification.style.transform = 'translateX(-50%) translateY(-20px)';
@@ -381,13 +365,12 @@ function showTaskNotification(taskId) {
     }, 3000);
 }
 
-// Initialize app
 window.onload = function() {
     updateTime();
     setInterval(updateTime, 60000);
     initializeBackButton();
     initializeAutoRedirect();
     loadRealTasks();
-    setupTaskUpdateListener(); // CRITICAL: Add this line
-    console.log('📋 Task Manager Ready with live updates!');
+    setupTaskUpdateListener();
+    console.log('📋 Task Manager Ready with 4 tasks!');
 };
