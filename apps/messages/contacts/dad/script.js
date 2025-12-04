@@ -5,24 +5,20 @@ let isProcessing = false;
 // Questions and answers for Eric's Dad investigation
 const questions = [
     "Hello Mr. Petrove, I'm a detective investigating Eric's disappearance",
+    "Ricky??",
     "I know this is difficult, but I need to ask about Eric's recent behavior",
-    "Did he seem stressed or worried about anything?",
-    "Was he having problems with anyone?",
-    "What about his friends? Did he mention any conflicts?",
-    "When was the last time you spoke to him?",
+    "What about his freinds and School.",
     "Did he say anything unusual or leave any clues?",
     "Thank you for your time. I'll find your son"
 ];
 
 // Dad's responses
 const answers = [
-    "...Eric? My boy... I haven't slept since he disappeared.",
-    "He was different lately. Quiet. Distant. Always on his phone.",
-    "He kept saying 'Everything will be fixed soon.' Never explained what.",
-    "No... but he stopped talking about his friends. Especially Dyere.",
-    "He and Dyere had a fight. Something about money... and a garage.",
+    "...Ricky? My boy... I haven't slept since he disappeared.",
+    "Yes, it was his nickname",
+    "He talks a little bit to us, he is a little bit depressed.",
+    "he stopped talking about his friends, also he didn't went school for last some days.",
     "Two days before he vanished. He hugged me tight... like he knew.",
-    "He left his laptop... but it's password locked. I can't open it.",
     "Please... bring him home. He's a good boy."
 ];
 
@@ -252,38 +248,55 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Close popup
     function closePopup() {
-        const popup = document.querySelector('div[style*="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8);"]');
-        if (popup) {
-            popup.remove();
+    // Find popup by checking multiple style patterns
+    const popup = document.querySelector('div[style*="position: fixed"][style*="top: 0"][style*="left: 0"]');
+    if (popup) {
+        popup.remove();
+        console.log("✅ Popup closed");
+    } else {
+        // Alternative search method
+        const allDivs = document.querySelectorAll('div');
+        for (let div of allDivs) {
+            const style = div.getAttribute('style');
+            if (style && 
+                style.includes('position: fixed') && 
+                style.includes('top: 0') && 
+                style.includes('left: 0') &&
+                style.includes('width: 100%') &&
+                style.includes('height: 100%')) {
+                div.remove();
+                console.log("✅ Popup closed (alternative method)");
+                break;
+            }
         }
     }
+}
 
-    // Handle choice selection
-    function selectChoice() {
-        if (isProcessing || currentStep >= questions.length) return;
+// Handle choice selection
+function selectChoice() {
+    if (isProcessing || currentStep >= questions.length) return;
 
-        isProcessing = true;
-        const question = questions[currentStep];
-        choiceButton.disabled = true;
+    isProcessing = true;
+    const question = questions[currentStep];
+    choiceButton.disabled = true;
 
-        // Add user's message
-        addMessage(question, 'sent');
+    // Add user's message
+    addMessage(question, 'sent');
 
-        // Simulate typing delay, then add response
-        setTimeout(() => {
-            const answer = answers[currentStep];
-            addMessage(answer, 'received');
+    // Simulate typing delay, then add response
+    setTimeout(() => {
+        const answer = answers[currentStep];
+        addMessage(answer, 'received');
 
-            currentStep++;
+        currentStep++;
 
-            // Update typing status
-            if (contactStatus && currentStep < questions.length) {
-                contactStatus.textContent = "Typing...";
-                setTimeout(() => {
-                    contactStatus.textContent = "Online";
-                }, 1500);
-            }
-
+        // Update typing status
+        if (contactStatus && currentStep < questions.length) {
+            contactStatus.textContent = "Typing...";
+            setTimeout(() => {
+                contactStatus.textContent = "Online";
+            }, 1500);
+        }
             // Re-enable button for next question
             setTimeout(() => {
                 updateChoiceButton();
