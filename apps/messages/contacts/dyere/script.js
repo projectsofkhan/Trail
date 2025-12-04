@@ -5,24 +5,21 @@ let dyereBlocked = false;
 
 // Questions and their fixed answers for Dyere chat
 const questions = [
-    "Hey Dyere!",
-    "I'm investigating Eric's disappearance",
-    "Can you tell me about your last conversation with him?",
-    "Did he seem worried or anxious?",
-    "Why are you hiding something?",
-    "I think you know more than you're telling"
+    "Hello Dyere, I'm investigating Eric Petrove's disappearance.",
+    "Do you know if anything unusual happened to him recently?",
+    "Did something happen in his last days at school?",
+    "About what? Tell me about this argument.",
+    "I found his phone crushed on the roadside. His family asked me to investigate."
 ];
 
 // Dyere's responses that lead to blocking
 const answers = [
-    "Hey, what's up?",
-    "Eric? Yeah, I know him. He brings his car here sometimes.",
-    "We just talked about normal stuff... car repairs, life.",
-    "Look, I don't want any trouble. Eric's a good guy.",
-    "I'm not hiding anything! Why are you asking so many questions?",
-    "That's it! I'm done talking to you. *BLOCKED*"
+    "Hello sir!",
+    "He stopped coming to school last week. I don't know what happened.",
+    "We had an argument, yes.",
+    "Wait, first tell me how you got his phone? Why are you using it?",
+    "That's suspicious. How do I know you're telling the truth? I think you should talk to the police instead."
 ];
-
 document.addEventListener('DOMContentLoaded', function() {
     const currentTimeElement = document.getElementById('current-time');
     const chatMessages = document.getElementById('chatMessages');
@@ -234,7 +231,7 @@ blockSound.volume = 0.3;
                         <div style="font-size: 0.8rem; opacity: 0.9;">Dyere is hiding something about Eric</div>
                     </div>
                 </div>
-                <button onclick="closePopup()" style="
+                <button id="close-popup-btn" style="
                     background: white;
                     color: #E1306C;
                     border: none;
@@ -268,19 +265,22 @@ blockSound.volume = 0.3;
 
         document.body.appendChild(popup);
 
+        // Add event listener to the popup button
+        setTimeout(() => {
+            const closeBtn = document.getElementById('close-popup-btn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function() {
+                    popup.remove();
+                });
+            }
+        }, 100);
+
         // Auto-remove after 8 seconds
         setTimeout(() => {
             if (popup.parentElement) {
                 popup.remove();
             }
         }, 8000);
-    }
-
-    function closePopup() {
-        const popup = document.querySelector('div[style*="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8);"]');
-        if (popup) {
-            popup.remove();
-        }
     }
 
     // Handle choice selection
@@ -332,11 +332,7 @@ blockSound.volume = 0.3;
         }
 
         updateChoiceButton();
-
-        // Add welcome message after a short delay
-        setTimeout(() => {
-            addMessage("Hey, who's this?", 'received');
-        }, 1000);
+        // Welcome message removed - chat starts empty
     }
 
     // Event listeners
@@ -349,5 +345,4 @@ blockSound.volume = 0.3;
 
     // Make functions available globally
     window.selectChoice = selectChoice;
-    window.closePopup = closePopup;
 });
