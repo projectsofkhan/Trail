@@ -32,8 +32,8 @@ const gameTasks = {
     },
     'task6_unlock_instashan': {  // ✅ NEW TASK 6
         title: 'Task 6: Unlock Instashan ID',
-        description: 'Complete your Instashan profile setup to unlock your unique Instashan ID',
-        hint: 'Go to Instashan app → Navigate to profile → Complete profile visit',
+        description: 'unlock the Instashan ID of Eric',
+        hint: 'Go to Instashan app → click forget password → write eric's nickname (available on Dad's chat)...',
         unlocks: [] // Last task for now
     }
 };
