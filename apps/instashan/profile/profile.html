@@ -616,6 +616,112 @@
             checkLoginStatus();
             loadPosts();
         });
+// ================= TASK 6 COMPLETION VERIFICATION =================
+function checkAndCompleteTask6() {
+    console.log('🔍 Checking Task 6 completion...');
+    
+    // Check if user is logged in
+    if (localStorage.getItem('instashan_logged_in') === 'true') {
+        // Check if already completed
+        const progress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
+        
+        if (!progress['task6_unlock_instashan']) {
+            console.log('✅ Task 6 completed! Unlocking Instashan ID...');
+            
+            // Mark task as completed
+            progress['task6_unlock_instashan'] = true;
+            localStorage.setItem('taskProgress', JSON.stringify(progress));
+            
+            // Trigger update in main app
+            localStorage.setItem('taskProgressUpdate', Date.now());
+            
+            // Send message to parent window if opened from task manager
+            if (window.opener && !window.opener.closed) {
+                try {
+                    window.opener.postMessage({
+                        type: 'TASK_COMPLETED',
+                        taskId: 'task6_unlock_instashan'
+                    }, '*');
+                    console.log('📤 Sent completion message to parent');
+                } catch (e) {
+                    console.log('⚠️ Could not notify parent window');
+                }
+            }
+            
+            // Show success notification
+            showTask6Success();
+        } else {
+            console.log('ℹ️ Task 6 already completed');
+        }
+    }
+}
+
+function showTask6Success() {
+    const successMsg = document.createElement('div');
+    successMsg.style.cssText = `
+        position: fixed;
+        top: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, #E1306C, #C13584);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 15px;
+        font-weight: 600;
+        z-index: 9999;
+        animation: slideIn 0.5s ease;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        text-align: center;
+        min-width: 280px;
+        max-width: 90%;
+        border: 2px solid rgba(255,255,255,0.2);
+    `;
+    
+    successMsg.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 8px;">
+            <span style="font-size: 1.5rem;">✅</span>
+            <span style="font-size: 1.2rem; font-weight: 700;">Instashan ID Unlocked!</span>
+        </div>
+        <div style="font-size: 0.9rem; opacity: 0.9;">
+            Task 6 completed successfully
+        </div>
+        <div style="font-size: 0.8rem; margin-top: 5px; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 8px;">
+            🔓 Eric's social media evidence now accessible
+        </div>
+        
+        <style>
+            @keyframes slideIn {
+                from { opacity: 0; transform: translateX(-50%) translateY(-30px); }
+                to { opacity: 1; transform: translateX(-50%) translateY(0); }
+            }
+        </style>
+    `;
+    
+    document.body.appendChild(successMsg);
+    
+    // Play success sound
+    const sound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3');
+    sound.volume = 0.3;
+    sound.play().catch(e => console.log('Sound error:', e));
+    
+    // Remove after 5 seconds
+    setTimeout(() => {
+        successMsg.style.opacity = '0';
+        successMsg.style.transform = 'translateX(-50%) translateY(-20px)';
+        setTimeout(() => successMsg.remove(), 500);
+    }, 5000);
+}
+
+// Call the function when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait a bit for everything to load
+    setTimeout(checkAndCompleteTask6, 1500);
+});
+
+// Also check on user interaction
+document.addEventListener('click', function() {
+    checkAndCompleteTask6();
+});
     </script>
 </body>
 </html>
