@@ -28,6 +28,12 @@ const gameTasks = {
         title: 'Task 5: Talk to Eric\'s Dad',
         description: 'Interview Eric\'s father for family perspective and clues',
         hint: 'Go to Messages app → Click on Dad → Complete all conversation steps',
+        unlocks: ['task6_unlock_instashan'] // ✅ NOW UNLOCKS TASK 6
+    },
+    'task6_unlock_instashan': {  // ✅ NEW TASK 6
+        title: 'Task 6: Unlock Instashan ID',
+        description: 'Complete your Instashan profile setup to unlock your unique Instashan ID',
+        hint: 'Go to Instashan app → Navigate to profile → Complete profile visit',
         unlocks: [] // Last task for now
     }
 };
@@ -333,7 +339,8 @@ function showTaskNotification(taskId) {
         'talk_sahil': 'Talk to Sahil',
         'investigate_dyere': 'Investigate Dyere',
         'task4_call_dyere': 'Call To Dyere',
-        'task5_talk_dad': 'Talk to Eric\'s Dad'
+        'task5_talk_dad': 'Talk to Eric\'s Dad',
+        'task6_unlock_instashan': 'Unlock Instashan ID' // ✅ ADDED
     };
 
     const notification = document.createElement('div');
@@ -394,5 +401,5 @@ window.onload = function() {
     initializeAutoRedirect();
     loadRealTasks();
     setupTaskUpdateListener();
-    console.log('📋 Task Manager Ready with 5 tasks!');
+    console.log('📋 Task Manager Ready with 6 tasks!');
 };
