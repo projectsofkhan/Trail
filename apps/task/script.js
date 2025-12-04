@@ -1,4 +1,5 @@
-// Complete task progression system
+
+        // Complete task progression system
 const gameTasks = {
     'chat_mr_ray': {
         title: 'Task 1: Talk to Mr. Ray',
@@ -32,8 +33,8 @@ const gameTasks = {
     },
     'task6_unlock_instashan': {  // ✅ NEW TASK 6
         title: 'Task 6: Unlock Instashan ID',
-        description: 'unlock the Instashan ID of Eric',
-        hint: 'Go to Instashan app → click forget password → write eric's nickname (available on Dad's chat)...',
+        description: 'Unlock the Instashan ID of Eric',
+        hint: 'Go to Instashan app → Click forget password → Write Eric\'s nickname (available on Dad\'s chat)...', // ✅ FIXED: Escaped apostrophes
         unlocks: [] // Last task for now
     }
 };
