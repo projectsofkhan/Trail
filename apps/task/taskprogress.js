@@ -1,4 +1,4 @@
-// taskprogress.js - Updated with Task 5
+// taskprogress.js - Updated with Task 6
 const TaskProgress = {
     // Task definitions - EXACTLY MATCHING TASK MANAGER
     tasks: {
@@ -31,7 +31,7 @@ const TaskProgress = {
             title: 'Call To Dyere',
             description: 'Call Dyere from the phone app to get more information',
             completed: false,
-            unlocks: 'Dad contact unlocked & location clue', // ✅ UPDATED
+            unlocks: 'Dad contact unlocked & location clue',
             type: 'call'
         },
         'task5_talk_dad': {
@@ -41,6 +41,14 @@ const TaskProgress = {
             completed: false,
             unlocks: 'Laptop clue and garage evidence',
             type: 'chat'
+        },
+        'task6_unlock_instashan': {  // ✅ NEW TASK 6
+            id: 'task6_unlock_instashan',
+            title: 'Unlock Instashan ID',
+            description: 'Complete your Instashan profile setup to unlock your unique Instashan ID',
+            completed: false,
+            unlocks: 'Eric\'s social media evidence access',
+            type: 'navigation'
         }
     },
 
@@ -63,7 +71,7 @@ const TaskProgress = {
             console.log('📢 Task progress updated:', e.detail);
         });
 
-        console.log('✅ Task Progress System Ready - 5 Tasks');
+        console.log('✅ Task Progress System Ready - 6 Tasks');
     },
 
     completeTask(taskId) {
@@ -74,7 +82,7 @@ const TaskProgress = {
 
             // Also update gameTasks progress for Task Manager
             this.updateGameTasks(taskId);
-            
+
             // ✅ AUTOMATICALLY UNLOCK DAD'S CONTACT WHEN TASK 4 COMPLETES
             if (taskId === 'task4_call_dyere') {
                 this.unlockDadContact();
@@ -86,7 +94,7 @@ const TaskProgress = {
             this.playCompletionSound();
         }
     },
-    
+
     // ✅ NEW FUNCTION: Unlock Dad's contact
     unlockDadContact() {
         const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
