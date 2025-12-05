@@ -1,4 +1,4 @@
-// taskprogress.js - Updated with Task 6
+// taskprogress.js - Updated with Task 7
 const TaskProgress = {
     // Task definitions - EXACTLY MATCHING TASK MANAGER
     tasks: {
@@ -49,6 +49,14 @@ const TaskProgress = {
             completed: false,
             unlocks: 'Eric\'s social media evidence access',
             type: 'navigation'
+        },
+        'task7_complete_diary': {  // ✅ NEW TASK 7
+            id: 'task7_complete_diary',
+            title: 'Complete Diary Page 1',
+            description: 'Solve the riddle in Eric\'s diary to unlock the first page',
+            completed: false,
+            unlocks: 'Diary access and hidden clues',
+            type: 'puzzle'
         }
     },
 
@@ -71,7 +79,7 @@ const TaskProgress = {
             console.log('📢 Task progress updated:', e.detail);
         });
 
-        console.log('✅ Task Progress System Ready - 6 Tasks');
+        console.log('✅ Task Progress System Ready - 7 Tasks');
     },
 
     completeTask(taskId) {
@@ -88,8 +96,8 @@ const TaskProgress = {
                 this.unlockDadContact();
             }
 
-            // ✅ AUTOMATICALLY UNLOCK DIARY PAGE 1 WHEN TASK 6 COMPLETES
-            if (taskId === 'task6_unlock_instashan') {
+            // ✅ AUTOMATICALLY UNLOCK DIARY PAGE 1 WHEN TASK 7 COMPLETES
+            if (taskId === 'task7_complete_diary') {
                 this.unlockDiaryPage1();
             }
 
@@ -108,10 +116,10 @@ const TaskProgress = {
         console.log('🔓 Dad\'s contact unlocked via TaskProgress system!');
     },
 
-    // ✅ NEW FUNCTION: Unlock Diary Page 1 when Task 6 completes
+    // ✅ NEW FUNCTION: Unlock Diary Page 1 when Task 7 completes
     unlockDiaryPage1() {
-        localStorage.setItem('task6_completed', 'true');
-        console.log('🔓 Diary Page 1 unlocked via Task 6 completion!');
+        localStorage.setItem('task7_completed', 'true');
+        console.log('🔓 Diary Page 1 unlocked via Task 7 completion!');
         
         // Also notify any open diary pages
         if (window.opener && !window.opener.closed) {
@@ -166,9 +174,9 @@ const TaskProgress = {
             }
         });
         
-        // Also sync task6_completed status
-        if (this.tasks['task6_unlock_instashan']?.completed) {
-            localStorage.setItem('task6_completed', 'true');
+        // Also sync task7_completed status
+        if (this.tasks['task7_complete_diary']?.completed) {
+            localStorage.setItem('task7_completed', 'true');
         }
     },
 
@@ -293,7 +301,7 @@ const TaskProgress = {
         this.notifyChanges();
         
         // Also reset diary unlocks
-        localStorage.removeItem('task6_completed');
+        localStorage.removeItem('task7_completed');
         localStorage.removeItem('diary_page1_unlocked');
         
         console.log('🔄 All task progress and diary unlocks reset');
@@ -320,4 +328,3 @@ window.addEventListener('message', function(event) {
         console.log('📖 Diary unlocked from external source');
     }
 });
-
