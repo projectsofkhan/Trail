@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diary - Page 1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background: #333333;
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Mobile Phone Frame */
+        .phone-container {
+            width: 340px;
+            height: 680px;
+            background-color: #1a1a1a;
+            border-radius: 30px;
+            padding: 8px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notch {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 130px;
+            height: 25px;
+            background-color: #1a1a1a;
+            border-radius: 0 0 15px 15px;
+            z-index: 10;
+        }
+
+        .screen {
+            width: 100%;
+            height: calc(100% - 16px);
+            background-color: #000;
+            border-radius: 22px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 11px;
+            font-weight: 500;
+            padding: 0 15px;
+            height: 35px;
+            background-color: rgba(0, 0, 0, 0.2);
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 3;
+        }
+
+        .status-bar .left-icons, .status-bar .right-icons { 
+            display: flex; 
+            align-items: center; 
+        }
+
+        .status-bar span { 
+            margin-right: 8px; 
+        }
+
+        .status-bar .center-text { 
+            font-size: 12px; 
+            font-weight: 500; 
+        }
+
+        /* App Structure */
+        .app-page {
+            flex: 1;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            display: flex;
+            flex-direction: column;
+            margin-top: 35px;
+            height: calc(100% - 35px);
+        }
+
+        /* Enhanced Back Button */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: rgba(139, 0, 0, 0.95);
+            color: #FFD700;
+            height: 50px;
+            flex-shrink: 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: #FFD700;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 8px 12px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .back-button:active {
+            transform: scale(0.95);
+            background: rgba(255, 215, 0, 0.2);
+        }
+
+        .app-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* Page Content */
+        .page-content {
+            flex: 1;
+            padding: 25px 20px;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .diary-paper {
+            background: rgba(255, 248, 225, 0.95);
+            border-radius: 12px;
+            padding: 25px;
+            min-height: 500px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(139, 69, 19, 0.3);
+            position: relative;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .diary-paper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 30px;
+            right: 30px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #8B4513, transparent);
+        }
+
+        .diary-paper::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 30px;
+            right: 30px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #8B4513, transparent);
+        }
+
+        .page-number-header {
+            text-align: center;
+            font-size: 14px;
+            color: #8B0000;
+            margin-bottom: 25px;
+            font-style: italic;
+            font-weight: 500;
+        }
+
+        .riddle-text {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-style: italic;
+            font-family: 'Georgia', serif;
+        }
+
+        .input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .blank-input {
+            width: 120px;
+            padding: 10px 12px;
+            border: 2px solid #8B0000;
+            border-radius: 8px;
+            background: white;
+            color: #333;
+            font-size: 16px;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .blank-input:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .blank-input.correct {
+            border-color: #228B22;
+            background: #F0FFF0;
+        }
+
+        .blank-input.incorrect {
+            border-color: #DC143C;
+            background: #FFF0F0;
+        }
+
+        .submit-btn {
+            background: linear-gradient(to bottom, #8B0000, #660000);
+            color: #FFD700;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            align-self: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(to bottom, #660000, #8B0000);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 15px;
+            min-height: 24px;
+            font-weight: 500;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .success-message {
+            color: #228B22;
+        }
+
+        .error-message {
+            color: #DC143C;
+        }
+
+        .hidden-page {
+            display: none;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .hidden-page h2 {
+            color: #8B0000;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        .hidden-page p {
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        /* Home Bar */
+        .home-bar {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 2px;
+            z-index: 10;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="notch"></div>
+        <div class="screen">
+            <div class="status-bar">
+                <div class="left-icons">
+                    <span>◇</span>
+                    <span id="current-time">1:37</span>
+                </div>
+                <div class="center-text">Diary - Page 1</div>
+                <div class="right-icons">
+                    <span>📶</span>
+                    <span>🔋</span>
+                </div>
+            </div>
+
+            <div class="app-page">
+                <div class="app-header">
+                    <button class="back-button" onclick="goBackToDiary()">←</button>
+                    <div class="app-title">Diary - Page 01</div>
+                    <div style="width: 40px;"></div>
+                </div>
+
+                <div class="page-content">
+                    <div class="diary-paper">
+                        <div class="page-number-header">PAGE 01</div>
+                        
+                        <!-- Riddle Section -->
+                        <div id="riddle-section">
+                            <div class="riddle-text">
+                                <p>I chased by ______, all the day</p>
+                                <p>Until the light was taken away.</p>
+                                <p>Then in the dark I came to see,</p>
+                                <p>My ______ was just part of me.</p>
+                            </div>
+                            
+                            <div class="input-container">
+                                <input type="text" 
+                                       class="blank-input" 
+                                       id="blank1" 
+                                       placeholder="First word" 
+                                       maxlength="10"
+                                       autocomplete="off">
+                                <input type="text" 
+                                       class="blank-input" 
+                                       id="blank2" 
+                                       placeholder="Second word" 
+                                       maxlength="10"
+                                       autocomplete="off">
+                            </div>
+                            
+                            <div class="message" id="message"></div>
+                            
+                            <button class="submit-btn" id="submit-btn" onclick="checkAnswers()">
+                                Unlock Page
+                            </button>
+                        </div>
+                        
+                        <!-- Hidden Content (Shows after correct answer) -->
+                        <div class="hidden-page" id="hidden-content">
+                            <h2>The Revelation</h2>
+                            <p>I chased by Shadow, all the day</p>
+                            <p>Until the light was taken away.</p>
+                            <p>Then in the dark I came to see,</p>
+                            <p>My shadow was just part of me.</p>
+                            <br>
+                            <p>The truth reveals itself in absence,</p>
+                            <p>What follows you in every instance,</p>
+                            <p>Grows tall when light begins to fade,</p>
+                            <p>Yet in the darkness, doesn't shade.</p>
+                            <br>
+                            <p>It mimics every move you make,</p>
+                            <p>But never gives or takes,</p>
+                            <p>In brightest light, it's close at hand,</p>
+                            <p>In total dark, it takes a stand.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="home-bar"></div>
+    </div>
+
+    <script>
+        // Check if page is already unlocked
+        function isPageUnlocked() {
+            return localStorage.getItem('diary_page1_unlocked') === 'true';
+        }
+
+        // Save page as unlocked
+        function unlockPage() {
+            localStorage.setItem('diary_page1_unlocked', 'true');
+            console.log('✅ Page 1 unlocked and saved to localStorage');
+        }
+
+        // ✅ NEW FUNCTION: Mark Task 7 as completed
+        function markTask7Completed() {
+            // Update localStorage for TaskProgress
+            const progress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
+            progress['task7_complete_diary'] = true;
+            localStorage.setItem('taskProgress', JSON.stringify(progress));
+            
+            // Set task7_completed flag
+            localStorage.setItem('task7_completed', 'true');
+            
+            // Notify TaskProgress system if available
+            if (window.TaskProgress) {
+                window.TaskProgress.completeTask('task7_complete_diary');
+            }
+            
+            // Notify Task Manager
+            if (window.opener && !window.opener.closed) {
+                try {
+                    window.opener.postMessage({
+                        type: 'TASK_COMPLETED',
+                        taskId: 'task7_complete_diary'
+                    }, '*');
+                    console.log('✅ Task 7 completion sent to Task Manager');
+                } catch (e) {
+                    console.log('⚠️ Could not notify Task Manager');
+                }
+            }
+            
+            // Show task completion popup
+            showTask7CompletionPopup();
+            
+            console.log('✅ Task 7 marked as completed!');
+        }
+
+        // Show Task 7 completion popup
+        function showTask7CompletionPopup() {
+            const popup = document.createElement('div');
+            popup.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+                animation: fadeIn 0.3s ease;
+            `;
+
+            popup.innerHTML = `
+                <div style="
+                    background: linear-gradient(135deg, #8B0000, #A0522D);
+                    color: #FFD700;
+                    padding: 30px;
+                    border-radius: 20px;
+                    text-align: center;
+                    max-width: 280px;
+                    margin: 20px;
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+                    animation: slideUp 0.5s ease;
+                ">
+                    <div style="font-size: 3rem; margin-bottom: 15px;">🔓</div>
+                    <h3 style="margin: 0 0 10px 0; font-size: 1.4rem; font-weight: 600;">Diary Unlocked!</h3>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 12px; margin: 15px 0;">
+                        <div style="font-size: 1.1rem; font-weight: 500; margin-bottom: 5px;">Task 7 Complete!</div>
+                        <div style="font-size: 0.9rem; opacity: 0.9;">Diary Page 1 unlocked and solved</div>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.15); padding: 12px; border-radius: 10px; margin: 15px 0;">
+                        <div style="font-size: 1.8rem; margin-right: 10px;">🎉</div>
+                        <div style="text-align: left;">
+                            <div style="font-size: 0.9rem; font-weight: 500;">Progress Updated</div>
+                            <div style="font-size: 0.8rem; opacity: 0.9;">Check Task Manager</div>
+                        </div>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" style="
+                        background: #FFD700;
+                        color: #8B0000;
+                        border: none;
+                        padding: 12px 30px;
+                        border-radius: 25px;
+                        font-weight: 600;
+                        font-size: 1rem;
+                        cursor: pointer;
+                        margin-top: 10px;
+                    ">Continue</button>
+                </div>
+                
+                <style>
+                    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+                    @keyframes slideUp {
+                        from { opacity: 0; transform: translateY(30px) scale(0.9); }
+                        to { opacity: 1; transform: translateY(0) scale(1); }
+                    }
+                </style>
+            `;
+
+            document.body.appendChild(popup);
+
+            setTimeout(() => {
+                if (popup.parentElement) {
+                    popup.remove();
+                }
+            }, 5000);
+        }
+
+        // Go back to diary main page
+        function goBackToDiary() {
+            window.location.href = 'https://projectsofkhan.github.io/Trail/apps/diary/';
+        }
+
+        // Check answers
+        function checkAnswers() {
+            const blank1 = document.getElementById('blank1');
+            const blank2 = document.getElementById('blank2');
+            const message = document.getElementById('message');
+            const submitBtn = document.getElementById('submit-btn');
+            
+            const answer1 = blank1.value.trim().toLowerCase();
+            const answer2 = blank2.value.trim().toLowerCase();
+            
+            // Clear previous messages and styles
+            message.textContent = '';
+            message.className = 'message';
+            blank1.classList.remove('correct', 'incorrect', 'shake');
+            blank2.classList.remove('correct', 'incorrect', 'shake');
+            
+            // Check if both blanks are filled
+            if (!answer1 || !answer2) {
+                message.textContent = 'Please fill in both blanks.';
+                message.classList.add('error-message');
+                return;
+            }
+            
+            // Check answers
+            const correct1 = answer1 === 'shadow';
+            const correct2 = answer2 === 'shadow';
+            
+            // Apply visual feedback
+            blank1.classList.add(correct1 ? 'correct' : 'incorrect');
+            blank2.classList.add(correct2 ? 'correct' : 'incorrect');
+            
+            if (!correct1 || !correct2) {
+                // Wrong answer
+                blank1.classList.add('shake');
+                blank2.classList.add('shake');
+                message.textContent = 'Not quite right. Try again.';
+                message.classList.add('error-message');
+                return;
+            }
+            
+            // Correct answer!
+            message.textContent = 'Correct! The page is now unlocked.';
+            message.classList.add('success-message');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '✓ Unlocked';
+            
+            // Save to localStorage
+            unlockPage();
+            
+            // ✅ MARK TASK 7 AS COMPLETED
+            markTask7Completed();
+            
+            // Show hidden content after delay
+            setTimeout(() => {
+                document.getElementById('riddle-section').style.display = 'none';
+                document.getElementById('hidden-content').style.display = 'block';
+            }, 1500);
+        }
+
+        // Handle Enter key press
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                checkAnswers();
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentTimeElement = document.getElementById('current-time');
+            
+            // Update time
+            function updateTime() {
+                if (currentTimeElement) {
+                    const now = new Date();
+                    const hours = now.getHours();
+                    const minutes = now.getMinutes().toString().padStart(2, '0');
+                    currentTimeElement.textContent = `${hours}:${minutes}`;
+                }
+            }
+            
+            updateTime();
+            setInterval(updateTime, 60000);
+            
+            // Check if page is already unlocked
+            if (isPageUnlocked()) {
+                document.getElementById('riddle-section').style.display = 'none';
+                document.getElementById('hidden-content').style.display = 'block';
+                document.getElementById('submit-btn').textContent = '✓ Already Unlocked';
+                document.getElementById('submit-btn').disabled = true;
+                
+                // Also check if Task 7 is marked as completed
+                const taskProgress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
+                if (!taskProgress['task7_complete_diary']) {
+                    markTask7Completed();
+                }
+            }
+            
+            // Add keyboard event listeners
+            document.getElementById('blank1').addEventListener('keypress', handleKeyPress);
+            document.getElementById('blank2').addEventListener('keypress', handleKeyPress);
+            
+            // Auto-focus first input
+            document.getElementById('blank1').focus();
+            
+            console.log('📖 Diary Page 1 Ready - Task 7 integration active');
+        });
+    </script>
+</body>
+</html>
