@@ -174,7 +174,25 @@
             animation: fadeInUp 0.5s ease;
         }
 
-        .page-item:active {
+        .page-item.locked {
+            background: white;
+            cursor: not-allowed;
+            opacity: 8;
+            position: relative;
+            border-left: 5px solid #333;
+        }
+
+        .page-item.locked::after {
+            content: "🔒";
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            opacity: 0.8;
+        }
+
+        .page-item:active:not(.locked) {
             transform: scale(0.98);
         }
 
@@ -186,12 +204,23 @@
             font-family: 'Georgia', serif;
         }
 
+        .page-item.locked .page-number {
+            color: #666;
+        }
+
         .page-title {
             font-size: 16px;
             font-weight: 600;
             color: #333;
         }
 
+        .page-item.locked .page-title {
+            color: #666;
+        }
+.page-item.locked {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
         /* Home Bar */
         .home-bar {
             position: absolute;
@@ -261,31 +290,31 @@
 
                 <div class="diary-container">
                     <div class="pages-grid" id="pagesGrid">
-                        <div class="page-item" onclick="openPage('page1')">
+                        <div class="page-item" id="page1-item" onclick="openPage('page1')">
                             <div class="page-number">01</div>
                             <div class="page-title">Page 01</div>
                         </div>
-                        <div class="page-item" onclick="openPage('page2')">
+                        <div class="page-item locked" onclick="openLockedPage()">
                             <div class="page-number">02</div>
                             <div class="page-title">Page 02</div>
                         </div>
-                        <div class="page-item" onclick="openPage('page3')">
+                        <div class="page-item locked" onclick="openLockedPage()">
                             <div class="page-number">03</div>
                             <div class="page-title">Page 03</div>
                         </div>
-                        <div class="page-item" onclick="openPage('page4')">
+                        <div class="page-item locked" onclick="openLockedPage()">
                             <div class="page-number">04</div>
                             <div class="page-title">Page 04</div>
                         </div>
-                        <div class="page-item" onclick="openPage('page5')">
+                        <div class="page-item locked" onclick="openLockedPage()">
                             <div class="page-number">05</div>
                             <div class="page-title">Page 05</div>
                         </div>
-                        <div class="page-item" onclick="openPage('page6')">
+                        <div class="page-item locked" onclick="openLockedPage()">
                             <div class="page-number">06</div>
                             <div class="page-title">Page 06</div>
                         </div>
-                        <div class="page-item" onclick="openPage('page7')">
+                        <div class="page-item locked" onclick="openLockedPage()">
                             <div class="page-number">07</div>
                             <div class="page-title">Page 07</div>
                         </div>
@@ -297,8 +326,72 @@
         <div class="home-bar"></div>
     </div>
 
-    <script>
-        
+<script>
+// Check if Task 6 is completed
+function isTask6Completed() {
+    // Check localStorage for task completion status
+    const task6Completed = localStorage.getItem('task6_completed');
+    return task6Completed === 'true';
+}
+
+// Apply lock/unlock status based on task completion
+function applyPageLockStatus() {
+    const page1Item = document.getElementById('page1-item');
+    
+    if (isTask6Completed()) {
+        // Task 6 is completed - Page 1 should be unlocked
+        page1Item.classList.remove('locked');
+        page1Item.style.cursor = 'pointer';
+        page1Item.onclick = function() { 
+            openPage('page1');
+        };
+        console.log('✅ Task 6 completed - Page 1 unlocked');
+    } else {
+        // Task 6 is NOT completed - Page 1 should be locked
+        page1Item.classList.add('locked');
+        page1Item.style.cursor = 'not-allowed';
+        page1Item.onclick = function() { 
+            openLockedPage();
+        };
+        console.log('🔒 Task 6 not completed - Page 1 locked');
+    }
+}
+
+// Open locked page (for all locked pages)
+function openLockedPage() {
+    const pagesGrid = document.getElementById('pagesGrid');
+    if (pagesGrid) {
+        pagesGrid.classList.add('page-transition');
+    }
+    setTimeout(() => {
+        window.location.href = 'https://projectsofkhan.github.io/Trail/apps/diary/lockedpage.html';
+    }, 200);
+}
+
+// Open specific page (only for unlocked pages)
+function openPage(pageNumber) {
+    if (pageNumber === 'page1' && !isTask6Completed()) {
+        // Double-check before opening page 1
+        openLockedPage();
+        return;
+    }
+    
+    const pagesGrid = document.getElementById('pagesGrid');
+    if (pagesGrid) {
+        pagesGrid.classList.add('page-transition');
+    }
+    
+    setTimeout(() => {
+        if (pageNumber === 'page1') {
+            // Redirect to actual page 1
+            window.location.href = 'https://projectsofkhan.github.io/Trail/apps/diary/page1.html';
+        } else {
+            // For other pages that might be unlocked in future
+            openLockedPage();
+        }
+    }, 200);
+}
+
 /**
  * Back Button - Closes app tab and returns to home
  */
@@ -388,6 +481,9 @@ document.addEventListener('DOMContentLoaded', function() {
     updateTime();
     setInterval(updateTime, 60000);
 
+    // Apply lock/unlock status for pages
+    applyPageLockStatus();
+
     // Add fade animations to page items
     if (pagesGrid) {
         const pageItems = pagesGrid.querySelectorAll('.page-item');
@@ -400,19 +496,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeBackButton();
     initializeAutoRedirect();
 
-    console.log('📖 Diary App Ready - All pages redirect to locked page!');
+    console.log('📖 Diary App Ready - Lock status applied!');
 });
-
-// All pages redirect to locked page
-function openPage(pageNumber) {
-    const pagesGrid = document.getElementById('pagesGrid');
-    if (pagesGrid) {
-        pagesGrid.classList.add('page-transition');
-    }
-    setTimeout(() => {
-        window.location.href = 'https://projectsofkhan.github.io/Trail/apps/diary/lockedpage.html';
-    }, 200);
-}
 
 function nextPage() {
     window.location.href = 'https://projectsofkhan.github.io/Trail/apps/diary/lockedpage.html';
@@ -424,11 +509,9 @@ function prevPage() {
 
 // Make functions global
 window.openPage = openPage;
+window.openLockedPage = openLockedPage;
 window.nextPage = nextPage;
 window.prevPage = prevPage;
-
-
-
-    </script>
+</script>
 </body>
 </html>
