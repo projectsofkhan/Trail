@@ -42,7 +42,7 @@ const TaskProgress = {
             unlocks: 'Laptop clue and garage evidence',
             type: 'chat'
         },
-        'task6_unlock_instashan': {  // ✅ NEW TASK 6
+        'task6_unlock_instashan': {
             id: 'task6_unlock_instashan',
             title: 'Unlock Instashan ID',
             description: 'Complete your Instashan profile setup to unlock your unique Instashan ID',
@@ -88,6 +88,11 @@ const TaskProgress = {
                 this.unlockDadContact();
             }
 
+            // ✅ AUTOMATICALLY UNLOCK DIARY PAGE 1 WHEN TASK 6 COMPLETES
+            if (taskId === 'task6_unlock_instashan') {
+                this.unlockDiaryPage1();
+            }
+
             console.log(`✅ Task completed: ${taskId}`);
 
             // Play completion sound
@@ -101,6 +106,24 @@ const TaskProgress = {
         extendedProgress.unlock_dad = true;
         localStorage.setItem('extendedProgress', JSON.stringify(extendedProgress));
         console.log('🔓 Dad\'s contact unlocked via TaskProgress system!');
+    },
+
+    // ✅ NEW FUNCTION: Unlock Diary Page 1 when Task 6 completes
+    unlockDiaryPage1() {
+        localStorage.setItem('task6_completed', 'true');
+        console.log('🔓 Diary Page 1 unlocked via Task 6 completion!');
+        
+        // Also notify any open diary pages
+        if (window.opener && !window.opener.closed) {
+            try {
+                window.opener.postMessage({
+                    type: 'DIARY_UNLOCKED',
+                    page: 'page1'
+                }, '*');
+            } catch (e) {
+                console.log('⚠️ Could not notify diary page');
+            }
+        }
     },
 
     updateGameTasks(taskId) {
@@ -142,6 +165,11 @@ const TaskProgress = {
                 this.tasks[taskId].completed = progress[taskId];
             }
         });
+        
+        // Also sync task6_completed status
+        if (this.tasks['task6_unlock_instashan']?.completed) {
+            localStorage.setItem('task6_completed', 'true');
+        }
     },
 
     notifyChanges() {
@@ -263,7 +291,12 @@ const TaskProgress = {
         });
         this.saveProgress();
         this.notifyChanges();
-        console.log('🔄 All task progress reset');
+        
+        // Also reset diary unlocks
+        localStorage.removeItem('task6_completed');
+        localStorage.removeItem('diary_page1_unlocked');
+        
+        console.log('🔄 All task progress and diary unlocks reset');
     }
 };
 
@@ -281,4 +314,10 @@ window.addEventListener('message', function(event) {
             TaskProgress.completeTask(taskId);
         }
     }
+    
+    // Listen for diary unlock messages
+    if (event.data && event.data.type === 'DIARY_UNLOCKED') {
+        console.log('📖 Diary unlocked from external source');
+    }
 });
+
