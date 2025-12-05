@@ -175,21 +175,18 @@
         }
 
         .page-item.locked {
-            background: white;
+            background: rgba(150, 150, 150, 0.8);
             cursor: not-allowed;
-            opacity: 8;
-            position: relative;
-            border-left: 5px solid #333;
+            opacity: 0.6;
+            border-left: 5px solid #444;
         }
 
-        .page-item.locked::after {
-            content: "🔒";
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 24px;
-            opacity: 0.8;
+        .page-item.locked .page-number {
+            color: #666;
+        }
+
+        .page-item.locked .page-title {
+            color: #666;
         }
 
         .page-item:active:not(.locked) {
@@ -204,23 +201,12 @@
             font-family: 'Georgia', serif;
         }
 
-        .page-item.locked .page-number {
-            color: #666;
-        }
-
         .page-title {
             font-size: 16px;
             font-weight: 600;
             color: #333;
         }
 
-        .page-item.locked .page-title {
-            color: #666;
-        }
-.page-item.locked {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
         /* Home Bar */
         .home-bar {
             position: absolute;
@@ -326,12 +312,36 @@
         <div class="home-bar"></div>
     </div>
 
-<script>
-// Check if Task 6 is completed
+    <script>
+// Check if Task 6 is completed - CORRECTED VERSION
 function isTask6Completed() {
     // Check localStorage for task completion status
     const task6Completed = localStorage.getItem('task6_completed');
-    return task6Completed === 'true';
+    
+    // Debug logging
+    console.log('📖 DIARY CHECK: Checking task6_completed');
+    console.log('📖 DIARY CHECK: localStorage task6_completed =', task6Completed);
+    console.log('📖 DIARY CHECK: Type of value:', typeof task6Completed);
+    
+    // Check both string "true" and boolean true
+    if (task6Completed === 'true' || task6Completed === true) {
+        console.log('✅ Task 6 IS completed (from localStorage)');
+        return true;
+    }
+    
+    // Also check taskProgress storage
+    const taskProgress = JSON.parse(localStorage.getItem('taskProgress') || '{}');
+    console.log('📖 DIARY CHECK: taskProgress data:', taskProgress);
+    
+    if (taskProgress['task6_unlock_instashan'] === true) {
+        console.log('✅ Task 6 IS completed (from taskProgress)');
+        // Sync it to task6_completed for consistency
+        localStorage.setItem('task6_completed', 'true');
+        return true;
+    }
+    
+    console.log('❌ Task 6 is NOT completed');
+    return false;
 }
 
 // Apply lock/unlock status based on task completion
@@ -345,7 +355,7 @@ function applyPageLockStatus() {
         page1Item.onclick = function() { 
             openPage('page1');
         };
-        console.log('✅ Task 6 completed - Page 1 unlocked');
+        console.log('✅ Page 1 unlocked - Task 6 completed');
     } else {
         // Task 6 is NOT completed - Page 1 should be locked
         page1Item.classList.add('locked');
@@ -353,7 +363,7 @@ function applyPageLockStatus() {
         page1Item.onclick = function() { 
             openLockedPage();
         };
-        console.log('🔒 Task 6 not completed - Page 1 locked');
+        console.log('🔒 Page 1 locked - Task 6 not completed');
     }
 }
 
@@ -370,8 +380,9 @@ function openLockedPage() {
 
 // Open specific page (only for unlocked pages)
 function openPage(pageNumber) {
+    // Always double-check before opening
     if (pageNumber === 'page1' && !isTask6Completed()) {
-        // Double-check before opening page 1
+        console.log('⚠️ Double-check failed: Task 6 not completed');
         openLockedPage();
         return;
     }
@@ -390,6 +401,29 @@ function openPage(pageNumber) {
             openLockedPage();
         }
     }, 200);
+}
+
+// Listen for storage changes (when TaskProgress updates localStorage)
+function setupStorageListener() {
+    window.addEventListener('storage', function(event) {
+        console.log('📡 Storage event detected:', event.key, '=', event.newValue);
+        
+        if (event.key === 'task6_completed' || event.key === 'taskProgress') {
+            console.log('🔄 Task status changed, updating page lock status...');
+            setTimeout(() => {
+                applyPageLockStatus();
+            }, 100);
+        }
+    });
+    
+    // Also check for message events from TaskProgress
+    window.addEventListener('message', function(event) {
+        if (event.data && event.data.type === 'DIARY_UNLOCKED') {
+            console.log('📨 Received DIARY_UNLOCKED message from TaskProgress');
+            localStorage.setItem('task6_completed', 'true');
+            applyPageLockStatus();
+        }
+    });
 }
 
 /**
@@ -483,6 +517,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Apply lock/unlock status for pages
     applyPageLockStatus();
+    
+    // Setup storage listener to detect when Task 6 completes
+    setupStorageListener();
 
     // Add fade animations to page items
     if (pagesGrid) {
@@ -496,7 +533,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeBackButton();
     initializeAutoRedirect();
 
-    console.log('📖 Diary App Ready - Lock status applied!');
+    console.log('📖 Diary App Ready - Lock system active');
+    console.log('📖 Current task6_completed status:', localStorage.getItem('task6_completed'));
 });
 
 function nextPage() {
@@ -507,11 +545,22 @@ function prevPage() {
     window.location.href = 'https://projectsofkhan.github.io/Trail/apps/diary/lockedpage.html';
 }
 
+// Debug function - can be called from console
+window.debugTask6Status = function() {
+    console.log('🔍 DEBUG TASK 6 STATUS:');
+    console.log('localStorage task6_completed:', localStorage.getItem('task6_completed'));
+    console.log('localStorage taskProgress:', JSON.parse(localStorage.getItem('taskProgress') || '{}'));
+    console.log('Is task6 completed?', isTask6Completed());
+};
+
 // Make functions global
 window.openPage = openPage;
 window.openLockedPage = openLockedPage;
 window.nextPage = nextPage;
 window.prevPage = prevPage;
-</script>
+window.isTask6Completed = isTask6Completed;
+window.applyPageLockStatus = applyPageLockStatus;
+
+    </script>
 </body>
 </html>
