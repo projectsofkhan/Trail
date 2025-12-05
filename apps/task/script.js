@@ -1,5 +1,4 @@
-
-        // Complete task progression system
+// Complete task progression system
 const gameTasks = {
     'chat_mr_ray': {
         title: 'Task 1: Talk to Mr. Ray',
@@ -31,10 +30,16 @@ const gameTasks = {
         hint: 'Go to Messages app → Click on Dad → Complete all conversation steps',
         unlocks: ['task6_unlock_instashan'] // ✅ NOW UNLOCKS TASK 6
     },
-    'task6_unlock_instashan': {  // ✅ NEW TASK 6
+    'task6_unlock_instashan': {
         title: 'Task 6: Unlock Instashan ID',
         description: 'Unlock the Instashan ID of Eric',
-        hint: 'Go to Instashan app → Click forget password → Write Eric\'s nickname (available on Dad\'s chat)...', // ✅ FIXED: Escaped apostrophes
+        hint: 'Go to Instashan app → Click forget password → Write Eric\'s nickname (available on Dad\'s chat)...',
+        unlocks: ['task7_complete_diary'] // ✅ NOW UNLOCKS TASK 7
+    },
+    'task7_complete_diary': {  // ✅ NEW TASK 7
+        title: 'Task 7: Complete Diary Page 1',
+        description: 'Solve the riddle in Eric\'s diary to unlock the first page',
+        hint: 'Go to Diary app → Click on Page 1 → Solve the riddle (answer: shadow)',
         unlocks: [] // Last task for now
     }
 };
@@ -309,9 +314,14 @@ function setupTaskUpdateListener() {
             // ✅ AUTOMATICALLY UNLOCK DAD'S CONTACT WHEN TASK 4 COMPLETES
             if (taskId === 'task4_call_dyere') {
                 const extendedProgress = JSON.parse(localStorage.getItem('extendedProgress') || '{}');
-                extendedProgress.unlock_dad = true; // ✅ Unlocks Dad
+                extendedProgress.unlock_dad = true;
                 localStorage.setItem('extendedProgress', JSON.stringify(extendedProgress));
                 console.log('🔓 Dad\'s contact unlocked automatically!');
+            }
+
+            // ✅ AUTOMATICALLY MARK TASK 7 COMPLETE WHEN DIARY IS UNLOCKED
+            if (taskId === 'task7_complete_diary') {
+                console.log('🔓 Task 7 (Diary) completed!');
             }
 
             loadRealTasks();
@@ -341,7 +351,8 @@ function showTaskNotification(taskId) {
         'investigate_dyere': 'Investigate Dyere',
         'task4_call_dyere': 'Call To Dyere',
         'task5_talk_dad': 'Talk to Eric\'s Dad',
-        'task6_unlock_instashan': 'Unlock Instashan ID' // ✅ ADDED
+        'task6_unlock_instashan': 'Unlock Instashan ID',
+        'task7_complete_diary': 'Complete Diary Page 1' // ✅ ADDED
     };
 
     const notification = document.createElement('div');
@@ -402,5 +413,5 @@ window.onload = function() {
     initializeAutoRedirect();
     loadRealTasks();
     setupTaskUpdateListener();
-    console.log('📋 Task Manager Ready with 6 tasks!');
+    console.log('📋 Task Manager Ready with 7 tasks!');
 };
