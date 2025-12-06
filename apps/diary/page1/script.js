@@ -184,7 +184,7 @@ function showAd() {
 
 function showHint() {
     const message = document.getElementById('message');
-    message.textContent = `Hint : Check Out the Eric's Post 11 on Instashan`;
+    message.textContent = `Hint: Check Out Eric's 11th Post on Instashan`;
     message.classList.add('success-message');
     closeAd();
 }
