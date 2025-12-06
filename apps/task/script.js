@@ -39,7 +39,7 @@ const gameTasks = {
     'task7_complete_diary': {  // ✅ NEW TASK 7
         title: 'Task 7: Complete Diary Page 1',
         description: 'Solve the riddle in Eric\'s diary to unlock the first page',
-        hint: 'Go to Diary app → Click on Page 1 → Solve the riddle (answer: shadow)',
+        hint: 'Go to Diary app → Click on Page 1 → Answer the riddle.',
         unlocks: [] // Last task for now
     }
 };
