@@ -131,7 +131,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('https://image.jimcdn.com/app/cms/image/transf/none/path/s5b7af0618d302082/image/i11f65fa2d5a1cd28/version/1763123072/image.png');
+    background-image: url('backgroundimage.jpg');
     background-size: cover;
     background-position: center;
     filter: brightness(0.65);
