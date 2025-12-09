@@ -71,11 +71,11 @@ function initializeMusic() {
     bgMusic2 = document.getElementById('bgMusic2');
 
     if (bgMusic1) {
-        bgMusic1.volume = 0.05;
+        bgMusic1.volume = 0.3;
         bgMusic1.preload = 'auto';
     }
     if (bgMusic2) {
-        bgMusic2.volume = 0.05;
+        bgMusic2.volume = 0.3;
         bgMusic2.preload = 'auto';
     }
 
