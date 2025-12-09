@@ -15,7 +15,7 @@
     <div class="phone-container">
         <!-- Video Background -->
         <div class="video-background">
-            <video autoplay muted loop playsinline id="bg-video">
+            <video autoplay muted loop playsinline id="bg-video" preload="auto" webkit-playsinline>
                 <source src="backgroundvideo.mp4" type="video/mp4">
                 Your browser does not support HTML5 video.
             </video>
@@ -77,5 +77,73 @@
     </audio>
 
     <script src="script.js"></script>
+    
+    <!-- Inline JavaScript for Video Playback -->
+    <script>
+        // Video autoplay fix
+        function startVideoPlayback() {
+            const video = document.getElementById('bg-video');
+            
+            if (video) {
+                console.log('🎥 Video element found, trying to play...');
+                
+                // Try to play immediately
+                const playPromise = video.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        console.log('✅ Video playback started successfully');
+                    }).catch(error => {
+                        console.log('⚠️ Autoplay blocked:', error);
+                        
+                        // Try muted play (browsers allow muted autoplay)
+                        video.muted = true;
+                        video.play().then(() => {
+                            console.log('✅ Video playing (muted)');
+                            // Unmute after starting
+                            setTimeout(() => {
+                                video.muted = false;
+                                console.log('✅ Video unmuted');
+                            }, 1000);
+                        }).catch(e => {
+                            console.log('❌ Muted play also blocked:', e);
+                        });
+                    });
+                }
+            } else {
+                console.log('❌ Video element not found!');
+            }
+        }
+
+        // Start video when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📱 DOM loaded, starting video...');
+            startVideoPlayback();
+            
+            // Also try on user interaction
+            document.addEventListener('click', function() {
+                const video = document.getElementById('bg-video');
+                if (video && video.paused) {
+                    console.log('🖱️ User clicked, trying to play video...');
+                    video.play().catch(e => console.log('Click play failed:', e));
+                }
+            }, { once: true }); // Only try once
+            
+            // Debug: Add a test button
+            const debugDiv = document.createElement('div');
+            debugDiv.style.cssText = 'position:fixed;top:10px;right:10px;background:#000;color:#fff;padding:10px;border-radius:5px;z-index:9999;font-size:12px;';
+            debugDiv.innerHTML = `
+                <button onclick="startVideoPlayback()" style="background:#4CAF50;color:white;border:none;padding:5px 10px;border-radius:3px;margin:5px;">▶ Play Video</button>
+                <button onclick="location.reload()" style="background:#2196F3;color:white;border:none;padding:5px 10px;border-radius:3px;margin:5px;">↻ Reload</button>
+            `;
+            document.body.appendChild(debugDiv);
+        });
+
+        // Fallback: Try again after 2 seconds
+        setTimeout(startVideoPlayback, 2000);
+        
+        // Expose function globally for debug button
+        window.startVideoPlayback = startVideoPlayback;
+    </script>
 </body>
 </html>
